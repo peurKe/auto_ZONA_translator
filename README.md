@@ -74,6 +74,10 @@ Script for translating all Ukrainian or Russian texts of the Steam games '**Z.O.
  Language to translate to (specify the 2-letter language code):
 ```
 
+  3. Wait for the translation ending.
+
+  4. Enjoy Russian voices while having all the texts in your native language!
+
 • To restore original translation, execute the shortcut '**auto_ZONA_translator (restore)**' created by the executable
 
   Confirm you want to restore original translation (y/n)
@@ -128,7 +132,11 @@ Script for translating all Ukrainian or Russian texts of the Steam games '**Z.O.
 
  Language to translate to (specify the 2-letter language code):
 ```
-  
+
+  3. Wait for the translation ending.
+
+  4. Enjoy Russian voices while having all the texts in your native language!
+
 • To restore original translation, execute the shortcut '**auto_ZONA_translator (restore)**' created by the executable
 
   Confirm you want to restore original translation (y/n)
