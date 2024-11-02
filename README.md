@@ -55,7 +55,7 @@ Script for translating all Ukrainian or Russian texts of the Steam games 'Z.O.N.
 ```
   2. Select the language you want to translate English to:
 ```
-Supported languages:
+ Supported languages:
    cs (čeština)
    da (dansk)
    es (español)
@@ -72,12 +72,12 @@ Supported languages:
  Language to translate to (specify the 2-letter language code):
 ```
 
-• To restore original translation, execute the shortcut 'auto_ZO_translate (restore)' created by the executable
+• To restore original translation, execute the shortcut 'auto_ZONA_translator (restore)' created by the executable
 
+  Then confirm you want to restore original translation (y/n)
 ```
-Then confirm you want to restore original translation (y/n)
+ Confirm you want to restore all '0.035' backup binary files (y/n):
 ```
-
 
 ## Usage from sources
 
