@@ -438,7 +438,7 @@ def dialog_translate_deepl(translator, dialog='(OUPS)', to='fr'):
     return translator.translate_text(dialog, source_lang=DEFAULT_ZONA_TRANSLATE_LANG_SRC, target_lang=to).text
 
 
-def dialog_translate(translator, file='(NO_F)', dialog='(OUPS)', to='fr', delay=15, retries=2):
+def dialog_translate(translator, file='(NO_F)', dialog='(OUPS)', to='fr', delay=1, retries=2):
     # Translate dialog string
     # /!\ This method isn't pretty, but it takes much less time than the 'for attempt in range(retries+1)' loop.
     if dialog is None or dialog == '':
@@ -448,21 +448,23 @@ def dialog_translate(translator, file='(NO_F)', dialog='(OUPS)', to='fr', delay=
         dialog_tr = globals()[DEFAULT_TRANSLATE_FUNCTION](translator, dialog, to)
     except AuthorizationException_deepl as e:
         printc(f"Function '{currentframe().f_code.co_name}': Boo! A valid 'auth_key' is required with \"-p auth_key\" parameter. Exception {type(e).__name__}: {e}.", bcolors.FAIL)
-        sys.exit(-1)        
+        sys.exit(-1)
     except Exception as e:
         try:
+            printc(f"Function '{currentframe().f_code.co_name}': Rats! Google Translator attempt 1/3 failed on a translation in '{file}'. new attempt in {delay}s", bcolors.WARN)
             time_sleep(delay)
             # dialog_tr = translator.translate(dialog, src=DEFAULT_ZONA_TRANSLATE_LANG_SRC, dest=to).text
             dialog_tr = globals()[DEFAULT_TRANSLATE_FUNCTION](translator, dialog, to)
         except Exception as e:
             try:
+                printc(f"Function '{currentframe().f_code.co_name}': Rats! Google Translator attempt 2/3 failed on a translation in '{file}'. new attempt in {delay}s", bcolors.WARN)
                 time_sleep(delay)
                 # dialog_tr = translator.translate(dialog, src=DEFAULT_ZONA_TRANSLATE_LANG_SRC, dest=to).text
                 dialog_tr = globals()[DEFAULT_TRANSLATE_FUNCTION](translator, dialog, to)
             except Exception as e:
                 # Do not generate an exception, just add (OUCH) at the end of the string as a tag
                 # raise RuntimeError(f"Function '{currentframe().f_code.co_name}': Rats! Google Translator failed after 3 attemps on a translation in '{file}'. Exception {type(e).__name__}: {e}. Just bad luck :/")
-                printc(f"Function '{currentframe().f_code.co_name}': Rats! Google Translator failed after 3 attempts on a translation in '{file}'. Exception {type(e).__name__}: {e}. Just bad luck :/", bcolors.WARN)
+                printc(f"Function '{currentframe().f_code.co_name}': Rats! Google Translator failed after 3 attempts on a translation in '{file}'. Exception {type(e).__name__}: {e}. Just bad luck :/", bcolors.FAIL)
                 dialog_tr = dialog + ' (OUPS)'
 
     # # # FOR TESTING PURPOSES ONLY
@@ -680,7 +682,7 @@ def main():
         argparser.add_argument("-r", "--restore", action='store_true', help="Restore backup files (reset)")
         argparser.add_argument("-rv", "--restore-version", type=str, default=None, help="Specify the '0.0NN' patch version to restore. Default will be the current version. (reset)")
         argparser.add_argument("--force", action='store_true', help=f"Force translate even if translated files are already existing in '{DEFAULT_ZONA_TRANSLATE_DIR}/' directory")
-        argparser.add_argument("--delay", type=int, default=5, help="Delay in secondes between each attempt after an error with Google Translator (default value is 5)")
+        argparser.add_argument("--delay", type=int, default=1, help="Delay in secondes between each attempt after an error with Google Translator (default value is 1)")
         argparser.add_argument("--retries", type=int, default=2, help="Number of attempts after an error with Google Translator (default value: 2). Parameter disabled.")
         
         args = argparser.parse_args()
