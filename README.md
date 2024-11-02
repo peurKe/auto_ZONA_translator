@@ -37,7 +37,7 @@ Script for translating all Ukrainian or Russian texts of the Steam games '**Z.O.
 
 ## Usage from binary release
 
-• Go to the latest release:
+### Go to the latest release:
 
   https://github.com/peurKe/auto_ZONA_translator/releases
 
