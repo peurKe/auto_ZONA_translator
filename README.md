@@ -1,5 +1,5 @@
 # auto_ZONA_translator
-Script for translating all Ukrainian or Russian texts of the Steam games 'Z.O.N.A Origin' and 'Z.O.N.A Project X' by AGaming+ and enjoy Russian voices!
+Script for translating all Ukrainian or Russian texts of the Steam games '**Z.O.N.A Origin**' and '**Z.O.N.A Project X**' by **AGaming+** and enjoy Russian voices while having all the texts in your native language!
 
 ## Prerequisites
 
@@ -41,9 +41,9 @@ Script for translating all Ukrainian or Russian texts of the Steam games 'Z.O.N.
 
   https://github.com/peurKe/auto_ZONA_translator/releases  
 
-• Move the 'auto_ZONA_translator.exe' executable file in the same directory as the 'ZONAORIGIN.exe' or 'ZONA.exe' executable file (Example: usually in the 'C:\Program Files (x86)\Steam\steamapps\common\ZONAORIGIN\' directory).
+• Move the 'auto_ZONA_translator.exe' executable file in the same directory as the '**ZONAORIGIN.exe**' or '**ZONA.exe**' executable file (Example: usually in the '**C:\Program Files (x86)\Steam\steamapps\common\ZONAORIGIN\**' directory).
 
-• Go to the 'C:\Program Files (x86)\Steam\steamapps\common\ZONAORIGIN\' or 'C:\Program Files (x86)\Steam\steamapps\common\ZONA\' directory
+• Go to the '**C:\Program Files (x86)\Steam\steamapps\common\ZONAORIGIN\**' or '**C:\Program Files (x86)\Steam\steamapps\common\ZONA\**' directory
 
 • Execute 'auto_ZONA_translator.exe'
 
@@ -72,7 +72,7 @@ Script for translating all Ukrainian or Russian texts of the Steam games 'Z.O.N.
  Language to translate to (specify the 2-letter language code):
 ```
 
-• To restore original translation, execute the shortcut 'auto_ZONA_translator (restore)' created by the executable
+• To restore original translation, execute the shortcut '**auto_ZONA_translator (restore)**' created by the executable
 
   Confirm you want to restore original translation (y/n)
 ```
@@ -94,11 +94,11 @@ Script for translating all Ukrainian or Russian texts of the Steam games 'Z.O.N.
     pip install --upgrade pip
     pip install tqdm deepl googletrans==3.1.0a0 legacy-cgi nltk unidecode pywin32
 
-• Move the 'auto_ZONA_translator.py' executable file in the same directory as the 'ZONAORIGIN.exe' or 'ZONA.exe' executable file (Example: usually in the 'C:\Program Files (x86)\Steam\steamapps\common\ZONAORIGIN\' directory).
+• Move the 'auto_ZONA_translator.py' executable file in the same directory as the '**ZONAORIGIN.exe**' or '**ZONA.exe**' executable file (Example: usually in the '**C:\Program Files (x86)\Steam\steamapps\common\ZONAORIGIN\**' directory).
 
-• Go to the 'C:\Program Files (x86)\Steam\steamapps\common\ZONAORIGIN\' or 'C:\Program Files (x86)\Steam\steamapps\common\ZONA\' directory
+• Go to the '**C:\Program Files (x86)\Steam\steamapps\common\ZONAORIGIN\**' or '**C:\Program Files (x86)\Steam\steamapps\common\ZONA\**' directory
 
-• Double clic on 'auto_ZONA_translator.py' to execute script
+• Double clic on '**auto_ZONA_translator.py**' to execute script
 
   1. Press Enter if prerequisites displayed on the screen are correct:
 ```
@@ -125,7 +125,7 @@ Script for translating all Ukrainian or Russian texts of the Steam games 'Z.O.N.
  Language to translate to (specify the 2-letter language code):
 ```
   
-• To restore original translation, execute the shortcut 'auto_ZONA_translator (restore)' created by the executable
+• To restore original translation, execute the shortcut '**auto_ZONA_translator (restore)**' created by the executable
 
   Confirm you want to restore original translation (y/n)
 ```
