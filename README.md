@@ -74,44 +74,60 @@ Script for translating all Ukrainian or Russian texts of the Steam games 'Z.O.N.
 
 • To restore original translation, execute the shortcut 'auto_ZONA_translator (restore)' created by the executable
 
-  Then confirm you want to restore original translation (y/n)
+  Confirm you want to restore original translation (y/n)
 ```
  Confirm you want to restore all '0.035' backup binary files (y/n):
 ```
 
 ## Usage from sources
 
-• Download the **3.12.7** version of Python for windows:
+• Download the **latest** version of Python for windows for your PC architecture :
 
-   **/!\ Do not download the latest version because of numba python package requirement (only versions >=3.9,<3.13 are supported)**
+   **Windows installer (64-bit)** or **Windows installer (32-bit)**
    
-   Python for Windows "64-bit" 3.12.7   https://www.python.org/ftp/python/3.12.7/python-3.12.7-amd64.exe
-   
-   Python for Windows "32-bit" 3.12.7   https://www.python.org/ftp/python/3.12.7/python-3.12.7.exe
+   https://www.python.org/downloads/windows/
         
 • Run the installer and follow the prompts to install Python.
 
 • Open python installed console, upgrade pip package and install all following additional packages:
 
     pip install --upgrade pip
-    pip install numba tqdm googletrans==3.1.0a0 legacy-cgi nltk unidecode pywin32 pyinstaller
+    pip install tqdm deepl googletrans==3.1.0a0 legacy-cgi nltk unidecode pywin32
 
-• Move the 'auto_ZO_translate.py' script in the same directory as the 'ZONAORIGIN.exe' executable file (usually in the 'C:\Program Files (x86)\Steam\steamapps\common\ZONAORIGIN\' directory).
+• Move the 'auto_ZONA_translator.py' executable file in the same directory as the 'ZONAORIGIN.exe' or 'ZONA.exe' executable file (Example: usually in the 'C:\Program Files (x86)\Steam\steamapps\common\ZONAORIGIN\' directory).
 
-• Go to the 'C:\Program Files (x86)\Steam\steamapps\common\ZONAORIGIN\'
+• Go to the 'C:\Program Files (x86)\Steam\steamapps\common\ZONAORIGIN\' or 'C:\Program Files (x86)\Steam\steamapps\common\ZONA\' directory
 
-• Double clic on 'auto_ZO_translate.py' to execute script
+• Double clic on 'auto_ZONA_translator.py' to execute script
 
+  1. Press Enter if prerequisites displayed on the screen are correct:
 ```
-1. Press Enter if prerequisites displayed on the screen are correct:
-      - Your 'Z.O.N.A Origin' game must be up to date
-      - Your PC has an Internet connection for Google Translator API requests).
+    • Your 'Z.O.N.A Origin' game must be up to date.
+    • Your PC has an Internet connection for Google Translator or Deepl API requests.
+    • You have a valid API auth key if you use Deepl API requests with the "-t 'deepl'" and "-ta 'xxx'" parameters.
+```
+  2. Select the language you want to translate English to:
+```
+ Supported languages:
+   cs (čeština)
+   da (dansk)
+   es (español)
+   fi (suomi)
+   fr (français)
+   hu (magyar)
+   it (italiano)
+   nl (Nederlands)
+   pl (polski)
+   pt (português)
+   ro (română)
+   sv (svenska)
 
-2. Select the language you want to translate English to (Possible choices are: fr, it, es, cd, pl, ro)
+ Language to translate to (specify the 2-letter language code):
 ```
   
-• To restore original translation, execute the shortcut 'auto_ZO_translate (restore)' created by the script execution
+• To restore original translation, execute the shortcut 'auto_ZONA_translator (restore)' created by the executable
 
+  Confirm you want to restore original translation (y/n)
 ```
-Then confirm you want to restore original translation (y/n)
-```  
+ Confirm you want to restore all '0.035' backup binary files (y/n):
+```
