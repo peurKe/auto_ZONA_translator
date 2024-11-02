@@ -679,6 +679,7 @@ def main():
         argparser.add_argument("-f", "--files", type=str, default='empty', help="Comma separated str. Default is with all 'levelNN' and 'resources.assets' files. if '--file' is specified then '--files' parameter must be comma separated (eg. 'level7,level11')")
         argparser.add_argument("-s", "--min-size", type=int, default=2, help="Minimum size for string to translate is set to 2")
         argparser.add_argument("-v", "--verbose", action='store_true', help="Execute verbose mode (show translation results")
+        argparser.add_argument("--sep", type=str, default=';', help="String separator for verbose mode. (default value: ';')")
         argparser.add_argument("-d", "--debug", action='store_true', help="Execute debug mode")
         argparser.add_argument("-df", "--debug-file", action='store_true', help="Print debug in 'auto_ZO_translate_ru.log' file")
         argparser.add_argument("-r", "--restore", action='store_true', help="Restore backup files (reset)")
@@ -698,6 +699,7 @@ def main():
         i_files = args.files.split(',')
         i_min_size = args.min_size
         i_verbose = args.verbose
+        i_sep = args.sep
         i_debug = args.debug
         i_debug_file = args.debug_file
         i_restore = args.restore
@@ -728,6 +730,16 @@ def main():
             printc(f" No '0.0NN' version patch found in '{i_file_ggm}' binary file.\n", bcolors.FAIL)
             inputc(f" Press Enter to exit...\n", bcolors.ASK)
             sys.exit(1)
+
+        if i_debug:
+            print(f" DEFAULT_ZONA_GAME_NAME={bcolors.OK}'{DEFAULT_ZONA_GAME_NAME}'{bcolors.ENDC}")
+            print(f" DEFAULT_ZONA_DIR_NAME={bcolors.OK}'{DEFAULT_ZONA_DIR_NAME}'{bcolors.ENDC}")
+            print(f" DEFAULT_ZONA_DIR_EXAMPLE={bcolors.OK}'{DEFAULT_ZONA_DIR_EXAMPLE}'{bcolors.ENDC}")
+            print(f" DEFAULT_ZONA_DATA_DIR_NAME={bcolors.OK}'{DEFAULT_ZONA_DATA_DIR_NAME}'{bcolors.ENDC}")
+            print(f" DEFAULT_ZONA_DATA_DIR={bcolors.OK}'{DEFAULT_ZONA_DATA_DIR}'{bcolors.ENDC}")
+            print(f" DEFAULT_ZONA_GLOBAL_GM={bcolors.OK}'{DEFAULT_ZONA_GLOBAL_GM}'{bcolors.ENDC}")
+            print(f" DEFAULT_ZONA_VERSION_REGEX={bcolors.OK}'{DEFAULT_ZONA_VERSION_REGEX}'{bcolors.ENDC}")
+            print(f" DEFAULT_ZONA_TRANSLATE_LANG_SRC={bcolors.OK}'{DEFAULT_ZONA_TRANSLATE_LANG_SRC}'{bcolors.ENDC}\n")
 
         # RESTORE: Create backup file in backup directory if not already existing
         if i_restore:
@@ -999,12 +1011,11 @@ def main():
                                     dialog_str_len = len(dialog_str)
                                     # # DEBUG PRINT
                                     if i_debug:
-                                        sep = ';'
                                         if i_debug_file:
-                                            debug_str = " {:s}{:1s}CYR{:1s}0x{:x}{:1s}{:d}{:1s}{:d}{:1s}{:s}{:1s}{:s}\n".format(i_file, sep, sep, s.offset, sep, max_length, sep, dialog_len, sep, s.s, sep, dialog_str)
+                                            debug_str = " {:s}{:1s}CYR{:1s}0x{:x}{:1s}{:d}{:1s}{:d}{:1s}{:s}{:1s}{:s}\n".format(i_file, i_sep, i_sep, s.offset, i_sep, max_length, i_sep, dialog_len, i_sep, s.s, i_sep, dialog_str)
                                             debug_f.write(debug_str)
                                     if i_verbose:
-                                        debug_str = " {:s}{:1s}CYR{:1s}{:s}0x{:x}{:s}{:1s}{:d}{:1s}{:d}{:1s}{:s}{:s}{:s}{:1s}{:s}{:s}{:s}".format(i_file, sep, sep, bcolors.FAIL, s.offset, bcolors.ENDC, sep, max_length, sep, dialog_len, sep, bcolors.INFO, s.s, bcolors.ENDC, sep, bcolors.OK, dialog_str, bcolors.ENDC)
+                                        debug_str = " {:s}{:1s}CYR{:1s}{:s}0x{:x}{:s}{:1s}{:d}{:1s}{:d}{:1s}{:s}{:s}{:s}{:1s}{:s}{:s}{:s}".format(i_file, i_sep, i_sep, bcolors.FAIL, s.offset, bcolors.ENDC, i_sep, max_length, i_sep, dialog_len, i_sep, bcolors.INFO, s.s, bcolors.ENDC, i_sep, bcolors.OK, dialog_str, bcolors.ENDC)
                                         print(debug_str)
 
                                     # Set new binary string with translated dialog
