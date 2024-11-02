@@ -453,17 +453,17 @@ def dialog_translate(translator, file='(NO_F)', dialog='(OUPS)', to='fr', delay=
         try:
             time_sleep(delay)
             # dialog_tr = translator.translate(dialog, src=DEFAULT_ZONA_TRANSLATE_LANG_SRC, dest=to).text
-            dialog_tr = globals()[DEFAULT_TRANSLATE_FUNCTION]()
+            dialog_tr = globals()[DEFAULT_TRANSLATE_FUNCTION](translator, dialog, to)
         except Exception as e:
             try:
                 time_sleep(delay)
                 # dialog_tr = translator.translate(dialog, src=DEFAULT_ZONA_TRANSLATE_LANG_SRC, dest=to).text
-                dialog_tr = globals()[DEFAULT_TRANSLATE_FUNCTION]()
+                dialog_tr = globals()[DEFAULT_TRANSLATE_FUNCTION](translator, dialog, to)
             except Exception as e:
                 # Do not generate an exception, just add (OUCH) at the end of the string as a tag
                 # raise RuntimeError(f"Function '{currentframe().f_code.co_name}': Rats! Google Translator failed after 3 attemps on a translation in '{file}'. Exception {type(e).__name__}: {e}. Just bad luck :/")
                 printc(f"Function '{currentframe().f_code.co_name}': Rats! Google Translator failed after 3 attempts on a translation in '{file}'. Exception {type(e).__name__}: {e}. Just bad luck :/", bcolors.WARN)
-                dialog_tr = dialog_tr + ' (OUPS)'
+                dialog_tr = dialog + ' (OUPS)'
 
     # # # FOR TESTING PURPOSES ONLY
     # print(f"{file}:{DEFAULT_ZONA_TRANSLATE_LANG_SRC}:{bcolors.INFO}{dialog}{bcolors.ENDC}:{to}:{bcolors.OK}{dialog_tr}{bcolors.ENDC}")
