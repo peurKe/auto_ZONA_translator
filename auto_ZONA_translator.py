@@ -737,7 +737,7 @@ def main():
         else:
             print(" /// PREREQUISITES:\n")
             printc(f"    • Your '{DEFAULT_ZONA_GAME_NAME}' game must be up to date.", bcolors.INFO)
-            printc("    • Your PC has an Internet connection for Google Translator or Deepl API requests.\n", bcolors.INFO)
+            printc("    • Your PC has an Internet connection for Google Translator or Deepl API requests.", bcolors.INFO)
             printc("    • You have a valid API auth key if you use Deepl API requests with the \"-t 'deepl'\" and \"-ta 'xxx'\" parameters.\n", bcolors.INFO)
             printc(f" Press Ctrl+C to exit if you need to update '{DEFAULT_ZONA_GAME_NAME}' game before translate...", bcolors.ASK)
             inputc(f" Press Enter to translate '{DEFAULT_ZONA_GAME_NAME}' game...\n", bcolors.ASK)
