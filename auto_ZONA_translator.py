@@ -664,6 +664,8 @@ def main():
                     DEFAULT_ZONA_GLOBAL_GM = 'globalgamemanagers'
                     DEFAULT_ZONA_VERSION_REGEX = rb'(0\.0[0-9][0-9])'
                     DEFAULT_ZONA_TRANSLATE_LANG_SRC = 'uk'
+                elif game_exec == 'ZONA.exe':
+                    DEFAULT_ZONA_EXE_FILENAME = game_exec
 
         if not DEFAULT_ZONA_EXE_FILENAME:
             raise RuntimeError(f"Function '{currentframe().f_code.co_name}': Heck! The script is not where it should be. Move this script in one of the same directory as the {'\' or \''.join(DEFAULT_ZONA_FILENAME_LIST)}' executable files (Example: usually in the '{DEFAULT_ZONA_DIR_EXAMPLE}' directory). Then run this moved script again ;)")
