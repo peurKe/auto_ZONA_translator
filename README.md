@@ -39,20 +39,37 @@ Script for translating all Ukrainian or Russian texts of the Steam games 'Z.O.N.
 
 • Download the latest binary release:
 
-  https://github.com/peurKe/auto_ZO_translate/releases  
+  https://github.com/peurKe/auto_ZONA_translator/releases  
 
-• Move the 'auto_ZO_translate.exe' and 'auto_ZO_translate (restore).exe' files in the same directory as the 'ZONAORIGIN.exe' executable file (usually in the 'C:\Program Files (x86)\Steam\steamapps\common\ZONAORIGIN\' directory).
+• Move the 'auto_ZONA_translator.exe' executable file in the same directory as the 'ZONAORIGIN.exe' or 'ZONA.exe' executable file (Example: usually in the 'C:\Program Files (x86)\Steam\steamapps\common\ZONAORIGIN\' directory).
 
-• Go to the 'C:\Program Files (x86)\Steam\steamapps\common\ZONAORIGIN\'
+• Go to the 'C:\Program Files (x86)\Steam\steamapps\common\ZONAORIGIN\' or 'C:\Program Files (x86)\Steam\steamapps\common\ZONA\' directory
 
-• Execute 'auto_ZO_translate.exe'
+• Execute 'auto_ZONA_translator.exe'
 
+  1. Press Enter if prerequisites displayed on the screen are correct:
 ```
-1. Press Enter if prerequisites displayed on the screen are correct:
-      - Your 'Z.O.N.A Origin' game must be up to date
-      - Your PC has an Internet connection for Google Translator API requests).
+    • Your 'Z.O.N.A Origin' game must be up to date.
+    • Your PC has an Internet connection for Google Translator or Deepl API requests.
+    • You have a valid API auth key if you use Deepl API requests with the "-t 'deepl'" and "-ta 'xxx'" parameters.
+```
+  2. Select the language you want to translate English to:
+```
+Supported languages:
+   cs (čeština)
+   da (dansk)
+   es (español)
+   fi (suomi)
+   fr (français)
+   hu (magyar)
+   it (italiano)
+   nl (Nederlands)
+   pl (polski)
+   pt (português)
+   ro (română)
+   sv (svenska)
 
-2. Select the language you want to translate English to (Possible choices are: fr, it, es, cd, pl, ro)
+ Language to translate to (specify the 2-letter language code):
 ```
 
 • To restore original translation, execute the shortcut 'auto_ZO_translate (restore)' created by the executable
