@@ -41,13 +41,13 @@ Script for translating all Ukrainian or Russian texts of the Steam games '**Z.O.
 
   https://github.com/peurKe/auto_ZONA_translator/releases
 
-• Download the archive "auto_ZONA_translator_[GAME]_[LANGUAGE].zip" corresponding to your game and language.
+• Download the archive "**auto_ZONA_translator_[GAME]_[LANGUAGE].zip**" corresponding to your game and language.
 
 • Extract the archive content into your game directory.
 
 • Go to your game directory.
 
-• Execute 'auto_ZONA_translator.exe'
+• Execute '**auto_ZONA_translator.exe**'
 
   1. Press Enter if prerequisites displayed on the screen are correct:
 ```
@@ -96,7 +96,7 @@ Script for translating all Ukrainian or Russian texts of the Steam games '**Z.O.
     pip install --upgrade pip
     pip install tqdm deepl googletrans==3.1.0a0 legacy-cgi nltk unidecode pywin32
 
-• Download the archive "auto_ZONA_translator_SRC.zip".
+• Download the archive "**auto_ZONA_translator_SRC.zip**".
 
 • Extract the archive content into your game directory.
 
