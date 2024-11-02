@@ -12,16 +12,27 @@ Script for translating all Ukrainian or Russian texts of the Steam games 'Z.O.N.
 ## Currently supported languages
 
   • **fr** = français
+  
   • **cs** = čeština (Not yet validated)
+  
   • **da** = dansk (Not yet validated)
+  
   • **es** = español (Not yet validated)
+  
   • **fi** = suomi (Not yet validated)
+
   • **hu** = magyar (Not yet validated)
+  
   • **it** = italiano (Not yet validated)
+  
   • **nl** = Nederlands (Not yet validated)
+  
   • **pl** = polski (Not yet validated)
+  
   • **pt** = português (Not yet validated)
+  
   • **ro** = română (Not yet validated)
+  
   • **sv** = svenska (Not yet validated)
 
 ## Usage from binary release
