@@ -5,9 +5,9 @@ Script for translating all Ukrainian or Russian texts of the Steam games '**Z.O.
 
   • Your 'Z.O.N.A Origin' or 'Z.O.N.A Project X' game must be up to date.
   
-  • Your PC has an Internet connection for Google Translator or Deepl API requests.
+  • Your PC must have an Internet connection for Google Translator or Deepl API requests.
   
-  • You have a valid API auth key if you use Deepl API requests with the "-t 'deepl'" and "-ta 'xxx'" parameters.
+  • You must have a valid API auth key if you use Deepl API requests with the "-t 'deepl'" and "-ta 'xxx'" parameters.
 
 ## Currently supported languages
 
