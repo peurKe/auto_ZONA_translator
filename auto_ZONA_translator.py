@@ -307,10 +307,12 @@ RESTORE_SPECIFIC_WORDS = {
         { "from": "harceleur", "to": "Stalker" },
         { "from": "traqueur", "to": "Stalker" },
         { "from": "stalkers gratuits", "to": "Stalkers Libres" },
-        { "from": "Igor", "to": "IGOR" },
-        { "from": "but. menu", "to": "Retour Menu Principal" },
-        { "from": "plus loi", "to": "Suivant" },
-        { "from": "le bon controleur", "to": "Le controleur de droite" },
+        { "from": "ihor", "to": "IGOR" },
+        { "from": "voron", "to": "Corbeau" },
+        { "from": "pripriat", "to": "Prypriat" },
+        { "from": "but. menu", "to": "Retour" },
+        { "from": "plus loin", "to": "Suivant" },
+        { "from": "le bon controleur", "to": "Le controleur droit" },
         { "from": "œ", "to": "oe" },
         { "from": "cheveux gris", "to": "Gray" },
         { "from": "comme 'val'", "to": "AS 'Val'" },
@@ -376,7 +378,7 @@ def ascii_strings_version(buf):
         ascii_string = match.group().decode("ascii")
         ascii_length = len(ascii_string)
         ascii_address = match.start()
-        printc(f"{DEFAULT_ZONA_GAME_NAME}:{DEFAULT_ZONA_DIR_NAME}:{DEFAULT_ZONA_DATA_DIR_NAME}:{DEFAULT_ZONA_GLOBAL_GM}:0x{ascii_address:x} (v{ascii_string})\n", bcolors.NOTIF)
+        printc(f" {DEFAULT_ZONA_GAME_NAME}:{DEFAULT_ZONA_DIR_NAME}:{DEFAULT_ZONA_DATA_DIR_NAME}:{DEFAULT_ZONA_GLOBAL_GM}:0x{ascii_address:x} (v{ascii_string}) \n", bcolors.NOTIF)
         yield String(ascii_string, ascii_address, 0, ascii_length)
         # Only the first one
         break
@@ -398,8 +400,16 @@ def replace_accents(text):
 
 
 def restore_translated_words(text, lang='uk'):
+    # # FOR TESTING PURPOSES ONLY
+    # text_save = text
     for restore_word in RESTORE_SPECIFIC_WORDS[lang]:
-        text = re.sub(restore_word['from'], restore_word['to'], text, flags=re.IGNORECASE)
+        # # CASE SENSITIVE
+        # pattern = re.compile(re.escape(restore_word['from']), re.IGNORECASE)
+        # text = pattern.sub(restore_word['to'], text)
+        # CASE INSENSITIVE
+        text = re.sub(re.escape(restore_word['from']), restore_word['to'], text, flags=re.IGNORECASE)
+    # # FOR TESTING PURPOSES ONLY
+    # print(f"{bcolors.OK}{text_save}{bcolors.ENDC}:{bcolors.FAIL}{text}{bcolors.ENDC}")
     return text
 
 
@@ -739,8 +749,8 @@ def main():
         else:
             print(" /// PREREQUISITES:\n")
             printc(f"    • Your '{DEFAULT_ZONA_GAME_NAME}' game must be up to date.", bcolors.INFO)
-            printc("    • Your PC has an Internet connection for Google Translator or Deepl API requests.", bcolors.INFO)
-            printc("    • You have a valid API auth key if you use Deepl API requests with the \"-t 'deepl'\" and \"-ta 'xxx'\" parameters.\n", bcolors.INFO)
+            printc("    • Your PC must have an Internet connection for Google Translator or Deepl API requests.", bcolors.INFO)
+            printc("    • You must have a valid API auth key if you use Deepl API requests with the \"-t 'deepl'\" and \"-ta 'xxx'\" parameters.\n", bcolors.INFO)
             printc(f" Press Ctrl+C to exit if you need to update '{DEFAULT_ZONA_GAME_NAME}' game before translate...", bcolors.ASK)
             inputc(f" Press Enter to translate '{DEFAULT_ZONA_GAME_NAME}' game...\n", bcolors.ASK)
 
@@ -784,13 +794,14 @@ def main():
             
             printc(f"    • Translator ........................ : '{i_translator}'", bcolors.INFO)
             if i_auth_key:
-                printc(f"    • Translator authentication key...... : '(OBFUSCATED)'", bcolors.INFO)
+                printc(f"    • Translator authentication key...... : '********'", bcolors.INFO)
             printc(f"    • Translate from .................... : '{i_lang_src}'", bcolors.INFO)
-            printc(f"    • Translate to ...................... : '{i_langs}'", bcolors.INFO)
+            printc(f"    • Translate to ...................... : {i_langs}", bcolors.INFO)
             printc(f"    • Minimum size string to translate .. : {i_min_size}", bcolors.INFO)
-            printc(f"    • Debug mode ........................ : {i_debug}", bcolors.INFO)
+            printc(f"    • Verbose mode ...................... : {i_verbose}", bcolors.INFO)
+            printc(f"    • Debug/dry mode .................... : {i_debug}", bcolors.INFO)
             if i_debug:
-                printc(f"    • Debug in file ..................... : {i_debug_file}", bcolors.INFO)
+                printc(f"    • Debug/dry in file ................. : {i_debug_file}", bcolors.INFO)
             printc(f"    • Binary files to translate ......... : {i_files}\n", bcolors.INFO)
 
             # Download nltk 'stopwords' and 'punkt_tab'
