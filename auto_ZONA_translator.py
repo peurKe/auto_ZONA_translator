@@ -62,6 +62,7 @@ except Exception as e:
 class bcolors:
     OK = '\033[92m'
     INFO = '\033[93m'
+    WARN = '\033[38;5;208m'
     FAIL = '\033[91m'
     ASK = '\033[96m'
     NOTIF = '\033[42m'
@@ -288,53 +289,45 @@ CUSTOM_TARGET_STOPWORDS = {
 
 RESTORE_SPECIFIC_WORDS = {
     "cs": [
-        { "from": "Tracker", "to": "Stalker" },
         { "from": "tracker", "to": "Stalker" },
-        { "from": "psi", "to": "psych" },
-        { "from": "Psi", "to": "psych" }
+        { "from": "psi", "to": "Psych" }
     ],
     "da": [],
     "de": [
-        { "from": "Tracker", "to": "Stalker" },
         { "from": "tracker", "to": "Stalker" }
     ],
     "en": [
-        { "from": "Tracker", "to": "Stalker" },
         { "from": "tracker", "to": "Stalker" }
     ],
     "es": [
-        { "from": "Acosador", "to": "Stalker" },
         { "from": "acosador", "to": "Stalker" },
-        { "from": "Rastreador", "to": "stalker" },
-        { "from": "rastreador", "to": "stalker" }
+        { "from": "rastreador", "to": "Stalker" }
     ],
     "fr": [
-        { "from": "Harceleur", "to": "Stalker" },
-        { "from": "Traqueur", "to": "Stalker" },
         { "from": "harceleur", "to": "Stalker" },
         { "from": "traqueur", "to": "Stalker" },
-        { "from": "Stalkers gratuits", "to": "Stalkers Libres" },
-        { "from": "stalkers gratuits", "to": "stalkers Libres" },
+        { "from": "stalkers gratuits", "to": "Stalkers Libres" },
+        { "from": "Igor", "to": "IGOR" },
+        { "from": "but. menu", "to": "Retour Menu Principal" },
+        { "from": "plus loi", "to": "Suivant" },
+        { "from": "le bon controleur", "to": "Le controleur de droite" },
         { "from": "œ", "to": "oe" },
-        { "from": "COMME 'Val'", "to": "AS 'Val'" },
-        { "from": "COMME \"Val\"", "to": "AS 'Val'" }
+        { "from": "cheveux gris", "to": "Gray" },
+        { "from": "comme 'val'", "to": "AS 'Val'" },
+        { "from": "comme \"val\"", "to": "AS 'Val'" }
     ],
     "fi": [],
     "hu": [],
     "it": [
-        { "from": "Tracker", "to": "Stalker" },
         { "from": "tracker", "to": "Stalker" }
     ],
     "nl": [],
     "pl": [
-        { "from": "Tracker", "to": "Stalker" },
         { "from": "tracker", "to": "Stalker" }
     ],
     "pt": [],
     "ro": [
-        { "from": "Urmaritor", "to": "Stalker" },
         { "from": "urmaritor", "to": "Stalker" },
-        { "from": "Tracker", "to": "Stalker" },
         { "from": "tracker", "to": "Stalker" }
     ],
     "sv": [],
@@ -354,6 +347,7 @@ RESTORE_SPECIFIC_WORDS = {
     ]
 }
 
+i_debug = False
 
 def get_secret_input(prompt="Enter your secret: "):
     print(prompt, end='', flush=True)
@@ -405,13 +399,7 @@ def replace_accents(text):
 
 def restore_translated_words(text, lang='uk'):
     for restore_word in RESTORE_SPECIFIC_WORDS[lang]:
-        # # Replace case sensitive
-        # text = text.replace(restore_word['from'], restore_word['to'])
-        # Replace case insensitive
-        # pattern = re.compile(re.escape(restore_word['from']), re.IGNORECASE)
-        # Replace case sensitive
-        pattern = re.compile(re.escape(restore_word['from']))
-        text = pattern.sub(restore_word['to'], text)
+        text = re.sub(restore_word['from'], restore_word['to'], text, flags=re.IGNORECASE)
     return text
 
 
@@ -432,7 +420,7 @@ def dialog_filter(dialog, lang='uk'):
 
 # Dynamic function for Google translator
 def dialog_translate_google(translator, dialog='(OUPS)', to='fr'):
-    return translator.translate(dialog, src=DEFAULT_ZONA_TRANSLATE_LANG_SRC, dest=to).text
+    return translator.translate(dialog, src=DEFAULT_ZONA_TRANSLATE_LANG_SRC, dest=to, raise_exception=True).text
 
 
 # Dynamic function for Deepl translator
@@ -464,7 +452,7 @@ def dialog_translate(translator, file='(NO_F)', dialog='(OUPS)', to='fr', delay=
             except Exception as e:
                 # Do not generate an exception, just add (OUCH) at the end of the string as a tag
                 # raise RuntimeError(f"Function '{currentframe().f_code.co_name}': Rats! Google Translator failed after 3 attemps on a translation in '{file}'. Exception {type(e).__name__}: {e}. Just bad luck :/")
-                printc(f"Function '{currentframe().f_code.co_name}': Rats! Google Translator failed after 3 attempts on a translation in '{file}'. Exception {type(e).__name__}: {e}. Just bad luck :/", bcolors.INFO)
+                printc(f"Function '{currentframe().f_code.co_name}': Rats! Google Translator failed after 3 attempts on a translation in '{file}'. Exception {type(e).__name__}: {e}. Just bad luck :/", bcolors.WARN)
                 dialog_tr = dialog_tr + ' (OUPS)'
 
     # # # FOR TESTING PURPOSES ONLY
@@ -509,8 +497,13 @@ def get_address_from_binary(file_desc, file, search_hex, label):
 
 
 def backup_files(version):
+    global i_debug
+
     backup_dir = f"{DEFAULT_ZONA_TRANSLATE_BACKUP_DIR}_v{version}"
-    printc(f" • [Create backup in '{backup_dir}/' directory] ...\n", bcolors.INFO)
+
+    if i_debug:
+        printc(f" • [Create backup in '{backup_dir}/' directory] ...\n", bcolors.INFO)
+
     os_makedirs(backup_dir)
     # All 'levelNN' original files
     files_to_copy = [os_path.join(DEFAULT_ZONA_DATA_DIR, f) for f in os_listdir(DEFAULT_ZONA_DATA_DIR) if f.startswith('level') and not f.endswith('.resS')]
@@ -520,14 +513,20 @@ def backup_files(version):
     for file in files_to_copy:
         backup_file = os_path.join(backup_dir, os_path.basename(file))
         shutil.copy2(file, backup_file)
-    printc(f" • [Create backup in '{backup_dir}/' directory] OK\n", bcolors.OK)
+
+    if i_debug:
+        printc(f" • [Create backup in '{backup_dir}/' directory] OK\n", bcolors.OK)
 
 
 def restore_files(version=None, src=DEFAULT_ZONA_TRANSLATE_BACKUP_DIR):
+    global i_debug
+
     if version:
         src = f"{DEFAULT_ZONA_TRANSLATE_BACKUP_DIR}_v{version}"
 
-    printc(f" • [Restore files from '{src}/' directory to '{DEFAULT_ZONA_DATA_DIR}/'] ...\n", bcolors.INFO)
+    if i_debug:
+        printc(f" • [Restore files from '{src}/' directory to '{DEFAULT_ZONA_DATA_DIR}/'] ...\n", bcolors.INFO)
+
     if not os_path.exists(src):
         tips =''
         if src == DEFAULT_ZONA_TRANSLATE_BACKUP_DIR:
@@ -544,7 +543,9 @@ def restore_files(version=None, src=DEFAULT_ZONA_TRANSLATE_BACKUP_DIR):
     for file in files_to_copy:
         data_file = os_path.join(DEFAULT_ZONA_DATA_DIR, os_path.basename(file))
         shutil.copy2(file, data_file)
-    printc(f" • [Restore {files_count} files from '{src}/' directory to '{DEFAULT_ZONA_DATA_DIR}/'] OK\n", bcolors.OK)
+
+    if i_debug:
+        printc(f" • [Restore {files_count} files from '{src}/' directory to '{DEFAULT_ZONA_DATA_DIR}/'] OK\n", bcolors.OK)
 
 
 def check_all_in_langs(text):
@@ -633,6 +634,7 @@ def main():
     global DEFAULT_ZONA_VERSION_REGEX
     global DEFAULT_ZONA_TRANSLATE_LANG_SRC
     global DEFAULT_TRANSLATE_FUNCTION
+    global i_debug
 
     # Main code with global exception management
     try:
@@ -662,9 +664,9 @@ def main():
         argparser.add_argument("-l", "--langs", type=str, default='empty', choices=ALL_SUPPORTED_LANGS+['empty', 'all'], help="Languages to translate to. if more than one language then '--langs' parameter must be comma separated (eg. 'fr,cs')")
         argparser.add_argument("-f", "--files", type=str, default='empty', help="Comma separated str. Default is with all 'levelNN' and 'resources.assets' files. if '--file' is specified then '--files' parameter must be comma separated (eg. 'level7,level11')")
         argparser.add_argument("-s", "--min-size", type=int, default=2, help="Minimum size for string to translate is set to 2")
+        argparser.add_argument("-v", "--verbose", action='store_true', help="Execute verbose mode (show translation results")
         argparser.add_argument("-d", "--debug", action='store_true', help="Execute debug mode")
-        argparser.add_argument("-do", "--debug-out", type=str, default='terminal', choices=['terminal', 'file'], help="Print debug in terminal or 'auto_ZO_translate_ru.log' file")
-        argparser.add_argument("-dt", "--debug-translate", action='store_true', help="Translate binary files while debugging. If not set the binary files will not be modified")
+        argparser.add_argument("-df", "--debug-file", action='store_true', help="Print debug in 'auto_ZO_translate_ru.log' file")
         argparser.add_argument("-r", "--restore", action='store_true', help="Restore backup files (reset)")
         argparser.add_argument("-rv", "--restore-version", type=str, default=None, help="Specify the '0.0NN' patch version to restore. Default will be the current version. (reset)")
         argparser.add_argument("--force", action='store_true', help=f"Force translate even if translated files are already existing in '{DEFAULT_ZONA_TRANSLATE_DIR}/' directory")
@@ -681,9 +683,9 @@ def main():
         i_force = args.force
         i_files = args.files.split(',')
         i_min_size = args.min_size
+        i_verbose = args.verbose
         i_debug = args.debug
-        i_debug_out = args.debug_out
-        i_debug_translate = args.debug_translate
+        i_debug_file = args.debug_file
         i_restore = args.restore
         i_restore_version = args.restore_version
         i_delay = args.delay
@@ -696,7 +698,7 @@ def main():
         # CYRILLIC_PATTERN = rb'(' + SPECIFIC_CYRILLIC_BYTES_VR + rb'|' + CYRILLIC_BYTES[DEFAULT_ZONA_TRANSLATE_LANG_SRC] + rb'|' + LATIN_PUNCTUATION_BYTES + rb')'  # Regular expression for Cyrillic characters + CRLF + Latin punctuation
         CYRILLIC_PATTERN = rb'(' + SPECIFIC_CYRILLIC_BYTES_VR + rb'|' + CYRILLIC_BYTES[i_lang_src] + rb'|' + LATIN_PUNCTUATION_BYTES + rb')'  # Regular expression for Cyrillic characters + CRLF + Latin punctuation
 
-        if i_debug_translate:
+        if i_debug_file:
             i_debug = True
 
         i_file_ggm = f"{DEFAULT_ZONA_DATA_DIR}/{DEFAULT_ZONA_GLOBAL_GM}"
@@ -788,7 +790,7 @@ def main():
             printc(f"    • Minimum size string to translate .. : {i_min_size}", bcolors.INFO)
             printc(f"    • Debug mode ........................ : {i_debug}", bcolors.INFO)
             if i_debug:
-                printc(f"    • Debug out ......................... : {i_debug_out}", bcolors.INFO)
+                printc(f"    • Debug in file ..................... : {i_debug_file}", bcolors.INFO)
             printc(f"    • Binary files to translate ......... : {i_files}\n", bcolors.INFO)
 
             # Download nltk 'stopwords' and 'punkt_tab'
@@ -826,7 +828,8 @@ def main():
             backup_files_done = False
             backup_dir = f"{DEFAULT_ZONA_TRANSLATE_BACKUP_DIR}_v{current_version_patch}"
             if os_path.exists(backup_dir):
-                printc(f" • [Backup in '{backup_dir}/' directory already exists] OK\n", bcolors.OK)
+                if i_debug:
+                    printc(f" • [Backup in '{backup_dir}/' directory already exists] OK\n", bcolors.OK)
             else:
                 backup_files(current_version_patch)
                 # Set flag for backup files
@@ -842,36 +845,36 @@ def main():
                 TRANSLATE_DIR_PATH = f"{DEFAULT_ZONA_TRANSLATE_DIR}/{i_lang_src.lower()}_to_{i_lang.lower()}_v{current_version_patch}"
                 # Initialiaze success file flag path
                 TRANSLATE_SUCCEED_FILE = f"{TRANSLATE_DIR_PATH}/{DEFAULT_ZONA_TRANSLATE_SUCCEED_FILE}"
-                # Does translate dir for lang file destination does not exists?
+                # Translate dir for lang file destination does not exist
                 if not os_path.exists(TRANSLATE_DIR_PATH):
                     os_makedirs(TRANSLATE_DIR_PATH)
-                # Only if not debug
-                elif not i_debug:
-                    printc(f" • [Translated files for '{i_lang}' and '{current_version_patch}' version already exists in '{TRANSLATE_DIR_PATH}/' directory] OK\n", bcolors.OK)
+                # Translate dir does exist
+                else:
+                    if i_debug:printc(f" • [Translated files for '{i_lang}' and '{current_version_patch}' version already exists in '{TRANSLATE_DIR_PATH}/' directory] OK\n", bcolors.OK)
                     # Check success file flag exists in translate lang directory
                     if os_path.exists(TRANSLATE_SUCCEED_FILE):
-                        printc(f" • [Translated directory contains a valid '{TRANSLATE_SUCCEED_FILE}' succeed flag file] OK\n", bcolors.OK)
+                        if i_debug: printc(f" • [Translated directory contains a valid '{TRANSLATE_SUCCEED_FILE}' succeed flag file] OK\n", bcolors.OK)
                         # Translate dir for lang file destination does exists ('--force' parameter is not requested)
                         if not i_force:
-                            printc(f" • [Force translate IS NOT requested]\n", bcolors.ASK)
+                            if i_debug: printc(f" • [Force translate IS NOT requested]\n", bcolors.ASK)
                             # Copy existing translate dir for lang file
-                            printc(f" • [Copy translated files from '{TRANSLATE_DIR_PATH}/' to '{DEFAULT_ZONA_DATA_DIR}/'] ...\n", bcolors.INFO)
                             restore_files(src=TRANSLATE_DIR_PATH)
-                            printc(f" • [Copy translated files from '{TRANSLATE_DIR_PATH}/' to '{DEFAULT_ZONA_DATA_DIR}/'] OK\n", bcolors.OK)
                             translate_ended_message()
                             inputc(f" Press Enter to exit...\n", bcolors.ASK)
                             sys.exit(0)
                         # Translate dir for lang file destination does exists ('--force' parameter is requested)
                         else:
-                            printc(f" • [Translated files for '{i_lang}' and '{current_version_patch}' version already exists in '{TRANSLATE_DIR_PATH}/' directory] OK\n", bcolors.OK)
-                            printc(f" • [Translated directory does contain a valid '{TRANSLATE_SUCCEED_FILE}' succeed flag file] OK\n", bcolors.OK)
-                            printc(f" • [Force translate IS requested] OK\n", bcolors.OK)
-                            printc(f" • [Remove valid '{TRANSLATE_SUCCEED_FILE}' succeed flag file] ...\n", bcolors.INFO)
+                            if i_debug:
+                                printc(f" • [Translated files for '{i_lang}' and '{current_version_patch}' version already exists in '{TRANSLATE_DIR_PATH}/' directory] OK\n", bcolors.OK)
+                                printc(f" • [Translated directory does contain a valid '{TRANSLATE_SUCCEED_FILE}' succeed flag file] OK\n", bcolors.OK)
+                                printc(f" • [Force translate IS requested] OK\n", bcolors.OK)
+                                printc(f" • [Remove valid '{TRANSLATE_SUCCEED_FILE}' succeed flag file] ...\n", bcolors.INFO)
                             os_remove(TRANSLATE_SUCCEED_FILE)
-                            printc(f" • [Remove valid '{TRANSLATE_SUCCEED_FILE}' succeed flag file] OK\n", bcolors.OK)
+                            if i_debug: printc(f" • [Remove valid '{TRANSLATE_SUCCEED_FILE}' succeed flag file] OK\n", bcolors.OK)
                     else:
-                        printc(f" • [Translated directory does not contain a valid '{TRANSLATE_SUCCEED_FILE}' succeed flag file] OK\n", bcolors.OK)
-                        printc(f" • [Force translate will be performed]\n", bcolors.ASK)
+                        if i_debug: 
+                            printc(f" • [Translated directory does not contain a valid '{TRANSLATE_SUCCEED_FILE}' succeed flag file] OK\n", bcolors.OK)
+                            printc(f" • [Force translate will be performed]\n", bcolors.ASK)
 
                 # Increment lang index for progression
                 i_langs_index = i_langs_index + 1
@@ -879,15 +882,15 @@ def main():
                 # Do not restore when the backup has just been performed
                 if not backup_files_done:
                     # Restore original backup files in data dir before translate
-                    printc(f" • [Restore original backup files from '{DEFAULT_ZONA_TRANSLATE_BACKUP_DIR}/' to '{DEFAULT_ZONA_DATA_DIR}/'] ...\n", bcolors.INFO)
+                    if i_debug: printc(f" • [Restore original backup files from '{DEFAULT_ZONA_TRANSLATE_BACKUP_DIR}/' to '{DEFAULT_ZONA_DATA_DIR}/'] ...\n", bcolors.INFO)
                     restore_files(current_version_patch)
-                    printc(f" • [Restore original backup files from '{DEFAULT_ZONA_TRANSLATE_BACKUP_DIR}/' to '{DEFAULT_ZONA_DATA_DIR}/'] OK\n", bcolors.OK)
+                    if i_debug: printc(f" • [Restore original backup files from '{DEFAULT_ZONA_TRANSLATE_BACKUP_DIR}/' to '{DEFAULT_ZONA_DATA_DIR}/'] OK\n", bcolors.OK)
 
                 # BEGIN Translate to i_lang
                 printc(f" • [Translate {len(i_files)} files from '{i_lang_src}' to '{i_lang}' ({i_langs_index}/{i_langs_count} lang)] ...\n", bcolors.INFO)
 
                 if i_debug:
-                    if i_debug_out == 'file':
+                    if i_debug_file:
                         printc(f" • [Debug mode in file: log writed in './{DEFAULT_ZONA_TRANSLATE_DEBUG_FILE}'] ...\n", bcolors.INFO)
                     else:
                         printc(f" • [Debug mode in terminal] ...\n", bcolors.INFO)
@@ -902,6 +905,11 @@ def main():
                     
                         # print(f" • [Translate from '{i_lang_src}' to '{i_lang}'] {i_file} ...\n")
 
+                        # Translate only existing 'i_file'
+                        if not os_path.exists(i_file):
+                            printc(f" Warning: '{i_file}' is skipped because not found.", bcolors.WARN)
+                            continue
+                        
                         with open(i_file, 'rb') as f:
                             if i_file == 'resources.assets':
                                 # 'i_min_size' for 'resources.assets' cannot be too big. Some quests (as 'Explore ' one ) are truncated with non-ascii characters.
@@ -977,12 +985,12 @@ def main():
                                     # # DEBUG PRINT
                                     if i_debug:
                                         sep = ';'
-                                        if i_debug_out == 'file':
+                                        if i_debug_file:
                                             debug_str = " {:s}{:1s}CYR{:1s}0x{:x}{:1s}{:d}{:1s}{:d}{:1s}{:s}{:1s}{:s}\n".format(i_file, sep, sep, s.offset, sep, max_length, sep, dialog_len, sep, s.s, sep, dialog_str)
                                             debug_f.write(debug_str)
-                                        else:
-                                            debug_str = " {:s}{:1s}CYR{:1s}{:s}0x{:x}{:s}{:1s}{:d}{:1s}{:d}{:1s}{:s}{:s}{:s}{:1s}{:s}{:s}{:s}".format(i_file, sep, sep, bcolors.FAIL, s.offset, bcolors.ENDC, sep, max_length, sep, dialog_len, sep, bcolors.INFO, s.s, bcolors.ENDC, sep, bcolors.OK, dialog_str, bcolors.ENDC)
-                                            print(debug_str)
+                                    if i_verbose:
+                                        debug_str = " {:s}{:1s}CYR{:1s}{:s}0x{:x}{:s}{:1s}{:d}{:1s}{:d}{:1s}{:s}{:s}{:s}{:1s}{:s}{:s}{:s}".format(i_file, sep, sep, bcolors.FAIL, s.offset, bcolors.ENDC, sep, max_length, sep, dialog_len, sep, bcolors.INFO, s.s, bcolors.ENDC, sep, bcolors.OK, dialog_str, bcolors.ENDC)
+                                        print(debug_str)
 
                                     # Set new binary string with translated dialog
                                     binary_string = b''
@@ -991,7 +999,7 @@ def main():
                                     # Set translated dialog in bytes array
                                     bytearray_to_translate[s.offset:s.offset+dialog_str_len] = binary_string
 
-                            if i_debug and not i_debug_translate:
+                            if i_debug:
                                 printc(f" • [Debug mode without writing translation in binary file] OK\n", bcolors.OK)
                             else:
                                 # Copy original file in relative translate dir
@@ -1005,12 +1013,12 @@ def main():
                             # # printc(f" • [Translate from '{i_lang_src}' to '{i_lang}'] {i_file} OK\n", bcolors.OK)
 
                     if i_debug:
-                        if i_debug_out == 'file':
+                        if i_debug_file:
                             printc(f" • [Debug mode in file: log writed in './{DEFAULT_ZONA_TRANSLATE_DEBUG_FILE}'] OK\n", bcolors.OK)
                         else:
                             printc(f" • [Debug mode in terminal] OK\n", bcolors.OK)
-                        inputc(f" Press Enter to exit...", bcolors.ASK)
-                        sys.exit(0)
+                        # inputc(f" Press Enter to exit...", bcolors.ASK)
+                        # sys.exit(0)
 
                 # Create success file flag in translate lang directory
                 with open(TRANSLATE_SUCCEED_FILE, "w") as f:
@@ -1018,15 +1026,13 @@ def main():
                 # END Translate to i_lang
 
                 # All is OK!
-                printc(f" • [Translate {len(i_files)} files from '{i_lang_src}' to '{i_lang}' ({i_langs_index}/{i_langs_count} lang)] OK\n", bcolors.OK)
+                printc(f"\n • [Translate {len(i_files)} files from '{i_lang_src}' to '{i_lang}' ({i_langs_index}/{i_langs_count} lang)] OK\n", bcolors.OK)
 
-                if i_debug and not i_debug_translate:
+                if i_debug:
                     printc(f" • [Debug mode without overwriting '{DEFAULT_ZONA_DATA_DIR}/' game binary file] OK\n", bcolors.OK)
                 else:
                     # Copy translated files to default data dir
-                    printc(f" • [Copy translated files from '{TRANSLATE_DIR_PATH}/' to '{DEFAULT_ZONA_DATA_DIR}/'] ...\n", bcolors.INFO)
                     restore_files(src=TRANSLATE_DIR_PATH)
-                    printc(f" • [Copy translated files from '{TRANSLATE_DIR_PATH}/' to '{DEFAULT_ZONA_DATA_DIR}/'] OK\n", bcolors.OK)
 
             translate_ended_message()
 
