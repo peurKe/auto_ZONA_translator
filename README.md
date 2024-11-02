@@ -43,9 +43,9 @@ Script for translating all Ukrainian or Russian texts of the Steam games '**Z.O.
 
 • Download the archive "auto_ZONA_translator_[GAME]_[LANGUAGE].zip" corresponding to your game and language.
 
-• Extract the content ("**auto_ZONA_translator**" directory and "**auto_ZONA_translator.exe**" executable) into the game directory.
+• Extract the archive content into your game directory.
 
-• Go to the '**C:\Program Files (x86)\Steam\steamapps\common\ZONAORIGIN\**' or '**C:\Program Files (x86)\Steam\steamapps\common\ZONA\**' directory
+• Go to your game directory.
 
 • Execute 'auto_ZONA_translator.exe'
 
@@ -96,9 +96,11 @@ Script for translating all Ukrainian or Russian texts of the Steam games '**Z.O.
     pip install --upgrade pip
     pip install tqdm deepl googletrans==3.1.0a0 legacy-cgi nltk unidecode pywin32
 
-• Move the 'auto_ZONA_translator.py' executable file in the same directory as the '**ZONAORIGIN.exe**' or '**ZONA.exe**' executable file (Example: usually in the '**C:\Program Files (x86)\Steam\steamapps\common\ZONAORIGIN\**' directory).
+• Download the archive "auto_ZONA_translator_SRC.zip".
 
-• Go to the '**C:\Program Files (x86)\Steam\steamapps\common\ZONAORIGIN\**' or '**C:\Program Files (x86)\Steam\steamapps\common\ZONA\**' directory
+• Extract the archive content into your game directory.
+
+• Go to your game directory.
 
 • Double clic on '**auto_ZONA_translator.py**' to execute script
 
