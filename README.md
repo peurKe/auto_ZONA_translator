@@ -3,6 +3,7 @@
 Script for translating all Ukrainian or Russian texts of the Steam games '**Z.O.N.A Origin**' and '**Z.O.N.A Project X**' by **AGaming+** and enjoy Russian voices while having all the texts in your native language!
 
 <!-- TOC -->
+- [Discord](#Discord)
 - [Prerequisites](#Prerequisites)
 - [Currently supported languages](#Currently-supported-languages)
 - [Usage from binary release](#Usage-from-binary-release)
@@ -11,7 +12,7 @@ Script for translating all Ukrainian or Russian texts of the Steam games '**Z.O.
 
 # Discord
 
-[Welcome to #zona-translate-deepl!] (https://discord.com/channels/1113935727202410691/1302585407308955690)
+[Welcome to #zona-translate-deepl!](https://discord.com/channels/1113935727202410691/1302585407308955690)
 
 # Prerequisites
 
