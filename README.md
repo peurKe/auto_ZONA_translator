@@ -2,6 +2,8 @@
 
 Script for translating all Ukrainian or Russian texts of the Steam games '**Z.O.N.A Origin**' and '**Z.O.N.A Project X**' by **AGaming+** and enjoy Russian voices while having all the texts in your native language!
 
+[TOC]
+
 ## Prerequisites
 
 - Your 'Z.O.N.A' game must be up to date.
