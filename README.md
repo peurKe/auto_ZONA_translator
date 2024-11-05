@@ -141,9 +141,9 @@ pip install tqdm deepl googletrans==3.1.0a0 legacy-cgi nltk unidecode pywin32
 
 ## Download the sources ZIP archive
 
-- "**auto_ZONA_translator_sources.zip**"
+- "**Source code (zip)**"
 
-## Extract the sources ZIP archive "**auto_ZONA_translator_sources.zip**"
+## Extract the **Source code (zip)** archive
 
 - Extract it into your **Z.O.N.A Project X** or **Z.O.N.A Origin** game directory in your Steam Library.
   By default in: 
@@ -159,7 +159,7 @@ pip install tqdm deepl googletrans==3.1.0a0 legacy-cgi nltk unidecode pywin32
 - \\_ auto_ZONA_translator.py (file)
 
 Not:
-- \\_ auto_ZONA_translator_sources\\ (folder)
+- \\_ auto_ZONA_translator-0.x.y-alpha\\ (folder)
     - \\_ auto_ZONA\\ (folder)
     - \\_ auto_ZONA_translator\\ (folder)
     - \\_ auto_ZONA_translator.py (file)
