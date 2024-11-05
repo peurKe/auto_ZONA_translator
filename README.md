@@ -14,21 +14,18 @@ Script for translating all Ukrainian or Russian texts of the Steam games '**Z.O.
 
 # Usage from binary release
 
-### Go to the Latest release:
+## Go to the Latest release:
 
-  • [Latest release](https://github.com/peurKe/auto_ZONA_translator/releases)
+- [Latest release](https://github.com/peurKe/auto_ZONA_translator/releases)
 
-### Download the EXE installer "**auto_ZONA_translator_installer.exe**"
+## Download the EXE installer "**auto_ZONA_translator_installer.exe**"
 
-### Copy the EXE installer "**auto_ZONA_translator_installer.exe**"
+## Copy the EXE installer "**auto_ZONA_translator_installer.exe**"
 
- Copy it into your **Z.O.N.A Project X** or **Z.O.N.A Origin** game directory in your Steam Library.
-
- By default in :
- 
-   **Z.O.N.A Project X**: C:\SteamLibrary\steamapps\common\ZONA
-
-   **Z.O.N.A Origin**: C:\SteamLibrary\steamapps\common\ZONAORIGIN
+- Copy it into your **Z.O.N.A Project X** or **Z.O.N.A Origin** game directory in your Steam Library.
+  By default in: 
+     - **Z.O.N.A Project X**: C:\SteamLibrary\steamapps\common\ZONA
+     - **Z.O.N.A Origin**: C:\SteamLibrary\steamapps\common\ZONAORIGIN
 
    NB: If your games are installed on D: drive then the drive will be D:
  
