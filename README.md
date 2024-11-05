@@ -10,9 +10,9 @@ Script for translating all Ukrainian or Russian texts of the Steam games '**Z.O.
 
 ## Currently supported languages
 
-  • English, Čeština, Dansk, Español, Suomi, Français, Magyar, Italiano, Nederlands, Polski, Português, Română, Svenska
+- English, Čeština, Dansk, Español, Suomi, Français, Magyar, Italiano, Nederlands, Polski, Português, Română, Svenska
 
-## Usage from binary release
+# Usage from binary release
 
 ### Go to the Latest release:
 
