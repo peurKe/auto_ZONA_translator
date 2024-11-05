@@ -2,15 +2,20 @@
 
 Script for translating all Ukrainian or Russian texts of the Steam games '**Z.O.N.A Origin**' and '**Z.O.N.A Project X**' by **AGaming+** and enjoy Russian voices while having all the texts in your native language!
 
-[TOC]
+<!-- TOC -->
+- [Prerequisites](#Prerequisites)
+- [Currently supported languages](#Currently-supported-languages)
+- [Usage from binary release](#Usage-from-binary-release)
+- [Usage from sources](#Usage-from-sources)
+<!-- /TOC -->
 
-## Prerequisites
+# Prerequisites
 
 - Your 'Z.O.N.A' game must be up to date.
 - Your PC must have an Internet connection for Google Translator or Deepl API requests.
 - You must have a valid API auth key if you use Deepl API requests with the "-t 'deepl'" and "-ta 'xxx'" parameters.
 
-## Currently supported languages
+# Currently supported languages
 
 - English, Čeština, Dansk, Español, Suomi, Français, Magyar, Italiano, Nederlands, Polski, Português, Română, Svenska
 
