@@ -156,9 +156,9 @@ Be sure your 'Z.O.N.A' game directory contains:
 
 Not:
 - \\_ auto_ZONA_translator_sources
-      - \\_ auto_ZONA (folder)
-      - \\_ auto_ZONA_translator (folder)
-      - \\_ auto_ZONA_translator.py (file)
+    - \\_ auto_ZONA (folder)
+    - \\_ auto_ZONA_translator (folder)
+    - \\_ auto_ZONA_translator.py (file)
 
 ## Go to your game directory.
 
