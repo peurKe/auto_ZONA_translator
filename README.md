@@ -147,9 +147,8 @@ pip install tqdm deepl googletrans==3.1.0a0 legacy-cgi nltk unidecode pywin32
 
    NB: If your games are installed on D: drive, then the drive will be D:
 
-IMPORTANT:
+## IMPORTANT Be sure your 'Z.O.N.A' game directory contains:
 
-Be sure your 'Z.O.N.A' game directory contains:
 - \\_ auto_ZONA\\ (folder)
 - \\_ auto_ZONA_translator\\ (folder)
 - \\_ auto_ZONA_translator.py (file)
