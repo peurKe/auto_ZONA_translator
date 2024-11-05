@@ -5,8 +5,8 @@ Title : auto_ZONA_translator.py
 Description : Script for translating all Ukrainian or Russian texts of the Steam games 'Z.O.N.A Origin' and 'Z.O.N.A Project X' by AGaming+ and enjoy Ukrainian voices while having all the texts in your native language!
 Author: peurKe
 Creation Date: 2024-10-31
-Last Modified: 2024-10-31
-Version: 1.0
+Last Modified: 2024-11-05
+Version: 0.1.0-alpha
 License: MIT
 """
 
@@ -59,9 +59,6 @@ except Exception as e:
     input(f" Press Enter to exit...")
     sys.exit(-1)
 
-# Allow to fail with -1 when error occurs
-Failure = False
-
 class bcolors:
     OK = '\033[92m'
     INFO = '\033[93m'
@@ -70,7 +67,6 @@ class bcolors:
     ASK = '\033[96m'
     NOTIF = '\033[42m'
     ENDC = '\033[0m'
-
 
 # # /!\ By default, binary files are now retrieved dynamically.
 # DEFAULT_FILES = [
