@@ -9,6 +9,10 @@ Script for translating all Ukrainian or Russian texts of the Steam games '**Z.O.
 - [Usage from sources](#Usage-from-sources)
 <!-- /TOC -->
 
+# Discord
+
+[Welcome to #zona-translate-deepl!] (https://discord.com/channels/1113935727202410691/1302585407308955690)
+
 # Prerequisites
 
 - Your 'Z.O.N.A' game must be up to date.
