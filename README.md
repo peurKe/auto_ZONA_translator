@@ -150,14 +150,14 @@ pip install tqdm deepl googletrans==3.1.0a0 legacy-cgi nltk unidecode pywin32
 IMPORTANT:
 
 Be sure your 'Z.O.N.A' game directory contains:
-- \\_ auto_ZONA (folder)
-- \\_ auto_ZONA_translator (folder)
+- \\_ auto_ZONA\\ (folder)
+- \\_ auto_ZONA_translator\\ (folder)
 - \\_ auto_ZONA_translator.py (file)
 
 Not:
-- \\_ auto_ZONA_translator_sources
-    - \\_ auto_ZONA (folder)
-    - \\_ auto_ZONA_translator (folder)
+- \\_ auto_ZONA_translator_sources\\ (folder)
+    - \\_ auto_ZONA\\ (folder)
+    - \\_ auto_ZONA_translator\\ (folder)
     - \\_ auto_ZONA_translator.py (file)
 
 ## Go to your game directory.
