@@ -29,8 +29,8 @@ Script for translating all Ukrainian or Russian texts of the Steam games '**Z.O.
 
 ## Copy the EXE installer "**auto_ZONA_translator_installer.exe**"
 
-- Copy it into your **Z.O.N.A Project X** or **Z.O.N.A Origin** game directory in your Steam Library.
-  By default in: 
+- Copy it to your **Z.O.N.A Project X** or **Z.O.N.A Origin** game folder in your Steam library.
+  By default in :
     - **Z.O.N.A Project X**: C:\SteamLibrary\steamapps\common\ZONA\
     - **Z.O.N.A Origin**: C:\SteamLibrary\steamapps\common\ZONAORIGIN\
 
@@ -40,7 +40,7 @@ Script for translating all Ukrainian or Russian texts of the Steam games '**Z.O.
 
 ## Double-clic on '**auto_ZONA_translator_installer.exe**'
 
-- Check the box for language you want to translate to:
+- Tick the box for the language you wish to translate into:
 ```
  Choose your preferred language for ZONA subtitles
  Please select one of the following options:
@@ -62,20 +62,19 @@ Script for translating all Ukrainian or Russian texts of the Steam games '**Z.O.
 
 ## Installer show the destination location
 
-- If destination location correspond to your Z.O.N.A game installation, then clic on "Next" button
-  Else clic on 'Browse' button to set the correct destination location,  then clic on "Next" button
+- If the destination location corresponds to the installation of your Z.O.N.A. game, click on the "Next" button.
+  Alternatively, click the 'Browse' button to define the correct destination location, then click the 'Next' button.
 
-## Installer indicate destination location already exists
+## The installer indicates that the destination location already exists
 
-- It is normal. It is beacause installer install in an existing game, so confirm by clic on 'Yes' button.
+- That's normal. This is because the installer is installing in an existing game. Confirm by clicking on the 'Yes' button.
 
-## Installer show the main information about installation process that will be executed
-
+## The installer displays the main information about the installation process that will be carried out.
 - Clic on 'Install' button.
 
-## Then installation python script starts automatically
+## The installation python script then starts automatically
 
-- Prerequisites appears on screen and let you update your Z.O.N.A game before start to translate it.
+- Prerequisites appear on the screen, allowing you to update your Z.O.N.A. game before you start translating it.
 ```
     • Your 'Z.O.N.A' game must be up to date.
     • Your PC must have an Internet connection for Google Translator or Deepl API requests.
@@ -110,9 +109,9 @@ Script for translating all Ukrainian or Russian texts of the Steam games '**Z.O.
 
 ## Restoring original subtitles
 
-- 2 ways :
-  - Either select 'English' language in 'Z.O.N.A' game's settings.
-  - Or either execute the shortcut '**auto_ZONA_translator (restore)**' created by the executable into your Z.O.N.A game directory, and confirm you want to restore original translation (y/n)
+- There are two methods available:
+  - Soit vous sélectionnez la langue "English" dans les paramètres du jeu "Z.O.N.A",
+  - Or run the shortcut '**auto_ZONA_translator (restore)**' created by the executable in your Z.O.N.A game directory, and confirm that you want to restore the original translation by typing 'y'.
 ```
  Confirm you want to restore all '0.035' backup binary files (y/n): 
 ```
@@ -152,9 +151,9 @@ pip install tqdm deepl googletrans==3.1.0a0 legacy-cgi nltk unidecode pywin32
 
 ### Double clic on '**auto_ZONA_translator.py**' to execute python script
 
-## Then installation python script starts automatically
+## The installation python script then starts automatically
 
-- Prerequisites appears on screen and let you update your Z.O.N.A game before start to translate it.
+- Prerequisites appear on the screen, allowing you to update your Z.O.N.A. game before you start translating it.
 ```
     • Your 'Z.O.N.A' game must be up to date.
     • Your PC must have an Internet connection for Google Translator or Deepl API requests.
@@ -207,9 +206,9 @@ pip install tqdm deepl googletrans==3.1.0a0 legacy-cgi nltk unidecode pywin32
 
 ## Restoring original subtitles
 
-- 2 ways :
-  - Either select 'English' language in 'Z.O.N.A' game's settings.
-  - Or either execute the shortcut '**auto_ZONA_translator (restore)**' created by the executable into your Z.O.N.A game directory, and confirm you want to restore original translation (y/n)
+- There are two methods available:
+  - Soit vous sélectionnez la langue "English" dans les paramètres du jeu "Z.O.N.A",
+  - Or run the shortcut '**auto_ZONA_translator (restore)**' created by the executable in your Z.O.N.A game directory, and confirm that you want to restore the original translation by typing 'y'.
 ```
  Confirm you want to restore all '0.035' backup binary files (y/n): 
 ```
