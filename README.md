@@ -3,7 +3,7 @@ Script for translating all Ukrainian or Russian texts of the Steam games '**Z.O.
 
 ## Prerequisites
 
-  • Your 'Z.O.N.A Origin' or 'Z.O.N.A Project X' game must be up to date.
+  • Your 'Z.O.N.A' game must be up to date.
   
   • Your PC must have an Internet connection for Google Translator or Deepl API requests.
   
@@ -11,29 +11,7 @@ Script for translating all Ukrainian or Russian texts of the Steam games '**Z.O.
 
 ## Currently supported languages
 
-  • **fr** = français
-  
-  • **cs** = čeština (Not yet validated)
-  
-  • **da** = dansk (Not yet validated)
-  
-  • **es** = español (Not yet validated)
-  
-  • **fi** = suomi (Not yet validated)
-
-  • **hu** = magyar (Not yet validated)
-  
-  • **it** = italiano (Not yet validated)
-  
-  • **nl** = Nederlands (Not yet validated)
-  
-  • **pl** = polski (Not yet validated)
-  
-  • **pt** = português (Not yet validated)
-  
-  • **ro** = română (Not yet validated)
-  
-  • **sv** = svenska (Not yet validated)
+  • English, Čeština, Dansk, Español, Suomi, Français, Magyar, Italiano, Nederlands, Polski, Português, Română, Svenska
 
 ## Usage from binary release
 
@@ -41,50 +19,104 @@ Script for translating all Ukrainian or Russian texts of the Steam games '**Z.O.
 
   • [Latest release](https://github.com/peurKe/auto_ZONA_translator/releases)
 
-### Download the ZIP archive "**auto_ZONA_translator_[GAME].[VERSION].[LANGUAGE].zip**" corresponding to your game and language.
+### Download the EXE installer "**auto_ZONA_translator_installer.exe**"
 
-  • "**auto_ZONA_translator_[GAME].[VERSION].[LANGUAGE].zip**"
+### Copy the EXE installer "**auto_ZONA_translator_installer.exe**"
 
-### Extract the archive content into your game directory.
+ Copy it into your **Z.O.N.A Project X** or **Z.O.N.A Origin** game directory in your Steam Library.
 
+ By default in :
+ 
+   **Z.O.N.A Project X**: C:\SteamLibrary\steamapps\common\ZONA
+
+   **Z.O.N.A Origin**: C:\SteamLibrary\steamapps\common\ZONAORIGIN
+
+   NB: If your games are installed on D: drive then the drive will be D:
+ 
 ### Go to your game directory.
 
-### Execute '**auto_ZONA_translator.exe**'
+### Double-clic on '**auto_ZONA_translator_installer.exe**'
 
-  • Press Enter if prerequisites displayed on the screen are correct:
+  • Check the box for language you want to translate to:
 ```
-    • Your 'Z.O.N.A Origin' game must be up to date.
-    • Your PC has an Internet connection for Google Translator or Deepl API requests.
-    • You have a valid API auth key if you use Deepl API requests with the "-t 'deepl'" and "-ta 'xxx'" parameters.
+ Choose your preferred language for ZONA subtitles
+ Please select one of the following options:
+   ( )  en (English)
+   ( )  cs (Čeština)
+   ( )  da (Dansk)
+   ( )  es (Español)
+   ( )  fi (Suomi)
+   ( )  fr (Français)
+   ( )  hu (Magyar)
+   ( )  it (Italiano)
+   ( )  nl (Nederlands)
+   ( )  pl (Polski)
+   ( )  pt (Português)
+   ( )  ro (Română)
+   ( )  sv (Svenska)
 ```
-  • Select the language you want to translate English to:
+  • Clic on "Next" button
+
+### Installer show the destination location
+
+  • If destination location correspond to your Z.O.N.A game installation, then clic on "Next" button
+
+  • Else clic on 'Browse' button to set the correct destination location,  then clic on "Next" button
+
+### Installer indicate destination location already exists
+
+  • It is normal. It is beacause installer install in an existing game, so confirm by clic on 'Yes' button.
+
+### Installer show the main information about installation process that will be executed
+
+  • Clic on 'Install' button.
+
+### Then installation python script starts automatically
+
+  • Prerequisites appears on screen and let you update your Z.O.N.A game before start to translate it.
 ```
- Supported languages:
-   cs (čeština)
-   da (dansk)
-   es (español)
-   fi (suomi)
-   fr (français)
-   hu (magyar)
-   it (italiano)
-   nl (Nederlands)
-   pl (polski)
-   pt (português)
-   ro (română)
-   sv (svenska)
+    • Your 'Z.O.N.A' game must be up to date.
+    • Your PC must have an Internet connection for Google Translator or Deepl API requests.
+    • You must have a valid API auth key if you use Deepl API requests with the \"-t 'deepl'\" and \"-ta 'xxx'\" parameters.
 
- Language to translate to (specify the 2-letter language code):
+      If needed you can update now your '{DEFAULT_ZONA_GAME_NAME}' game before begin translation.
+      Then press Enter to translate your '{DEFAULT_ZONA_GAME_NAME}' game...\n", bcolors.ASK)
 ```
 
-  • Wait for the translation ending.
+  • Try to update your Z.O.N.A game from Steam, and press Enter to translate your Z.O.N.A game.
 
-  • Enjoy Russian voices while having all the texts in your native language!
+  • Or directly press Enter to translate your Z.O.N.A game without update it.
 
-### To restore original translation, execute the shortcut '**auto_ZONA_translator (restore)**' created by the executable
-
-  • Confirm you want to restore original translation (y/n)
+### Wait for the translation ending, if installation succeed then this message will appears.
 ```
- Confirm you want to restore all '0.035' backup binary files (y/n):
+    To play with this translation:
+        1. Just launch 'Z.O.N.A' game from Steam as usual.
+        2. Be sure to select 'Ukrainian' language in 'Z.O.N.A' game's settings.
+
+    /!\ Over the next few days:
+        If 'Z.O.N.A' no longer launches correctly or if a new update has been made by AGaming+
+        You will need to run this script again to update the translation.
+
+    Press Enter to exit...
+```
+
+ Press Enter to exit...
+
+### Enjoy Russian voices while having all the texts in your native language!
+
+  • Just launch 'Z.O.N.A' game from Steam as usual.
+
+  • Be sure to select 'Ukrainian' language in 'Z.O.N.A' game's settings.
+
+### Restoring original subtitles
+
+2 ways :
+
+  • Either select 'English' language in 'Z.O.N.A' game's settings.
+
+  • Or either execute the shortcut '**auto_ZONA_translator (restore)**' created by the executable into your Z.O.N.A game directory, and confirm you want to restore original translation (y/n)
+```
+ Confirm you want to restore all '0.035' backup binary files (y/n): 
 ```
 
 ## Usage from sources
@@ -119,29 +151,50 @@ Script for translating all Ukrainian or Russian texts of the Steam games '**Z.O.
   • Select the language you want to translate English to:
 ```
  Supported languages:
-   cs (čeština)
-   da (dansk)
-   es (español)
-   fi (suomi)
-   fr (français)
-   hu (magyar)
-   it (italiano)
+   en (English)
+   cs (Čeština)
+   da (Dansk)
+   es (Español)
+   fi (Suomi)
+   fr (Français)
+   hu (Magyar)
+   it (Italiano)
    nl (Nederlands)
-   pl (polski)
-   pt (português)
-   ro (română)
-   sv (svenska)
+   pl (Polski)
+   pt (Português)
+   ro (Română)
+   sv (Svenska)
 
  Language to translate to (specify the 2-letter language code):
 ```
 
-### Wait for the translation ending.
+### Wait for the translation ending, if installation succeed then this message will appears.
+```
+    To play with this translation:
+        1. Just launch 'Z.O.N.A' game from Steam as usual.
+        2. Be sure to select 'Ukrainian' language in 'Z.O.N.A' game's settings.
+
+    /!\ Over the next few days:
+        If 'Z.O.N.A' no longer launches correctly or if a new update has been made by AGaming+
+        You will need to run this script again to update the translation.
+
+    Press Enter to exit...
+```
 
 ### Enjoy Russian voices while having all the texts in your native language!
 
-### To restore original translation, execute the shortcut '**auto_ZONA_translator (restore)**' created by the executable
+  • Just launch 'Z.O.N.A' game from Steam as usual.
 
-  • Confirm you want to restore original translation (y/n)
+  • Be sure to select 'Ukrainian' language in 'Z.O.N.A' game's settings.
+
+### Restoring original subtitles
+
+2 ways :
+
+  • Either select 'English' language in 'Z.O.N.A' game's settings.
+
+  • Or either execute the shortcut '**auto_ZONA_translator (restore)**' created by the executable into your Z.O.N.A game directory, and confirm you want to restore original translation (y/n)
 ```
- Confirm you want to restore all '0.035' backup binary files (y/n):
+ Confirm you want to restore all '0.035' backup binary files (y/n): 
 ```
+
