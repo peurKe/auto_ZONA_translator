@@ -6,8 +6,8 @@ Project for translating all Ukrainian or Russian texts of the Steam games '**Z.O
 - [Discord](#Discord)
 - [Prerequisites](#Prerequisites)
 - [Currently supported languages](#Currently-supported-languages)
-- [Usage from binary release](#Usage-from-binary-release)
-- [Usage from sources](#Usage-from-sources)
+- [Usage from executable installer](#Usage-from-executable-installer)
+- [Usage from python sources](#Usage-from-python-sources)
 <!-- /TOC -->
 
 # Discord
