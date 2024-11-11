@@ -1,6 +1,6 @@
 # auto_ZONA_translator
 
-Script for translating all Ukrainian or Russian texts of the Steam games '**Z.O.N.A Origin**' and '**Z.O.N.A Project X**' by **AGaming+** and enjoy Ukrainian or Russian voices while having all the texts in your native language!
+Project for translating all Ukrainian or Russian texts of the Steam games '**Z.O.N.A Origin**' and '**Z.O.N.A Project X**' by **AGaming+** and enjoy Ukrainian or Russian voices while having all the texts in your native language!
 
 <!-- TOC -->
 - [Discord](#Discord)
