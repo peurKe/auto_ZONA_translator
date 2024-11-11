@@ -932,11 +932,13 @@ def main():
                     while not len(i_auth_key):
                         # i_auth_key = str(inputc(f"API authentication key for '{i_translator}': ", bcolors.ASK)).strip()
                         i_auth_key = get_secret_input(f"API authentication key for '{i_translator}': ").strip()
-                        # # BEGIN FOR TESTING PURPOSES ONLY
-                        print(f"i_auth_key: '{i_auth_key}'")
-                        input("Press enter to continue...\n")
-                        # sys.exit(0)
-                        # # END FOR TESTING PURPOSES ONLY
+                        # # # BEGIN FOR TESTING PURPOSES ONLY
+                        # print(f"i_auth_key: '{i_auth_key}'")
+                        # input("Press enter to continue...\n")
+                        # # sys.exit(0)
+                        # # # END FOR TESTING PURPOSES ONLY
+            # GUI execution requiert 'i_lang_src'
+            # Write new preferred source lang in config file (only if 'i_lang_src' is not 'empty')
             if i_lang_src not in ['empty']:
                 set_config('i_lang_src', i_lang_src)
             if i_lang_src == 'empty':
@@ -949,8 +951,11 @@ def main():
                     while i_lang not in ALL_SUPPORTED_SOURCE_LANGS:
                         i_lang = str(inputc(f" Language to translate from (specify the 2-letter language code): ", bcolors.ASK)).lower().strip()
                     print()
+                # Set new preferred source lang 'i_lang_src'
+                i_lang_src = i_lang
+                set_config('i_lang_src', i_lang_src)
             # GUI execution requiert only one unique 'i_lang' in 'i_langs' destination list
-            # Write new preferred lang in config file (only if langs is not ['all'] or ['empty'])
+            # Write new preferred lang in config file (only if 'i_langs' is not ['all'] or ['empty'])
             if i_langs not in [['all'], ['empty']]:
                 set_config('i_lang', i_langs[0])
             if i_langs == ['empty']:
@@ -963,9 +968,9 @@ def main():
                     while i_lang not in ALL_SUPPORTED_LANGS:
                         i_lang = str(inputc(f" Language to translate to (specify the 2-letter language code): ", bcolors.ASK)).lower().strip()
                     print()
+                # Set new preferred translated 'i_langs'
                 i_langs = [i_lang]
                 set_config('i_lang', i_langs[0])
-                i_langs = check_all_in_langs(i_langs)
 
             # Replace ['all'] with all supported langs
             i_langs = check_all_in_langs(i_langs)
