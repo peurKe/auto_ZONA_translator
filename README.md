@@ -22,7 +22,20 @@ Project for translating all Ukrainian or Russian texts of the Steam games '**Z.O
 
 # Currently supported languages
 
-- English, Čeština, Dansk, Español, Suomi, Français, Magyar, Italiano, Nederlands, Polski, Português, Română, Svenska
+- English :gb:
+- Čeština :czech_republic:
+- Dansk :denmark:
+- Español :es:
+- Français :fr:
+- German :de:
+- Italiano :it:
+- Magyar :hungary:
+- Nederlands :netherlands:
+- Polski :poland:
+- Português :portugal:
+- Română :romania:
+- Suomi :finland:
+- Svenska :sweden:
 
 # Usage from binary release
 
@@ -36,10 +49,18 @@ Project for translating all Ukrainian or Russian texts of the Steam games '**Z.O
 
 - Copy it to your **Z.O.N.A Project X** or **Z.O.N.A Origin** game folder in your Steam library.
   By default in :
-    - **Z.O.N.A Project X**: C:\Program Files (x86)\Steam\steamapps\common\ZONA\
-    - **Z.O.N.A Origin**: C:\Program Files (x86)\Steam\steamapps\common\ZONAORIGIN\
+    - **Z.O.N.A Project X** :arrow_right: C:\Program Files (x86)\Steam\steamapps\common\ZONA\
+    - **Z.O.N.A Origin** :arrow_right: C:\Program Files (x86)\Steam\steamapps\common\ZONAORIGIN\
 
-   NB: If your games are installed on D: drive, then the drive will be D:
+   NB: If your Z.O.N.A game is installed on a drive other than the C: system drive, your game folder could be in the following location:
+    - **Z.O.N.A Project X** :arrow_right: E:\SteamLibrary\steamapps\common\ZONA\
+    - **Z.O.N.A Origin** :arrow_right: E:\Steam\Library\steamapps\common\ZONAORIGIN\
+
+   If you want to retrieve your Z.O.N.A game folder, go to your library in Steam and:
+    - Right-click on your Z.O.N.A. game in your list of games in the left-hand panel.
+    - Click on 'Properties...'
+    - Click on 'Browse...'
+   An explorer window will appear showing the folder for your Z.O.N.A. game.
  
 ## Go to your game directory.
 
@@ -111,7 +132,7 @@ Project for translating all Ukrainian or Russian texts of the Steam games '**Z.O
 ## Restoring original subtitles
 
 - There are two methods available:
-  - Soit vous sélectionnez la langue "English" dans les paramètres du jeu "Z.O.N.A",
+  - Either select 'English' in your Z.O.N.A game settings,
   - Or run the shortcut '**auto_ZONA_translator (restore)**' created by the executable in your Z.O.N.A game directory, and confirm that you want to restore the original translation by typing 'y'.
 ```
  Confirm you want to restore all '0.045' backup binary files (y/n): 
@@ -141,12 +162,20 @@ pip install tqdm deepl googletrans==3.1.0a0 legacy-cgi nltk unidecode pywin32
 
 ## Extract the **Source code (zip)** archive
 
-- Extract it into your **Z.O.N.A Project X** or **Z.O.N.A Origin** game directory in your Steam Library.
-  By default in: 
-    - **Z.O.N.A Project X**: C:\Program Files (x86)\Steam\steamapps\common\ZONA\
-    - **Z.O.N.A Origin**: C:\Program Files (x86)\Steam\steamapps\common\ZONAORIGIN\
+- Extract it into your **Z.O.N.A Project X** or **Z.O.N.A Origin** game folder in your Steam library.
+  By default in :
+    - **Z.O.N.A Project X** :arrow_right: C:\Program Files (x86)\Steam\steamapps\common\ZONA\
+    - **Z.O.N.A Origin** :arrow_right: C:\Program Files (x86)\Steam\steamapps\common\ZONAORIGIN\
 
-   NB: If your games are installed on D: drive, then the drive will be D:
+   NB: if your Z.O.N.A game is installed on a drive other than the C: system drive, your game folder could be in the following location:
+    - **Z.O.N.A Project X** :arrow_right: E:\SteamLibrary\steamapps\common\ZONA\
+    - **Z.O.N.A Origin** :arrow_right: E:\Steam\Library\steamapps\common\ZONAORIGIN\
+
+   If you want to retrieve your Z.O.N.A game folder, go to your library in Steam and:
+    - Right-click on your Z.O.N.A. game in your list of games in the left-hand panel.
+    - Click on 'Properties...'
+    - Click on 'Browse...'
+   An explorer window will appear showing the folder for your Z.O.N.A. game.
 
 ## IMPORTANT Be sure your 'Z.O.N.A' game directory contains:
 
@@ -216,7 +245,7 @@ Not:
 ## Restoring original subtitles
 
 - There are two methods available:
-  - Soit vous sélectionnez la langue "English" dans les paramètres du jeu "Z.O.N.A",
+  - Either select 'English' in your Z.O.N.A game settings,
   - Or run the shortcut '**auto_ZONA_translator (restore)**' created by the executable in your Z.O.N.A game directory, and confirm that you want to restore the original translation by typing 'y'.
 ```
  Confirm you want to restore all '0.045' backup binary files (y/n): 

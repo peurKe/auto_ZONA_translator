@@ -37,21 +37,21 @@ begin
 
   // Destination language (Texts and Subtitles)
   DST_Page := CreateInputOptionPage(wpWelcome, 'TEXTS and SUBTITLES selection', '', 'Choose your preferred language for TEXTS and SUBTITLES:', True, True);
-  DST_Page.Add('English');
   DST_Page.Add('Čeština');
   DST_Page.Add('Dansk');
-  DST_Page.Add('German');
+  DST_Page.Add('English');
   DST_Page.Add('Español');
-  DST_Page.Add('Suomi');
   DST_Page.Add('Français');
-  DST_Page.Add('Magyar');
+  DST_Page.Add('German');
   DST_Page.Add('Italiano');
+  DST_Page.Add('Magyar');
   DST_Page.Add('Nederlands');
   DST_Page.Add('Polski');
   DST_Page.Add('Português');
   DST_Page.Add('Română');
+  DST_Page.Add('Suomi');
   DST_Page.Add('Svenska');
-  DST_Page.Values[0] := True;
+  DST_Page.Values[4] := True; // Default is 'Français'
 end;
 
 procedure CurStepChanged(CurStep: TSetupStep);
@@ -74,34 +74,34 @@ begin
     DST_LanguageMsg := 'Launch your Z.O.N.A game and select ''' + SRC_LanguageName + ''' language in game settings.'
 
     if DST_Page.Values[0] then
-      DST_LanguageCode := 'en'
-    else if DST_Page.Values[1] then
       DST_LanguageCode := 'cs'
-    else if DST_Page.Values[2] then
+    else if DST_Page.Values[1] then
       DST_LanguageCode := 'da'
+    else if DST_Page.Values[2] then
+      DST_LanguageCode := 'en'
     else if DST_Page.Values[3] then
-      DST_LanguageCode := 'de'
-    else if DST_Page.Values[4] then
       DST_LanguageCode := 'es'
-    else if DST_Page.Values[5] then
-      DST_LanguageCode := 'fi'
-    else if DST_Page.Values[6] then
+    else if DST_Page.Values[4] then
     begin
       DST_LanguageCode := 'fr'
       DST_LanguageMsg := 'Lancez votre jeu Z.O.N.A et sélectionnez la langue ''' + SRC_LanguageName + ''' dans les paramètres du jeu.'
     end
+    else if DST_Page.Values[5] then
+      DST_LanguageCode := 'de'
+    else if DST_Page.Values[6] then
+      DST_LanguageCode := 'it'
     else if DST_Page.Values[7] then
       DST_LanguageCode := 'hu'
     else if DST_Page.Values[8] then
-      DST_LanguageCode := 'it'
-    else if DST_Page.Values[9] then
       DST_LanguageCode := 'nl'
-    else if DST_Page.Values[10] then
+    else if DST_Page.Values[9] then
       DST_LanguageCode := 'pl'
-    else if DST_Page.Values[11] then
+    else if DST_Page.Values[10] then
       DST_LanguageCode := 'pt'
-    else if DST_Page.Values[12] then
+    else if DST_Page.Values[11] then
       DST_LanguageCode := 'ro'
+    else if DST_Page.Values[12] then
+      DST_LanguageCode := 'fi'
     else
       DST_LanguageCode := 'sv';
       
