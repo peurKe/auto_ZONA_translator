@@ -37,21 +37,21 @@ begin
 
   // Destination language (Texts and Subtitles)
   DST_Page := CreateInputOptionPage(wpWelcome, 'TEXTS and SUBTITLES selection', '', 'Choose your preferred language for TEXTS and SUBTITLES:', True, True);
-  DST_Page.Add('Čeština');
-  DST_Page.Add('Dansk');
-  DST_Page.Add('English');
-  DST_Page.Add('Español');
-  DST_Page.Add('Français');
-  DST_Page.Add('German');
-  DST_Page.Add('Italiano');
-  DST_Page.Add('Magyar');
-  DST_Page.Add('Nederlands');
-  DST_Page.Add('Polski');
-  DST_Page.Add('Português');
-  DST_Page.Add('Română');
-  DST_Page.Add('Suomi');
-  DST_Page.Add('Svenska');
-  DST_Page.Values[4] := True; // Default is 'Français'
+  DST_Page.Add('Čeština (Czech)');
+  DST_Page.Add('Dansk (Danish)');
+  DST_Page.Add('English (English)');
+  DST_Page.Add('Español (Spanish)');
+  DST_Page.Add('Français (French)');
+  DST_Page.Add('German (German)');
+  DST_Page.Add('Italiano (Italian)');
+  DST_Page.Add('Magyar (Hungarian)');
+  DST_Page.Add('Nederlands (Dutch)');
+  DST_Page.Add('Polski (Polish)');
+  DST_Page.Add('Português (Portuguese)');
+  DST_Page.Add('Română (Romanian)');
+  DST_Page.Add('Suomi (Finnish)');
+  DST_Page.Add('Svenska (Swedish)');
+  DST_Page.Values[4] := True; // Default is 'Français (French)'
 end;
 
 procedure CurStepChanged(CurStep: TSetupStep);

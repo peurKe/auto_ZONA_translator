@@ -22,28 +22,28 @@ Project for translating all Ukrainian or Russian texts of the Steam games '**Z.O
 
 # Currently supported languages
 
-- English :gb:
-- Čeština :czech_republic:
-- Dansk :denmark:
-- Español :es:
-- Français :fr:
-- German :de:
-- Italiano :it:
-- Magyar :hungary:
-- Nederlands :netherlands:
-- Polski :poland:
-- Português :portugal:
-- Română :romania:
-- Suomi :finland:
-- Svenska :sweden:
+- Čeština (Czech)
+- Dansk (Danish)
+- English (English)
+- Español (Spanish)
+- Français (French)
+- German (German)
+- Italiano (Italian)
+- Magyar (Hungarian)
+- Nederlands (Dutch)
+- Polski (Polish)
+- Português (Portuguese)
+- Română (Romanian)
+- Suomi (Finnish)
+- Svenska (Swedish)
 
-# Usage from binary release
+# Usage from executable installer
 
 ## Go to the Latest release:
 
 - [Latest release](https://github.com/peurKe/auto_ZONA_translator/releases)
 
-## Download the EXE installer "**auto_ZONA_translator_installer.exe**"
+## Download the EXE installer "**auto_ZONA_translator_installer.exe**" from the release assets.
 
 ## Copy the EXE installer "**auto_ZONA_translator_installer.exe**"
 
@@ -69,27 +69,28 @@ Project for translating all Ukrainian or Russian texts of the Steam games '**Z.O
 - Tick the box corresponding to the language of the TEXT and SUBTITLES you wish to read in the game:
 ```
   Choose your preferred language for TEXTS and SUBTITLES:
-   ( )  English
-   ( )  Čeština
-   ( )  Dansk
-   ( )  Español
-   ( )  Suomi
-   ( )  Français
-   ( )  Magyar
-   ( )  Italiano
-   ( )  Nederlands
-   ( )  Polski
-   ( )  Português
-   ( )  Română
-   ( )  Svenska
+    ( ) Čeština
+    ( ) Dansk
+    ( ) English
+    ( ) Español
+    (X) Français
+    ( ) German
+    ( ) Italiano
+    ( ) Magyar
+    ( ) Nederlands
+    ( ) Polski
+    ( ) Português
+    ( ) Română
+    ( ) Suomi
+    ( ) Svenska
 ```
 - Clic on "Next" button
 
 - Tick the box corresponding to the VOICE language you wish to hear in the game:
 ```
   Choose your preferred language for VOICES:
-   ( )  Ukrainian
-   ( )  Russian
+    (X)  Ukrainian
+    ( )  Russian
 ```
 - Clic on "Next" button
 
@@ -127,7 +128,7 @@ Project for translating all Ukrainian or Russian texts of the Steam games '**Z.O
 ## Enjoy Ukrainian or Russian voices while having all the texts in your native language!
 
 - Just launch 'Z.O.N.A' game from Steam as usual.
-- Be sure to select 'Ukrainian/Russian' language in 'Z.O.N.A' game's settings.
+- Make sure you select the 'Ukrainian' or 'Russian' language in your 'Z.O.N.A' game settings according to your choice of VOICES in the installation executable.
 
 ## Restoring original subtitles
 
@@ -138,7 +139,7 @@ Project for translating all Ukrainian or Russian texts of the Steam games '**Z.O
  Confirm you want to restore all '0.045' backup binary files (y/n): 
 ```
 
-# Usage from sources
+# Usage from python sources
 
 ## Download the **latest** version of Python for windows for your PC architecture
 
@@ -156,7 +157,7 @@ pip install tqdm deepl googletrans==3.1.0a0 legacy-cgi nltk unidecode pywin32
 
 - [Latest release](https://github.com/peurKe/auto_ZONA_translator/releases)
 
-## Download the sources ZIP archive
+## Download the sources ZIP archive from the release assets.
 
 - "**Source code (zip)**"
 
@@ -240,7 +241,7 @@ Not:
 ## Enjoy Russian voices while having all the texts in your native language!
 
 - Just launch 'Z.O.N.A' game from Steam as usual.
-- Be sure to select 'Ukrainian' language in 'Z.O.N.A' game's settings.
+- Make sure you select the 'Ukrainian' or 'Russian' language in your 'Z.O.N.A' game settings according to your choice of source language during the python script execution.
 
 ## Restoring original subtitles
 
