@@ -5,8 +5,8 @@ Title : auto_ZONA_translator.py
 Description : Script for translating all Ukrainian or Russian texts of the Steam games 'Z.O.N.A Origin' and 'Z.O.N.A Project X' by AGaming+ and enjoy Ukrainian voices while having all the texts in your native language!
 Author: peurKe
 Creation Date: 2024-10-31
-Last Modified: 2024-11-05
-Version: 0.1.0-alpha
+Last Modified: 2024-11-11
+Version: 0.1.1-alpha
 License: MIT
 """
 
@@ -35,7 +35,8 @@ License: MIT
 
 import argparse
 import sys
-from os import path as os_path, makedirs as os_makedirs, listdir as os_listdir, rmdir as os_rmdir, remove as os_remove, getcwd as os_getcwd
+from os import path as os_path, makedirs as os_makedirs, listdir as os_listdir, rename as os_rename, rmdir as os_rmdir, remove as os_remove, getcwd as os_getcwd
+from datetime import datetime
 from inspect import currentframe
 import re
 from time import sleep as time_sleep, time as time_time
@@ -125,6 +126,7 @@ DEFAULT_ZONA_VERSION_REGEX = rb'(1\.0[0-9]\.[0-9][0-9])'
 DEFAULT_ZONA_TRANSLATE_LANG_SRC = 'uk'
 # END Z.O.N.A PROJECT X
 
+ALL_SUPPORTED_SOURCE_LANGS = ['uk', 'ru']
 ALL_SUPPORTED_LANGS = ['cs', 'da', 'de', 'en', 'es', 'fi', 'fr', 'hu', 'it', 'nl', 'pl', 'pt', 'ro', 'sv']
 ALL_SUPPORTED_LANGS_DB = {
     "cs": "Čeština",
@@ -141,8 +143,16 @@ ALL_SUPPORTED_LANGS_DB = {
     "pt": "Português",
     "ro": "Română",
     "sv": "Svenska",
-    "uk": "Ukrainian"
+    "ru": "Russian",  # Source language
+    "uk": "Ukrainian"  # Source language
 }
+# Supported sources languages
+ALL_SUPPORTED_SOURCE_LANGS_DESCRIPTION_LIST = [
+    f"   {bcolors.ASK}uk{bcolors.ENDC} {bcolors.INFO}(ukrainian){bcolors.ENDC}\n",
+    f"   {bcolors.ASK}ru{bcolors.ENDC} {bcolors.INFO}(russian){bcolors.ENDC}\n"
+]
+ALL_SUPPORTED_SOURCE_LANGS_DESCRIPTION = " Supported source languages:\n" + ''.join(ALL_SUPPORTED_SOURCE_LANGS_DESCRIPTION_LIST)
+# Supported translated languages
 ALL_SUPPORTED_LANGS_DESCRIPTION_LIST = [
     f"   {bcolors.ASK}cs{bcolors.ENDC} {bcolors.INFO}(čeština){bcolors.ENDC}\n",
     f"   {bcolors.ASK}da{bcolors.ENDC} {bcolors.INFO}(dansk){bcolors.ENDC}\n",
@@ -158,7 +168,7 @@ ALL_SUPPORTED_LANGS_DESCRIPTION_LIST = [
     f"   {bcolors.ASK}sv{bcolors.ENDC} {bcolors.INFO}(svenska){bcolors.ENDC}\n"
 ]
 ALL_SUPPORTED_LANGS_DESCRIPTION = " Supported languages:\n" + ''.join(ALL_SUPPORTED_LANGS_DESCRIPTION_LIST)
-ALL_SUPPORTED_LANGS_SRC = ['uk', 'ru']
+ALL_SUPPORTED_LANGS_SRC = ['empty', 'uk', 'ru']
 
 # Regular expression for Cyrillic bytes (Russian + Specific + Ukrainian pattern)
 # CYRILLIC_BYTES = rb'\xD0[\x90-\xBF]|\xD1[\x80-\x8F]'  # OK
@@ -314,63 +324,73 @@ CUSTOM_TARGET_STOPWORDS = {
 
 RESTORE_SPECIFIC_WORDS = {
     "cs": [
-        { "from": "tracker", "to": "Stalker" },
-        { "from": "psi", "to": "Psych" }
+        { "from": "tracker", "to": "Stalker", "case_sensitive": False },
+        { "from": "psi", "to": "Psych", "case_sensitive": False }
     ],
     "da": [],
     "de": [
-        { "from": "tracker", "to": "Stalker" }
+        { "from": "tracker", "to": "Stalker", "case_sensitive": False }
     ],
     "en": [
-        { "from": "tracker", "to": "Stalker" }
+        { "from": "tracker", "to": "Stalker", "case_sensitive": False }
     ],
     "es": [
-        { "from": "acosador", "to": "Stalker" },
-        { "from": "rastreador", "to": "Stalker" }
+        { "from": "acosador", "to": "Stalker", "case_sensitive": False },
+        { "from": "rastreador", "to": "Stalker", "case_sensitive": False }
     ],
     "fr": [
-        { "from": "harceleur", "to": "Stalker" },
-        { "from": "traqueur", "to": "Stalker" },
-        { "from": "stalkers gratuits", "to": "Stalkers Libres" },
-        { "from": "ihor", "to": "IGOR" },
-        { "from": "voron", "to": "Corbeau" },
-        { "from": "pripriat", "to": "Prypriat" },
-        { "from": "but. menu", "to": "Retour" },
-        { "from": "plus loin", "to": "Suivant" },
-        { "from": "le bon controleur", "to": "Le controleur droit" },
-        { "from": "œ", "to": "oe" },
-        { "from": "cheveux gris", "to": "Gray" },
-        { "from": "comme 'val'", "to": "AS 'Val'" },
-        { "from": "comme \"val\"", "to": "AS 'Val'" }
+        { "from": "harceleur", "to": "Stalker", "case_sensitive": False },
+        { "from": "traqueur", "to": "Stalker", "case_sensitive": False },
+        { "from": "stalkers gratuits", "to": "Stalkers Libres", "case_sensitive": False },
+        { "from": "ihor", "to": "IGOR", "case_sensitive": False },
+        { "from": "voron", "to": "Corbeau", "case_sensitive": False },
+        { "from": "shelter", "to": "Abri", "case_sensitive": False },  # Origin / Ukrainian + Russian / level11
+        { "from": "refuge", "to": "Abri", "case_sensitive": False },  # Origin / Ukrainian + Russian / level11
+        { "from": "asile", "to": "Abri", "case_sensitive": False },  # Origin / Russian / level11
+        { "from": "but. menu", "to": "Retour", "case_sensitive": False },
+        { "from": "plus loin", "to": "Suivant", "case_sensitive": False },
+        { "from": "le bon controleur", "to": "Le controleur droit", "case_sensitive": False },
+        { "from": "œ", "to": "oe", "case_sensitive": False },
+        { "from": "cheveux gris", "to": "Gray", "case_sensitive": False },
+        { "from": "comme 'val'", "to": "AS 'Val'", "case_sensitive": False },
+        { "from": "comme \"val\"", "to": "AS 'Val'", "case_sensitive": False },
+        { "from": "Entree", "to": "Quitter", "case_sensitive": True },  # Origin / Ukrainian
+        { "from": "l'Exode", "to": "quitter", "case_sensitive": True },  # Origin / Ukrainian
+        { "from": "Exode", "to": "Quitter", "case_sensitive": True },  # Origin / Ukrainian
+        { "from": "Cantonnement", "to": "Ville militaire", "case_sensitive": True },  # Origin / Ukrainian / level11
+        { "from": "Gage", "to": "Avant-poste", "case_sensitive": True },  # Origin / Ukrainian / level11
+        { "from": "Village Topp", "to": "Marais du village", "case_sensitive": True },  # Origin / Ukrainian / level11
+        { "from": "a mange", "to": "ite", "case_sensitive": True }  # Origin / Russian / level11 / 'Cело' with a latin 'C' = Village Russian / 'ело' = a mangé / 'Cело' = 'Ca mang' => Cite 
     ],
     "fi": [],
     "hu": [],
     "it": [
-        { "from": "tracker", "to": "Stalker" }
+        { "from": "tracker", "to": "Stalker", "case_sensitive": False }
     ],
     "nl": [],
     "pl": [
-        { "from": "tracker", "to": "Stalker" }
+        { "from": "tracker", "to": "Stalker", "case_sensitive": False }
     ],
     "pt": [],
     "ro": [
-        { "from": "urmaritor", "to": "Stalker" },
-        { "from": "tracker", "to": "Stalker" }
+        { "from": "urmaritor", "to": "Stalker", "case_sensitive": False },
+        { "from": "tracker", "to": "Stalker", "case_sensitive": False }
     ],
     "sv": [],
     "all": [
-        { "from": "  ", "to": " " },
-        { "from": " # ", "to": "#" },
-        { "from": " :", "to": ": " },
-        { "from": " ,", "to": "," },
-        { "from": " .", "to": "." },
-        { "from": " !", "to": "!" },
-        { "from": " ?", "to": "?" },
-        { "from": " ’’ ", "to": " " },
-        { "from": "’’", "to": "'" },
-        { "from": " ’ ", "to": " " },
-        { "from": " ' ", "to": " " },
-        { "from": "’", "to": "'" },
+        { "from": "pripiat", "to": "Prypiat", "case_sensitive": False },  # Origin / Ukrainian + Russian / level11
+        { "from": "  ", "to": " ", "case_sensitive": False },
+        { "from": " # ", "to": "#", "case_sensitive": False },
+        { "from": " :", "to": ": ", "case_sensitive": False },
+        { "from": " ,", "to": ",", "case_sensitive": False },
+        { "from": " .", "to": ".", "case_sensitive": False },
+        { "from": " !", "to": "!", "case_sensitive": False },
+        { "from": " ?", "to": "?", "case_sensitive": False },
+        { "from": " ’’ ", "to": " ", "case_sensitive": False },
+        { "from": "’’", "to": "'", "case_sensitive": False },
+        { "from": " ’ ", "to": " ", "case_sensitive": False },
+        { "from": " ' ", "to": " ", "case_sensitive": False },
+        { "from": "’", "to": "'", "case_sensitive": False },
     ]
 }
 
@@ -424,6 +444,9 @@ def set_config(var, value):
 
     printc(f" • [Set '{var}' with '{value}' in '{DEFAULT_ZONA_TRANSLATE_CFG_FILE}'] ...\n", bcolors.INFO)
     line_found = False
+
+    if not os_path.exists(DEFAULT_ZONA_TRANSLATE_DIR_NAME):
+        os_makedirs(DEFAULT_ZONA_TRANSLATE_DIR_NAME)
 
     if os_path.exists(DEFAULT_ZONA_TRANSLATE_CFG_FILE):
         # Reading and modifying lines
@@ -517,7 +540,10 @@ def restore_translated_words(text, lang='uk'):
         # pattern = re.compile(re.escape(restore_word['from']), re.IGNORECASE)
         # text = pattern.sub(restore_word['to'], text)
         # CASE INSENSITIVE
-        text = re.sub(re.escape(restore_word['from']), restore_word['to'], text, flags=re.IGNORECASE)
+        if not restore_word['case_sensitive']:
+            text = re.sub(re.escape(restore_word['from']), restore_word['to'], text, flags=re.IGNORECASE)
+        else:
+            text = re.sub(re.escape(restore_word['from']), restore_word['to'], text)
     # # FOR TESTING PURPOSES ONLY
     # print(f"{bcolors.OK}{text_save}{bcolors.ENDC}:{bcolors.FAIL}{text}{bcolors.ENDC}")
     return text
@@ -543,23 +569,23 @@ def dialog_filter(dialog, lang='uk'):
 
 
 # Dynamic function for Google translator
-def dialog_translate_google(translator, dialog='(OUPS)', to='fr'):
-    return translator.translate(dialog, src=DEFAULT_ZONA_TRANSLATE_LANG_SRC, dest=to, raise_exception=True).text
+def dialog_translate_google(translator, dialog='(OUPS)', lang_from=DEFAULT_ZONA_TRANSLATE_LANG_SRC, lang_to='fr'):
+    return translator.translate(dialog, src=lang_from, dest=lang_to, raise_exception=True).text
 
 
 # Dynamic function for Deepl translator
-def dialog_translate_deepl(translator, dialog='(OUPS)', to='fr'):
-    return translator.translate_text(dialog, source_lang=DEFAULT_ZONA_TRANSLATE_LANG_SRC, target_lang=to).text
+def dialog_translate_deepl(translator, dialog='(OUPS)', lang_from=DEFAULT_ZONA_TRANSLATE_LANG_SRC,  lang_to='fr'):
+    return translator.translate_text(dialog, source_lang=lang_from, target_lang=lang_to).text
 
 
-def dialog_translate(translator, file='(NO_F)', dialog='(OUPS)', to='fr', delay=1, retries=2):
+def dialog_translate(translator, file='(NO_F)', dialog='(OUPS)', lang_from=DEFAULT_ZONA_TRANSLATE_LANG_SRC, lang_to='fr', delay=1, retries=2):
     # Translate dialog string
     # /!\ This method isn't pretty, but it takes much less time than the 'for attempt in range(retries+1)' loop.
     if dialog is None or dialog == '':
         return '(OUPS)'
     try:
         # dialog_tr = translator.translate(dialog, src=DEFAULT_ZONA_TRANSLATE_LANG_SRC, dest=to).text
-        dialog_tr = globals()[DEFAULT_TRANSLATE_FUNCTION](translator, dialog, to)
+        dialog_tr = globals()[DEFAULT_TRANSLATE_FUNCTION](translator, dialog, lang_from, lang_to)
     except AuthorizationException_deepl as e:
         printc(f"Function '{currentframe().f_code.co_name}': Boo! A valid 'auth_key' is required with \"-p auth_key\" parameter. Exception {type(e).__name__}: {e}.", bcolors.FAIL)
         sys.exit(-1)
@@ -568,13 +594,13 @@ def dialog_translate(translator, file='(NO_F)', dialog='(OUPS)', to='fr', delay=
             printc(f"Function '{currentframe().f_code.co_name}': Rats! Google Translator attempt 1/3 failed on a translation in '{file}'. new attempt in {delay}s", bcolors.WARN)
             time_sleep(delay)
             # dialog_tr = translator.translate(dialog, src=DEFAULT_ZONA_TRANSLATE_LANG_SRC, dest=to).text
-            dialog_tr = globals()[DEFAULT_TRANSLATE_FUNCTION](translator, dialog, to)
+            dialog_tr = globals()[DEFAULT_TRANSLATE_FUNCTION](translator, dialog, lang_to)
         except Exception as e:
             try:
                 printc(f"Function '{currentframe().f_code.co_name}': Rats! Google Translator attempt 2/3 failed on a translation in '{file}'. new attempt in {delay}s", bcolors.WARN)
                 time_sleep(delay)
                 # dialog_tr = translator.translate(dialog, src=DEFAULT_ZONA_TRANSLATE_LANG_SRC, dest=to).text
-                dialog_tr = globals()[DEFAULT_TRANSLATE_FUNCTION](translator, dialog, to)
+                dialog_tr = globals()[DEFAULT_TRANSLATE_FUNCTION](translator, dialog, lang_to)
             except Exception as e:
                 # Do not generate an exception, just add (OUCH) at the end of the string as a tag
                 # raise RuntimeError(f"Function '{currentframe().f_code.co_name}': Rats! Google Translator failed after 3 attemps on a translation in '{file}'. Exception {type(e).__name__}: {e}. Just bad luck :/\n")
@@ -607,7 +633,7 @@ def dialog_translate(translator, file='(NO_F)', dialog='(OUPS)', to='fr', delay=
     # Remove all special characters
     dialog = remove_specials(dialog)
     # Restore specific words in translated lang
-    dialog = restore_translated_words(dialog, lang=to)
+    dialog = restore_translated_words(dialog, lang=lang_to)
     # Restore specific words for all langs
     dialog = restore_translated_words(dialog, lang='all')
     return dialog
@@ -643,8 +669,12 @@ def backup_files(version):
         if validation_original_data_files(file):
             shutil.copy2(file, backup_file)
         else:
-            # Remove backup directory to force recreation at next launch
-            os_rmdir(backup_dir)
+            # # Remove backup directory to force recreation at next launch
+            # os_rmdir(backup_dir)
+
+            # Rename directory name with date and time appended (Don't remove because directory can contains files)
+            current_time = datetime.now().strftime('%Y%m%d-%H%M%S')
+            os_rename(backup_dir, f"{backup_dir}_{current_time}")
             raise RuntimeError(f"Function '{currentframe().f_code.co_name}': Humm! '{DEFAULT_ZONA_DATA_DIR}' are not original files\n Use the Steam 'Check integrity of game files' button located in 'Installed files' tab in the {DEFAULT_ZONA_GAME_NAME}'s game properties to restore original data files.\n")
 
     if i_debug:
@@ -691,10 +721,10 @@ def check_all_in_langs(text):
     return text
 
 
-def translate_ended_message():
+def translate_ended_message(src_language):
     print(f" To play with this translation:")
     print(f"    1. Just launch '{DEFAULT_ZONA_GAME_NAME}' game from Steam as usual.")
-    print(f"    2. Be sure to select 'Ukrainian' language in '{DEFAULT_ZONA_GAME_NAME}' game's settings.\n")
+    print(f"    2. Be sure to select '{ALL_SUPPORTED_LANGS_DB[src_language]}' language in '{DEFAULT_ZONA_GAME_NAME}' game settings.\n")
     printc(f"                                                                                                         ", bcolors.NOTIF)
     printc(f"    /!\\ Over the next few days:                                                                          ", bcolors.NOTIF)
     printc(f"        If '{DEFAULT_ZONA_GAME_NAME}' no longer launches correctly or if a new update has been made by AGaming+    ", bcolors.NOTIF)
@@ -810,7 +840,7 @@ def main():
         argparser = argparse.ArgumentParser()
         argparser.add_argument("-t", "--translator", type=str, default='google', choices=['google', 'deepl'], help="Translator to use to translate to. (default value: google)")
         argparser.add_argument("-ta", "--auth-key", type=str, default='', help="Your Translator API authentivation key. (default value: '')")
-        argparser.add_argument("-ls", "--lang-src", type=str, default=DEFAULT_ZONA_TRANSLATE_LANG_SRC, choices=ALL_SUPPORTED_LANGS_SRC, help="Language to translate from. (default value: 'uk').")
+        argparser.add_argument("-ls", "--lang-src", type=str, default='empty', choices=ALL_SUPPORTED_LANGS_SRC, help="Language to translate from. (default value: 'empty').")
         argparser.add_argument("-l", "--langs", type=str, default='empty', choices=ALL_SUPPORTED_LANGS+['empty', 'all'], help="Languages to translate to. if more than one language then '--langs' parameter must be comma separated (eg. 'fr,cs')")
         argparser.add_argument("-f", "--files", type=str, default='empty', help="Comma separated str. Default is with all 'levelNN' and 'resources.assets' files. if '--file' is specified then '--files' parameter must be comma separated (eg. 'level7,level11')")
         argparser.add_argument("-s", "--min-size", type=int, default=2, help="Minimum size for string to translate is set to 2")
@@ -841,13 +871,6 @@ def main():
         i_restore_version = args.restore_version
         i_delay = args.delay
         i_retries = args.retries
-
-        # Regular expression for Cyrillic characters (Russian + Specific + Ukrainian pattern) and Latin punctuation
-        # CYRILLIC_PATTERN = rb'(\xD0[\x90-\xBF]|\xD1[\x80-\x8F]|\x0a|\x20|\x21|\x22|\x27|\x28|\x29|\x2B|\x2C|\x2D|\x2E|\x2F|\x5C|\x5F)'
-        # CYRILLIC_PATTERN = rb'(\xE2\x80\x94|\xD0[\x81\x86-\xBF]|\xD1[\x80-\x8F]|\xD2[\x90-\x91]|\xD2[\x84\x94]|\xD1\x96|\xD0[\x90-\xAF]|\x0a|\x20|\x21|\x22|\x27|\x28|\x29|\x2B|\x2C|\x2D|\x2E|\x2F|\x3A|\x3F\x5C|\x5F)'  # Regular expression for Cyrillic characters + CRLF + Latin punctuation
-        # CYRILLIC_PATTERN = rb'(\x56\x52\x3F\x20|\xE2\x80\x94|'+ CYRILLIC_BYTES + rb'|\x0a|\x20|\x21|\x22|\x27|\x28|\x29|\x2B|\x2C|\x2D|\x2E|\x2F|\x3A|\x3F|\x5C|\x5F)'  # Regular expression for Cyrillic characters + CRLF + Latin punctuation
-        # CYRILLIC_PATTERN = rb'(' + SPECIFIC_CYRILLIC_BYTES_VR + rb'|' + CYRILLIC_BYTES[DEFAULT_ZONA_TRANSLATE_LANG_SRC] + rb'|' + LATIN_PUNCTUATION_BYTES + rb')'  # Regular expression for Cyrillic characters + CRLF + Latin punctuation
-        CYRILLIC_PATTERN = rb'(' + SPECIFIC_CYRILLIC_BYTES_VR + rb'|' + CYRILLIC_BYTES[i_lang_src] + rb'|' + LATIN_PUNCTUATION_BYTES + rb')'  # Regular expression for Cyrillic characters + CRLF + Latin punctuation
 
         if i_debug_file:
             i_debug = True
@@ -890,14 +913,18 @@ def main():
             printc(f"    • Your '{DEFAULT_ZONA_GAME_NAME}' game must be up to date.", bcolors.INFO)
             printc("    • Your PC must have an Internet connection for Google Translator or Deepl API requests.", bcolors.INFO)
             printc("    • You must have a valid API auth key if you use Deepl API requests with the \"-t 'deepl'\" and \"-ta 'xxx'\" parameters.\n", bcolors.INFO)
-            printc(f" If needed you can update now your '{DEFAULT_ZONA_GAME_NAME}' game before begin translation.", bcolors.ASK)
-            inputc(f" Then press Enter to translate your '{DEFAULT_ZONA_GAME_NAME}' game...\n", bcolors.ASK)
+            # printc(f" If needed you can update now your '{DEFAULT_ZONA_GAME_NAME}' game before begin translation.", bcolors.ASK)
+            # inputc(f" Then press Enter to translate your '{DEFAULT_ZONA_GAME_NAME}' game...\n", bcolors.ASK)
 
             # Create the restore shortcut in the current directory if not existing
             if not os_path.exists(DEFAULT_ZONA_TRANSLATE_RESTORE_SHORTCUT):
                 printc(f" • [Create a restore shortcut in the current directory] ...\n", bcolors.INFO)
                 shortcut = create_restore_shortcut()
                 printc(f" • [Create '{shortcut}' restore shortcut in the current directory] OK\n", bcolors.OK)
+
+            # Create default translate dir path (for SQLite DB file)
+            if not os_path.exists(DEFAULT_ZONA_TRANSLATE_DIR):
+                os_makedirs(DEFAULT_ZONA_TRANSLATE_DIR)
 
             # BEGIN GUI execution
             if i_translator in DEFAULT_ZONA_TRANSLATE_WITH_AUTHENT:
@@ -910,11 +937,24 @@ def main():
                         input("Press enter to continue...\n")
                         # sys.exit(0)
                         # # END FOR TESTING PURPOSES ONLY
+            if i_lang_src not in ['empty']:
+                set_config('i_lang_src', i_lang_src)
+            if i_lang_src == 'empty':
+                # Get source language from config file
+                i_lang = get_config('i_lang_src')
+                if not i_lang:
+                    printc(f" • [Get 'i_lang_src' from '{DEFAULT_ZONA_TRANSLATE_CFG_FILE}'] Not found\n", bcolors.WARN)
+                    i_lang = ''
+                    printc(ALL_SUPPORTED_SOURCE_LANGS_DESCRIPTION, bcolors.INFO)
+                    while i_lang not in ALL_SUPPORTED_SOURCE_LANGS:
+                        i_lang = str(inputc(f" Language to translate from (specify the 2-letter language code): ", bcolors.ASK)).lower().strip()
+                    print()
             # GUI execution requiert only one unique 'i_lang' in 'i_langs' destination list
             # Write new preferred lang in config file (only if langs is not ['all'] or ['empty'])
             if i_langs not in [['all'], ['empty']]:
                 set_config('i_lang', i_langs[0])
             if i_langs == ['empty']:
+                # Get translated language from config file
                 i_lang = get_config('i_lang')
                 if not i_lang:
                     printc(f" • [Get 'i_lang' from '{DEFAULT_ZONA_TRANSLATE_CFG_FILE}'] Not found\n", bcolors.WARN)
@@ -924,11 +964,19 @@ def main():
                         i_lang = str(inputc(f" Language to translate to (specify the 2-letter language code): ", bcolors.ASK)).lower().strip()
                     print()
                 i_langs = [i_lang]
+                set_config('i_lang', i_langs[0])
                 i_langs = check_all_in_langs(i_langs)
 
             # Replace ['all'] with all supported langs
             i_langs = check_all_in_langs(i_langs)
             # END GUI execution
+
+            # Regular expression for Cyrillic characters (Russian + Specific + Ukrainian pattern) and Latin punctuation
+            # CYRILLIC_PATTERN = rb'(\xD0[\x90-\xBF]|\xD1[\x80-\x8F]|\x0a|\x20|\x21|\x22|\x27|\x28|\x29|\x2B|\x2C|\x2D|\x2E|\x2F|\x5C|\x5F)'
+            # CYRILLIC_PATTERN = rb'(\xE2\x80\x94|\xD0[\x81\x86-\xBF]|\xD1[\x80-\x8F]|\xD2[\x90-\x91]|\xD2[\x84\x94]|\xD1\x96|\xD0[\x90-\xAF]|\x0a|\x20|\x21|\x22|\x27|\x28|\x29|\x2B|\x2C|\x2D|\x2E|\x2F|\x3A|\x3F\x5C|\x5F)'  # Regular expression for Cyrillic characters + CRLF + Latin punctuation
+            # CYRILLIC_PATTERN = rb'(\x56\x52\x3F\x20|\xE2\x80\x94|'+ CYRILLIC_BYTES + rb'|\x0a|\x20|\x21|\x22|\x27|\x28|\x29|\x2B|\x2C|\x2D|\x2E|\x2F|\x3A|\x3F|\x5C|\x5F)'  # Regular expression for Cyrillic characters + CRLF + Latin punctuation
+            # CYRILLIC_PATTERN = rb'(' + SPECIFIC_CYRILLIC_BYTES_VR + rb'|' + CYRILLIC_BYTES[DEFAULT_ZONA_TRANSLATE_LANG_SRC] + rb'|' + LATIN_PUNCTUATION_BYTES + rb')'  # Regular expression for Cyrillic characters + CRLF + Latin punctuation
+            CYRILLIC_PATTERN = rb'(' + SPECIFIC_CYRILLIC_BYTES_VR + rb'|' + CYRILLIC_BYTES[i_lang_src] + rb'|' + LATIN_PUNCTUATION_BYTES + rb')'  # Regular expression for Cyrillic characters + CRLF + Latin punctuation
 
             # Save 'i_min_size' for 'resources.assets'
             i_min_size_saved = i_min_size
@@ -949,6 +997,7 @@ def main():
             printc(f"    • Minimum size string to translate .. : {i_min_size}", bcolors.INFO)
             printc(f"    • Verbose mode ...................... : {i_verbose}", bcolors.INFO)
             printc(f"    • Debug/dry mode .................... : {i_debug}", bcolors.INFO)
+            printc(f"    • Force mode ........................ : {i_force}", bcolors.INFO)
             if i_debug:
                 printc(f"    • Debug/dry in file ................. : {i_debug_file}", bcolors.INFO)
             printc(f"    • Binary files to translate ......... : {i_files}\n", bcolors.INFO)
@@ -964,10 +1013,6 @@ def main():
             # print(stops)
             # inputc(f" Press Enter to continue...", bcolors.ASK)
             # sys.exit(0)
-
-            # Create default translate dir path (for SQLite DB file)
-            if not os_path.exists(DEFAULT_ZONA_TRANSLATE_DIR):
-                os_makedirs(DEFAULT_ZONA_TRANSLATE_DIR)
 
             # Create or get existing DB for translation
             db = DBManager(db_name=f"{DEFAULT_ZONA_TRANSLATE_DB_DIR}/{DEFAULT_ZONA_TRANSLATE_DB_NAME[DEFAULT_ZONA_DIR_NAME.lower()]}")
@@ -1048,7 +1093,7 @@ def main():
                             printc(f" • [Restore translated files from '{TRANSLATE_DIR_PATH}/' to '{DEFAULT_ZONA_DATA_DIR}/'] ...\n", bcolors.INFO)
                             restore_files(version=current_version_patch, src=TRANSLATE_DIR_PATH)
                             printc(f" • [Restore translated files from '{TRANSLATE_DIR_PATH}/' to '{DEFAULT_ZONA_DATA_DIR}/'] OK\n", bcolors.OK)
-                            # translate_ended_message()
+                            # translate_ended_message(i_lang_src)
                             # inputc(f" Press Enter to exit...\n", bcolors.ASK)
                             # sys.exit(0)
                             continue
@@ -1177,7 +1222,13 @@ def main():
                                     # Translate does not exist
                                     else:
                                         dialog_type = 'ONLINE'
-                                        dialog_str = dialog_translate(translator=translator, file=i_file, dialog=s.s, to=i_lang, delay=i_delay, retries=i_retries)
+                                        dialog_str = dialog_translate(translator=translator,
+                                                                      file=i_file,
+                                                                      dialog=s.s,
+                                                                      lang_from=i_lang_src,
+                                                                      lang_to=i_lang,
+                                                                      delay=i_delay,
+                                                                      retries=i_retries)
 
                                         # Format translate before adding in DB
                                         dialog_len = len(dialog_str)
@@ -1249,7 +1300,7 @@ def main():
             # Close SQLite DB
             db.close()
             # Show ended message
-            translate_ended_message()
+            translate_ended_message(i_lang_src)
 
     except Exception as e:
         exc_type, exc_obj, exc_tb = sys.exc_info()
