@@ -43,9 +43,16 @@ Project for translating all Ukrainian or Russian texts of the Steam games '**Z.O
 
 - [Latest release](https://github.com/peurKe/auto_ZONA_translator/releases)
 
-## Download the EXE installer "**auto_ZONA_translator_installer.exe**" from the release assets.
+## Download the EXE installer "**auto_ZONA_translator_installer.exe**" from the release assets
 
-## Copy the EXE installer "**auto_ZONA_translator_installer.exe**"
+There is a specific version for each language
+
+- **auto_ZONA_translator_installer_FR.exe** embedding texts and subtitles for French only
+- **auto_ZONA_translator_installer_CS.exe** embedding texts and subtitles for Czech only
+- etc.
+- **auto_ZONA_translator_installer.exe** embedding texts and subtitles for all supported languages
+
+## Copy the downloaded EXE installer into game folder
 
 - Copy it to your **Z.O.N.A Project X** or **Z.O.N.A Origin** game folder in your Steam library.
   By default in :
@@ -64,9 +71,9 @@ Project for translating all Ukrainian or Russian texts of the Steam games '**Z.O
  
 ## Go to your game directory.
 
-## Double-clic on '**auto_ZONA_translator_installer.exe**'
+## Double-clic on EXE installer
 
-- Tick the box corresponding to the language of the TEXT and SUBTITLES you wish to read in the game:
+- Tick the box corresponding to the language of the TEXT and SUBTITLES you wish to read in the game: *(Only for non specific language installer)*
 ```
   Choose your preferred language for TEXTS and SUBTITLES:
     ( ) Čeština
@@ -84,7 +91,7 @@ Project for translating all Ukrainian or Russian texts of the Steam games '**Z.O
     ( ) Suomi
     ( ) Svenska
 ```
-- Clic on "Next" button
+- Clic on "Next" button *(Only for non specific language installer)*
 
 - Tick the box corresponding to the VOICE language you wish to hear in the game:
 ```

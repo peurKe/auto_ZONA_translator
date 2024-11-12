@@ -85,9 +85,10 @@ DEFAULT_ZONA_TRANSLATE_DIR_NAME = DEFAULT_ZONA_TRANSLATE_NAME
 DEFAULT_ZONA_TRANSLATE_DIR = f"./{DEFAULT_ZONA_TRANSLATE_DIR_NAME}"
 DEFAULT_ZONA_TRANSLATE_CFG_FILE = f"./{DEFAULT_ZONA_TRANSLATE_DIR_NAME}/{DEFAULT_ZONA_TRANSLATE_NAME}.cfg"
 DEFAULT_ZONA_TRANSLATE_DIR = f"./{DEFAULT_ZONA_TRANSLATE_DIR_NAME}"
-DEFAULT_ZONA_TRANSLATE_DB_DIR_NAME = ''
+DEFAULT_ZONA_TRANSLATE_DB_DIR_NAME = 'sqlite'
 DEFAULT_ZONA_TRANSLATE_DB_DIR = f"{DEFAULT_ZONA_TRANSLATE_DIR}/{DEFAULT_ZONA_TRANSLATE_DB_DIR_NAME}"
-DEFAULT_ZONA_TRANSLATE_DB_NAME = { "zona": "ZONA_ProjectX.db", "zonaorigin": "ZONA_Origin.db" }  # Keys are based on game directory in 'DEFAULT_ZONA_DIR_NAME'
+DEFAULT_ZONA_TRANSLATE_DB_NAME = { "zona": "ZONA_ProjectX", "zonaorigin": "ZONA_Origin" }  # Keys are based on game directory in 'DEFAULT_ZONA_DIR_NAME'
+DEFAULT_ZONA_TRANSLATE_DB_EXTENTION = '.db'
 DEFAULT_ZONA_TRANSLATE_BACKUP_DIR_NAME = 'BACKUP'
 # '@PLACEHOLDER_VERSION_DIR' will be replaced with current game version
 DEFAULT_ZONA_TRANSLATE_BACKUP_DIR = f"{DEFAULT_ZONA_TRANSLATE_DIR}/@PLACEHOLDER_VERSION_DIR/{DEFAULT_ZONA_TRANSLATE_BACKUP_DIR_NAME}"
@@ -340,24 +341,45 @@ RESTORE_SPECIFIC_WORDS = {
         { "from": "rastreador", "to": "Stalker", "case_sensitive": False }
     ],
     "fr": [
+        { "from": "UNIQUE DEVELOPPEUR", "to": "LE DEVELOPPEUR INDEPENDANT DE", "case_sensitive": False },  # Origin / Ukrainian + Russian / level1
+        { "from": "rejoignez-nous", "to": ", rejoignez notre", "case_sensitive": False },  # Origin / Ukrainian + Russian / level1 
+        { "from": "les cartes video", "to": "les cartes graphiques", "case_sensitive": False },  # Origin / Ukrainian + Russian / level1 
+        { "from": "des cartes graphiques moins puissantes", "to": "les cartes graphiques les plus faibles", "case_sensitive": False },  # Origin / Ukrainian + Russian / level1 
+        { "from": "hz en", "to": "Hz dans", "case_sensitive": False },  # Origin / Ukrainian + Russian / level1 
+        { "from": "Nouveau venu", "to": "Debutant", "case_sensitive": False },  # Origin / Ukrainian + Russian
+        { "from": "creneaux", "to": "emplacements", "case_sensitive": False },  # Origin / Ukrainian + Russian
+        { "from": "preservation", "to": "Sauvegarde", "case_sensitive": False },  # Origin / Ukrainian + Russian
+        { "from": "cheveux gris", "to": "Sedoy", "case_sensitive": False },
+        { "from": "grey", "to": "Sedoy", "case_sensitive": False },  # Origin / Ukrainian + Russian
+        { "from": "gray", "to": "Sedoy", "case_sensitive": False },  # Origin / Ukrainian + Russian
+        { "from": "sedoi", "to": "Sedoy", "case_sensitive": False },  # Origin / Ukrainian + Russian
         { "from": "harceleur", "to": "Stalker", "case_sensitive": False },
         { "from": "traqueur", "to": "Stalker", "case_sensitive": False },
-        { "from": "stalkers gratuits", "to": "Stalkers Libres", "case_sensitive": False },
+        { "from": "stalkers gratuits", "to": "Free Stalkers", "case_sensitive": False },
+        { "from": "stalkers libres", "to": "Free Stalkers", "case_sensitive": False },
         { "from": "ihor", "to": "IGOR", "case_sensitive": False },
+        { "from": "raven", "to": "Corbeau", "case_sensitive": False },
         { "from": "voron", "to": "Corbeau", "case_sensitive": False },
-        { "from": "shelter", "to": "Abri", "case_sensitive": False },  # Origin / Ukrainian + Russian / level11
-        { "from": "refuge", "to": "Abri", "case_sensitive": False },  # Origin / Ukrainian + Russian / level11
-        { "from": "asile", "to": "Abri", "case_sensitive": False },  # Origin / Russian / level11
+        { "from": "abri", "to": "Shelter", "case_sensitive": False },  # Origin / Ukrainian + Russian / level11
+        { "from": "refuge", "to": "Shelter", "case_sensitive": False },  # Origin / Ukrainian + Russian / level11
+        { "from": "asile", "to": "Shelter", "case_sensitive": False },  # Origin / Ukrainian + Russian / level11
+        { "from": "de shelter", "to": "du Shelter", "case_sensitive": False },  # Origin / Ukrainian + Russian / level11
         { "from": "but. menu", "to": "Retour", "case_sensitive": False },
         { "from": "plus loin", "to": "Suivant", "case_sensitive": False },
         { "from": "le bon controleur", "to": "Le controleur droit", "case_sensitive": False },
         { "from": "œ", "to": "oe", "case_sensitive": False },
-        { "from": "cheveux gris", "to": "Gray", "case_sensitive": False },
         { "from": "comme 'val'", "to": "AS 'Val'", "case_sensitive": False },
         { "from": "comme \"val\"", "to": "AS 'Val'", "case_sensitive": False },
         { "from": "Entree", "to": "Quitter", "case_sensitive": True },  # Origin / Ukrainian
         { "from": "l'Exode", "to": "quitter", "case_sensitive": True },  # Origin / Ukrainian
         { "from": "Exode", "to": "Quitter", "case_sensitive": True },  # Origin / Ukrainian
+        { "from": "Economie", "to": "Faible", "case_sensitive": True },  # Origin / Ukrainian / level11
+        { "from": "Tache", "to": "Quete", "case_sensitive": True },  # Origin / Ukrainian
+        { "from": "Retirer", "to": "supprimer", "case_sensitive": True },  # Origin / Ukrainian
+        { "from": "Telecharger", "to": "charger", "case_sensitive": True },  # Origin / Ukrainian
+        { "from": "un cas pour toi", "to": "un travail pour toi", "case_sensitive": False },  # Origin / Ukrainian
+        { "from": "une chose pour toi", "to": "un travail pour toi", "case_sensitive": True },  # Origin / Russian
+        { "from": "Forgotten Warehouse", "to": "Entrepot oublie", "case_sensitive": True },  # Origin / Ukrainian / level11
         { "from": "Cantonnement", "to": "Ville militaire", "case_sensitive": True },  # Origin / Ukrainian / level11
         { "from": "Gage", "to": "Avant-poste", "case_sensitive": True },  # Origin / Ukrainian / level11
         { "from": "Village Topp", "to": "Marais du village", "case_sensitive": True },  # Origin / Ukrainian / level11
@@ -592,13 +614,13 @@ def dialog_translate(translator, file='(NO_F)', dialog='(OUPS)', lang_from=DEFAU
         sys.exit(-1)
     except Exception as e:
         try:
-            printc(f"Function '{currentframe().f_code.co_name}': Rats! Google Translator attempt 1/3 failed on a translation in '{file}'. new attempt in {delay}s", bcolors.WARN)
+            printc(f"Function '{currentframe().f_code.co_name}': Rats! Google Translator attempt 1/3 failed on a translation in '{file}'. New attempt in {delay}s", bcolors.WARN)
             time_sleep(delay)
             # dialog_tr = translator.translate(dialog, src=DEFAULT_ZONA_TRANSLATE_LANG_SRC, dest=to).text
             dialog_tr = globals()[DEFAULT_TRANSLATE_FUNCTION](translator, dialog, lang_to)
         except Exception as e:
             try:
-                printc(f"Function '{currentframe().f_code.co_name}': Rats! Google Translator attempt 2/3 failed on a translation in '{file}'. new attempt in {delay}s", bcolors.WARN)
+                printc(f"Function '{currentframe().f_code.co_name}': Rats! Google Translator attempt 2/3 failed on a translation in '{file}'. New attempt in {delay}s", bcolors.WARN)
                 time_sleep(delay)
                 # dialog_tr = translator.translate(dialog, src=DEFAULT_ZONA_TRANSLATE_LANG_SRC, dest=to).text
                 dialog_tr = globals()[DEFAULT_TRANSLATE_FUNCTION](translator, dialog, lang_to)
@@ -1033,11 +1055,6 @@ def main():
             # inputc(f" Press Enter to continue...", bcolors.ASK)
             # sys.exit(0)
 
-            # Create or get existing DB for translation
-            db = DBManager(db_name=f"{DEFAULT_ZONA_TRANSLATE_DB_DIR}/{DEFAULT_ZONA_TRANSLATE_DB_NAME[DEFAULT_ZONA_DIR_NAME.lower()]}")
-            # Add source lang to DB
-            src_lang_id = db.add_lang(i_lang_src, ALL_SUPPORTED_LANGS_DB[i_lang_src], i_verbose)
-            
             print(f" /// TRANSLATION:\n")
             try:
                 if i_translator == 'deepl':
@@ -1084,7 +1101,16 @@ def main():
             i_langs_count = len(i_langs)
             i_langs_index = 0
             
+            # DB dir does not exist
+            if not os_path.exists(DEFAULT_ZONA_TRANSLATE_DB_DIR):
+                os_makedirs(DEFAULT_ZONA_TRANSLATE_DB_DIR)
+
             for i_lang in i_langs:
+
+                # Create or get existing DB for translation
+                db = DBManager(db_name=f"{DEFAULT_ZONA_TRANSLATE_DB_DIR}/{DEFAULT_ZONA_TRANSLATE_DB_NAME[DEFAULT_ZONA_DIR_NAME.lower()]}_{i_lang.lower()}{DEFAULT_ZONA_TRANSLATE_DB_EXTENTION}")
+                # Add source lang to DB
+                src_lang_id = db.add_lang(i_lang_src, ALL_SUPPORTED_LANGS_DB[i_lang_src], i_verbose)
 
                 # Increment lang index for progression
                 i_langs_index = i_langs_index + 1
@@ -1316,8 +1342,9 @@ def main():
                     # Copy translated files to default data dir
                     restore_files(version=current_version_patch, src=TRANSLATE_DIR_PATH)
 
-            # Close SQLite DB
-            db.close()
+                # Close SQLite DB
+                db.close()
+
             # Show ended message
             translate_ended_message(i_lang_src)
 
