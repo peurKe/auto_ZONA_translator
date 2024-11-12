@@ -95,7 +95,8 @@ DEFAULT_ZONA_TRANSLATE_BACKUP_DIR = f"{DEFAULT_ZONA_TRANSLATE_DIR}/@PLACEHOLDER_
 DEFAULT_ZONA_TRANSLATE_STR_IN_BINARY = f"THIS_FILE_WAS_TRANSLATED_WITH_{DEFAULT_ZONA_TRANSLATE_NAME}"
 DEFAULT_ZONA_TRANSLATE_SUCCEED_FILE = 'done.txt'
 DEFAULT_ZONA_TRANSLATE_RESTORE_SHORTCUT = f"{DEFAULT_ZONA_TRANSLATE_NAME} (restore).lnk"
-DEFAULT_ZONA_TRANSLATE_DEBUG_FILE = f"{DEFAULT_ZONA_TRANSLATE_NAME}.log"
+DEFAULT_ZONA_TRANSLATE_DEBUG_FILE = f"{DEFAULT_ZONA_TRANSLATE_NAME}.log.debug"
+DEFAULT_ZONA_TRANSLATE_LOG_FILE = f"{DEFAULT_ZONA_TRANSLATE_NAME}.log"
 DEFAULT_ZONA_TRANSLATE_WITH_AUTHENT = ['deepl']
 DEFAULT_ZONA_TRANSLATE_LANG_SRC = 'uk'
 DEFAULT_TRANSLATE_FUNCTION = 'dialog_translate_google'
@@ -762,6 +763,10 @@ def printc(msg, c=None):
     else:
         print(f"{c}{msg}{bcolors.ENDC}")
 
+    # Open the log file in 'append' mode
+    with open(DEFAULT_ZONA_TRANSLATE_LOG_FILE, 'a') as f:
+        f.write(f"{msg}\n")
+
 
 def inputc(prompt, c=None):
     if not c:
@@ -801,10 +806,17 @@ def main():
     global DEFAULT_ZONA_VERSION_REGEX
     global DEFAULT_ZONA_TRANSLATE_LANG_SRC
     global DEFAULT_TRANSLATE_FUNCTION
+    global DEFAULT_ZONA_TRANSLATE_DEBUG_FILE
+    global DEFAULT_ZONA_TRANSLATE_LOG_FILE
     global i_debug
 
     # Main code with global exception management
     try:
+        
+        # Open the log file in 'write' mode to clear the content
+        with open(DEFAULT_ZONA_TRANSLATE_LOG_FILE, 'w') as f:
+            pass  # Leave the file empty by not writing anything
+            
         # Allow to fail in 'exception/finally' directives with -1 when error occurs
         Failure = False
 
@@ -847,7 +859,7 @@ def main():
         argparser.add_argument("-v", "--verbose", action='store_true', help="Execute verbose mode (show translation results")
         argparser.add_argument("--sep", type=str, default=';', help="String separator for verbose mode. (default value: ';')")
         argparser.add_argument("-d", "--debug", action='store_true', help="Execute debug mode")
-        argparser.add_argument("-df", "--debug-file", action='store_true', help="Print debug in 'auto_ZO_translate_ru.log' file")
+        argparser.add_argument("-df", "--debug-file", action='store_true', help="Print debug in 'auto_ZO_translate_DEBUG.log' file")
         argparser.add_argument("-r", "--restore", action='store_true', help="Restore backup files (reset)")
         argparser.add_argument("-rv", "--restore-version", type=str, default=None, help="Specify the '0.0NN' patch version to restore. Default will be the current version. (reset)")
         argparser.add_argument("--force", action='store_true', help=f"Force translate even if translated files are already existing in '{DEFAULT_ZONA_TRANSLATE_DIR}/' directory")
@@ -916,11 +928,13 @@ def main():
             # printc(f" If needed you can update now your '{DEFAULT_ZONA_GAME_NAME}' game before begin translation.", bcolors.ASK)
             # inputc(f" Then press Enter to translate your '{DEFAULT_ZONA_GAME_NAME}' game...\n", bcolors.ASK)
 
-            # Create the restore shortcut in the current directory if not existing
+            # Create or update the restore shortcut in the current directory if not existing
+            shortcut_status = 'Update'
             if not os_path.exists(DEFAULT_ZONA_TRANSLATE_RESTORE_SHORTCUT):
-                printc(f" • [Create a restore shortcut in the current directory] ...\n", bcolors.INFO)
-                shortcut = create_restore_shortcut()
-                printc(f" • [Create '{shortcut}' restore shortcut in the current directory] OK\n", bcolors.OK)
+                shortcut_status = 'Create'
+            printc(f" • [{shortcut_status} the restore shortcut in the current directory] ...\n", bcolors.INFO)
+            shortcut = create_restore_shortcut()
+            printc(f" • [{shortcut_status} '{shortcut}' restore shortcut in the current directory] OK\n", bcolors.OK)
 
             # Create default translate dir path (for SQLite DB file)
             if not os_path.exists(DEFAULT_ZONA_TRANSLATE_DIR):
