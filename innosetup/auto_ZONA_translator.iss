@@ -1,7 +1,7 @@
 [Setup]
 AppName=auto_ZONA_translator
 OutputBaseFilename=auto_ZONA_translator_installer
-AppVersion=v0.1.4-alpha
+AppVersion=v0.1.5-alpha
 DefaultDirName={src}
 UsePreviousAppDir=no
 DisableProgramGroupPage=yes
@@ -51,7 +51,7 @@ begin
   DST_Page.Add('Română (Romanian)');
   DST_Page.Add('Suomi (Finnish)');
   DST_Page.Add('Svenska (Swedish)');
-  DST_Page.Values[4] := True; // Default is 'Français (French)'
+  DST_Page.Values[2] := True; // Default is 'English (English)'
 end;
 
 procedure CurStepChanged(CurStep: TSetupStep);

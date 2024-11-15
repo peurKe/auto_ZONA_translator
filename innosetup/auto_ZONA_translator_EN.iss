@@ -1,6 +1,6 @@
 [Setup]
 AppName=auto_ZONA_translator
-OutputBaseFilename=auto_ZONA_translator_installer_FR
+OutputBaseFilename=auto_ZONA_translator_installer_EN
 AppVersion=v0.1.5-alpha
 DefaultDirName={src}
 UsePreviousAppDir=no
@@ -10,7 +10,7 @@ DisableDirPage=no
 SetupIconFile=.\auto_ZONA_translator.ico
 
 [Languages]
-Name: "fr"; MessagesFile: "compiler:Languages\French.isl"
+Name: "en"; MessagesFile: "compiler:Default.isl"
 
 [Files]
 Source: "auto_ZONA_translator.exe"; DestDir: "{app}"; Flags: ignoreversion
@@ -29,13 +29,13 @@ var
 procedure InitializeWizard;
 begin
   // Source language (Voices)
-  SRC_Page := CreateInputOptionPage(wpWelcome, 'Sélection des VOIX du jeu', '', 'Choisissez votre langue préférée pour les VOIX du jeu:', True, False);
-  SRC_Page.Add('Ukrainien (Langue natale de Prypiat, immersion maximale!)');
-  SRC_Page.Add('Russe');
+  SRC_Page := CreateInputOptionPage(wpWelcome, 'Selecting the game''s VOICES', '', 'Choose your preferred language for the game''s VOICES:', True, False);
+  SRC_Page.Add('Ukrainian (Prypiat''s native tongue, maximum immersion!)');
+  SRC_Page.Add('Russian');
   SRC_Page.Values[0] := True;
 
   // Destination language (Texts and Subtitles)
-  DST_LanguageCode := 'fr'
+  DST_LanguageCode := 'en'
 end;
 
 procedure CurStepChanged(CurStep: TSetupStep);
@@ -46,16 +46,16 @@ begin
     if SRC_Page.Values[0] then
     begin
       SRC_LanguageCode := 'uk';
-      SRC_LanguageName := 'UKRAINIEN';
+      SRC_LanguageName := 'UKRAINIAN';
     end
     else
     begin
       SRC_LanguageCode := 'ru';
-      SRC_LanguageName := 'RUSSE';
+      SRC_LanguageName := 'RUSSIAN';
     end;
     
     // Destination language (Texts and Subtitles)
-    DST_LanguageMsg := 'Pour profiter des TEXTES en FRANCAIS et des voix en ' + SRC_LanguageName + ' : Lancez votre jeu Z.O.N.A depuis Steam puis sélectionnez ''' + SRC_LanguageName + ''' dans les paramètres de langue du jeu. AMUSEZ-VOUS BIEN DANS LA ZONE!'
+    DST_LanguageMsg := 'To enjoy TEXT in FRENCH and voices in ' + SRC_LanguageName + ': Launch your Z.O.N.A game from Steam, then select ''' + SRC_LanguageName + ''' in the game''s language settings. HAVE FUN IN THE ZONE!'
       
     // Execute auto_ZONA_translator.exe with the selected language and capture the return code
     Exec(ExpandConstant('{app}\auto_ZONA_translator.exe'), '-ls ' + SRC_LanguageCode + ' -l ' + DST_LanguageCode + ' --force', '', SW_SHOW, ewWaitUntilTerminated, ResultCode);
@@ -64,7 +64,7 @@ begin
     // if ResultCode = -1 then
     if (ResultCode = -1) or (ResultCode <> 0) then
     begin
-      MsgBox('L''installateur a rencontré une erreur. Les traductions n''ont pas été installées correctement. Désintallation en cours.', mbError, MB_OK);
+      MsgBox('The installer encountered an error. The translations have not been installed correctly. Unistallation in progress.', mbError, MB_OK);
       Exec(ExpandConstant('{uninstallexe}'), '/VERYSILENT', '', SW_HIDE, ewWaitUntilTerminated, ResultCode);
     end
     else

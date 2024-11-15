@@ -8,6 +8,7 @@ Project for translating all Ukrainian or Russian texts of the Steam games '**Z.O
 - [Currently supported languages](#Currently-supported-languages)
 - [Usage from executable installer](#Usage-from-executable-installer)
 - [Usage from python sources](#Usage-from-python-sources)
+- [Release notes](#Release-notes)
 <!-- /TOC -->
 
 # Discord
@@ -258,3 +259,29 @@ Not:
 ```
  Confirm you want to restore all '0.045' backup binary files (y/n): 
 ```
+
+# Release notes
+
+- v0.1.0
+  - initial update
+
+- v0.1.1
+  - Now, you can choose your preferred VOICES in the game between Ukrainian (Prypriat's native language) and Russian.
+
+- v0.1.2
+  - This release focuses on improving French translations, mainly to correct a few automatic translations. (Thanks to @cameleons for his help)
+
+- v0.1.3
+  - For all text languages: A separate database for each language (easier maintenance).
+
+- v0.1.4
+  - Only for french text language: faction names are no longer translated to maintain immersion. (Thanks to @cameleons for testing)
+
+- v0.1.5
+  - Great improvement in English translations + faction names are no longer translated to maintain immersion.
+  - Innosetup's dedicated French installer now offers a French-language interface.
+  - Innosetup's dedicated Czech installer has been added, with a Czech-language interface.
+  - Innosetup's dedicated German installer has been added, with a German-language interface.
+  - Innosetup's dedicated English installer has been added, with an English-language interface.
+  - Innosetup's dedicated Polish installer has been added, with a Polish-language interface.
+  

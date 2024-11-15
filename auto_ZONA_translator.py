@@ -6,7 +6,7 @@ Description : Script for translating all Ukrainian or Russian texts of the Steam
 Author: peurKe
 Creation Date: 2024-10-31
 Last Modified: 2024-11-15
-Version: 0.1.4-alpha
+Version: 0.1.5-alpha
 License: MIT
 """
 
@@ -334,7 +334,35 @@ RESTORE_SPECIFIC_WORDS = {
         { "from": "tracker", "to": "Stalker", "case_sensitive": False }
     ],
     "en": [
-        { "from": "tracker", "to": "Stalker", "case_sensitive": False }
+        { "from": "tracker", "to": "Stalker", "case_sensitive": False },
+        { "from": "SOLE DEVELOPER", "to": "THE INDEPENDANT SOLO DEVELOPER OF", "case_sensitive": False },  # Origin / Ukrainian + Russian / level1
+        { "from": "smaller video cards.", "to": "weaker video cards.", "case_sensitive": False },  # Origin / Ukrainian + Russian / level1 
+        { "from": "video cards.", "to": "video cards.  (TRANSLATION BY PEURKE)", "case_sensitive": False },  # Origin / Ukrainian + Russian / level1 
+        { "from": "grey-haired", "to": "Sedoy", "case_sensitive": False },
+        { "from": "grey", "to": "Sedoy", "case_sensitive": False },  # Origin / Ukrainian + Russian
+        { "from": "gray", "to": "Sedoy", "case_sensitive": False },  # Origin / Ukrainian + Russian
+        { "from": "sedoi", "to": "Sedoy", "case_sensitive": False },  # Origin / Ukrainian + Russian
+        { "from": "free stalker", "to": "Free Stalker", "case_sensitive": False },
+        { "from": "Judgment Day", "to": "Doomsday", "case_sensitive": False },
+        { "from": "Day of Judgment", "to": "Doomsday", "case_sensitive": False },
+        { "from": "bandit ", "to": "Bandits ", "case_sensitive": False },
+        { "from": "bandits", "to": "Bandits", "case_sensitive": True },
+        { "from": "special forces", "to": "AFU Special Forces", "case_sensitive": False },
+        { "from": "Crow", "to": "Raven", "case_sensitive": True },
+        { "from": "Vorone", "to": "Raven", "case_sensitive": True },
+        { "from": "refugees", "to": "Shelters", "case_sensitive": False },  # Origin / Ukrainian + Russian / level11
+        { "from": "refuge", "to": "Shelter", "case_sensitive": False },  # Origin / Ukrainian + Russian / level11
+        { "from": "asylum", "to": "Shelter", "case_sensitive": False },  # Origin / Ukrainian + Russian / level11
+        { "from": "goal. menu", "to": "Back to menu", "case_sensitive": False },
+        { "from": "golovne menu ", "to": "Back to menu", "case_sensitive": False },
+        { "from": "Entree", "to": "Quitter", "case_sensitive": True },  # Origin / Ukrainian
+        { "from": "Yes, Exodus", "to": "Yes, Quit", "case_sensitive": True },  # Origin / Ukrainian
+        { "from": "Economy", "to": "Low", "case_sensitive": True },  # Origin / Ukrainian / level11
+        { "from": "Download", "to": "Load", "case_sensitive": True },  # Origin / Ukrainian
+        { "from": "a case for you", "to": "a deal for you", "case_sensitive": False },  # Origin / Ukrainian
+        { "from": "Military dormitory", "to": "Militaire Town", "case_sensitive": True },  # Origin / Ukrainian / level11
+        { "from": "Topp village", "to": "Marshes of the village", "case_sensitive": True },  # Origin / Ukrainian / level11
+        { "from": "Neglected", "to": "Abandoned", "case_sensitive": True }
     ],
     "es": [
         { "from": "acosador", "to": "Stalker", "case_sensitive": False },
@@ -367,8 +395,8 @@ RESTORE_SPECIFIC_WORDS = {
         { "from": "bandits", "to": "Bandits", "case_sensitive": False },
         { "from": "forces speciales", "to": "Forces Speciales AFU", "case_sensitive": False },
         { "from": "ihor", "to": "IGOR", "case_sensitive": False },
-        { "from": "raven", "to": "Corbeau", "case_sensitive": False },
-        { "from": "voron", "to": "Corbeau", "case_sensitive": False },
+        { "from": "corbeau", "to": "Raven", "case_sensitive": False },
+        { "from": "voron", "to": "Raven", "case_sensitive": False },
         { "from": "abri", "to": "Shelter", "case_sensitive": False },  # Origin / Ukrainian + Russian / level11
         { "from": "refuge", "to": "Shelter", "case_sensitive": False },  # Origin / Ukrainian + Russian / level11
         { "from": "asile", "to": "Shelter", "case_sensitive": False },  # Origin / Ukrainian + Russian / level11
@@ -386,8 +414,8 @@ RESTORE_SPECIFIC_WORDS = {
         { "from": "Tache", "to": "Quete", "case_sensitive": True },  # Origin / Ukrainian
         { "from": "Retirer", "to": "supprimer", "case_sensitive": True },  # Origin / Ukrainian
         { "from": "Telecharger", "to": "charger", "case_sensitive": True },  # Origin / Ukrainian
-        { "from": "un cas pour toi", "to": "un travail pour toi", "case_sensitive": False },  # Origin / Ukrainian
-        { "from": "une chose pour toi", "to": "un travail pour toi", "case_sensitive": True },  # Origin / Russian
+        { "from": "un cas pour toi", "to": "une offre pour toi", "case_sensitive": False },  # Origin / Ukrainian
+        { "from": "une chose pour toi", "to": "une offre pour toi", "case_sensitive": True },  # Origin / Russian
         { "from": "Forgotten Warehouse", "to": "Entrepot oublie", "case_sensitive": True },  # Origin / Ukrainian / level11
         { "from": "Cantonnement", "to": "Ville militaire", "case_sensitive": True },  # Origin / Ukrainian / level11
         { "from": "Gage", "to": "Avant-poste", "case_sensitive": True },  # Origin / Ukrainian / level11
