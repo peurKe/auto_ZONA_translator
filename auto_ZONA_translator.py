@@ -5,8 +5,8 @@ Title : auto_ZONA_translator.py
 Description : Script for translating all Ukrainian or Russian texts of the Steam games 'Z.O.N.A Origin' and 'Z.O.N.A Project X' by AGaming+ and enjoy Ukrainian voices while having all the texts in your native language!
 Author: peurKe
 Creation Date: 2024-10-31
-Last Modified: 2024-11-11
-Version: 0.1.1-alpha
+Last Modified: 2024-11-15
+Version: 0.1.4-alpha
 License: MIT
 """
 
@@ -345,6 +345,7 @@ RESTORE_SPECIFIC_WORDS = {
         { "from": "rejoignez-nous", "to": ", rejoignez notre", "case_sensitive": False },  # Origin / Ukrainian + Russian / level1 
         { "from": "les cartes video", "to": "les cartes graphiques", "case_sensitive": False },  # Origin / Ukrainian + Russian / level1 
         { "from": "des cartes graphiques moins puissantes", "to": "les cartes graphiques les plus faibles", "case_sensitive": False },  # Origin / Ukrainian + Russian / level1 
+        { "from": "graphiques les plus faibles", "to": "graphiques les plus faibles.  (TRADUCTION PAR PEURKE)", "case_sensitive": False },  # Origin / Ukrainian + Russian / level1 
         { "from": "hz en", "to": "Hz dans", "case_sensitive": False },  # Origin / Ukrainian + Russian / level1 
         { "from": "Nouveau venu", "to": "Debutant", "case_sensitive": False },  # Origin / Ukrainian + Russian
         { "from": "creneaux", "to": "emplacements", "case_sensitive": False },  # Origin / Ukrainian + Russian
@@ -357,6 +358,14 @@ RESTORE_SPECIFIC_WORDS = {
         { "from": "traqueur", "to": "Stalker", "case_sensitive": False },
         { "from": "stalkers gratuits", "to": "Free Stalkers", "case_sensitive": False },
         { "from": "stalkers libres", "to": "Free Stalkers", "case_sensitive": False },
+        { "from": "jour du jugement", "to": "Doomsday", "case_sensitive": False },
+        { "from": "jour du jugement dernier", "to": "Doomsday", "case_sensitive": False },
+        { "from": "greve", "to": "Strike", "case_sensitive": False },
+        { "from": "frapper", "to": "Strike", "case_sensitive": False },
+        { "from": "frappe de base", "to": "Base des Strike", "case_sensitive": False },
+        { "from": "base de frappe", "to": "base des Strike", "case_sensitive": False },
+        { "from": "bandits", "to": "Bandits", "case_sensitive": False },
+        { "from": "forces speciales", "to": "Forces Speciales AFU", "case_sensitive": False },
         { "from": "ihor", "to": "IGOR", "case_sensitive": False },
         { "from": "raven", "to": "Corbeau", "case_sensitive": False },
         { "from": "voron", "to": "Corbeau", "case_sensitive": False },
@@ -383,7 +392,8 @@ RESTORE_SPECIFIC_WORDS = {
         { "from": "Cantonnement", "to": "Ville militaire", "case_sensitive": True },  # Origin / Ukrainian / level11
         { "from": "Gage", "to": "Avant-poste", "case_sensitive": True },  # Origin / Ukrainian / level11
         { "from": "Village Topp", "to": "Marais du village", "case_sensitive": True },  # Origin / Ukrainian / level11
-        { "from": "a mange", "to": "ite", "case_sensitive": True }  # Origin / Russian / level11 / 'Cело' with a latin 'C' = Village Russian / 'ело' = a mangé / 'Cело' = 'Ca mang' => Cite 
+        { "from": "a mange", "to": "ite", "case_sensitive": True },  # Origin / Russian / level11 / 'Cело' with a latin 'C' = Village Russian / 'ело' = a mangé / 'Cело' = 'Ca mang' => Cite 
+        { "from": "sont les ames des stalkers morts,", "to": "sont les ames des stalkers morts venues hanter Le Cameleons,", "case_sensitive": False } # Easter Egg Le Cameleons!
     ],
     "fi": [],
     "hu": [],

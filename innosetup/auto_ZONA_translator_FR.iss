@@ -1,7 +1,7 @@
 [Setup]
 AppName=auto_ZONA_translator
 OutputBaseFilename=auto_ZONA_translator_installer_FR
-AppVersion=v0.1.3-alpha
+AppVersion=v0.1.4-alpha
 DefaultDirName={src}
 UsePreviousAppDir=no
 DisableProgramGroupPage=yes
@@ -30,7 +30,7 @@ procedure InitializeWizard;
 begin
   // Source language (Voices)
   SRC_Page := CreateInputOptionPage(wpWelcome, 'Sélection des VOIX du jeu', '', 'Choisissez votre langue préférée pour les VOIX du jeu:', True, False);
-  SRC_Page.Add('Ukrainien');
+  SRC_Page.Add('Ukrainien (Langue natale de Prypiat, immersion maximale!)');
   SRC_Page.Add('Russe');
   SRC_Page.Values[0] := True;
 
