@@ -2,11 +2,17 @@
 # -*- coding: utf-8 -*-
 """
 Title : auto_ZONA_translator.py
-Description : Script for translating all Ukrainian or Russian texts of the Steam games 'Z.O.N.A Origin' and 'Z.O.N.A Project X' by AGaming+ and enjoy Ukrainian voices while having all the texts in your native language!
+Description :
+  Project for translating all Ukrainian or Russian texts of the following Steam games:
+    - 'Z.O.N.A Origin' by AGaming+
+    - 'Z.O.N.A Project X' by AGaming+
+    - 'Paradox of Hope'by NikZ
+    - 'CONVRGENCE'by NikZ
+  And enjoy Ukrainian or Russian voices while having all the texts in your native language!
 Author: peurKe
 Creation Date: 2024-10-31
-Last Modified: 2024-11-15
-Version: 0.1.5-alpha
+Last Modified: 2024-11-18
+Version: 0.2.0-alpha
 License: MIT
 """
 
@@ -26,6 +32,7 @@ License: MIT
 # pip install unidecode
 # pip install pywin32
 # pip install pyinstaller
+# pip install pygetwindow
 
 # Error: The read operation timed out --> Problem with google translator API = Relaunch script
 # Error: _ssl.c:1003: The handshake operation timed out --> Problem with google translator API = Relaunch script
@@ -41,11 +48,16 @@ from inspect import currentframe
 import re
 from time import sleep as time_sleep, time as time_time
 from tqdm import tqdm
-from unidecode import unidecode
+# from unidecode import unidecode
+from unicodedata import normalize as unicodedata_normalize, category as unicodedata_category
 from json import dumps as json_dumps
 import shutil
+import subprocess
+import pygetwindow as gw
 from collections import namedtuple
-from auto_ZONA.utils.DBManager import DBManager
+from auto_ZONA.utils.DBManager import DBManager # type: ignore
+from auto_ZONA.utils.specific_words import RESTORE_SPECIFIC_WORDS
+from auto_ZONA.utils.cyrillic_unicode import CYRILLIC_BYTES, SPECIFIC_CYRILLIC_BYTES_VR, LATIN_PUNCTUATION_BYTES, CYRILLIC_PATTERN
 try:
     # from nltk.corpus import stopwords
     from nltk import download as nltk_download
@@ -87,9 +99,16 @@ DEFAULT_ZONA_TRANSLATE_CFG_FILE = f"./{DEFAULT_ZONA_TRANSLATE_DIR_NAME}/{DEFAULT
 DEFAULT_ZONA_TRANSLATE_DIR = f"./{DEFAULT_ZONA_TRANSLATE_DIR_NAME}"
 DEFAULT_ZONA_TRANSLATE_DB_DIR_NAME = 'sqlite'
 DEFAULT_ZONA_TRANSLATE_DB_DIR = f"{DEFAULT_ZONA_TRANSLATE_DIR}/{DEFAULT_ZONA_TRANSLATE_DB_DIR_NAME}"
-DEFAULT_ZONA_TRANSLATE_DB_NAME = { "zona": "ZONA_ProjectX", "zonaorigin": "ZONA_Origin" }  # Keys are based on game directory in 'DEFAULT_ZONA_DIR_NAME'
+# DEFAULT_ZONA_TRANSLATE_DB_NAME keys are based on game directory in 'DEFAULT_ZONA_DIR_NAME'
+DEFAULT_ZONA_TRANSLATE_DB_NAME = {
+    "ZONA": "ZONA_ProjectX",
+    "ZONAORIGIN": "ZONA_Origin",
+    "PARADOX OF HOPE": "Paradox_of_Hope",
+    "CONVRGENCE": "CONVRGENCE"
+}
 DEFAULT_ZONA_TRANSLATE_DB_EXTENTION = '.db'
 DEFAULT_ZONA_TRANSLATE_BACKUP_DIR_NAME = 'BACKUP'
+DEFAULT_ZONA_TRANSLATE_RESOURCES_ASSETS_FILE = [ 'ZONA', 'ZONAORIGIN' ] # Currently only ZONA games need translation in 'resources.assets' file
 # '@PLACEHOLDER_VERSION_DIR' will be replaced with current game version
 DEFAULT_ZONA_TRANSLATE_BACKUP_DIR = f"{DEFAULT_ZONA_TRANSLATE_DIR}/@PLACEHOLDER_VERSION_DIR/{DEFAULT_ZONA_TRANSLATE_BACKUP_DIR_NAME}"
 # Flag for data binary file translated
@@ -104,7 +123,30 @@ DEFAULT_TRANSLATE_FUNCTION = 'dialog_translate_google'
 # END auto_ZONA_translator
 
 # List for checking executable presence
-DEFAULT_ZONA_FILENAME_LIST = [ 'ZONAORIGIN.exe', 'ZONA.exe' ]
+DEFAULT_ZONA_EXE_FILENAME_LIST = [ 'ZONAORIGIN.exe', 'ZONA.exe', 'Paradox of Hope.exe', 'CONVRGENCE.exe' ]
+
+# BEGIN DEFAULT Z.O.N.A
+DEFAULT_ZONA_GAME_NAME = ''
+DEFAULT_ZONA_DIR_NAME = ''
+DEFAULT_ZONA_DIR_EXAMPLE = ''
+DEFAULT_ZONA_DATA_DIR_NAME = ''
+DEFAULT_ZONA_DATA_DIR = ''
+DEFAULT_ZONA_GLOBAL_GM = ''
+DEFAULT_ZONA_VERSION_REGEX = []
+DEFAULT_ZONA_TRANSLATE_LANG_SRC = ''
+# END DEFAULT Z.O.N.A
+
+# # BEGIN Z.O.N.A PROJECT X
+# DEFAULT_ZONA_GAME_NAME = 'Z.O.N.A Project X'
+# DEFAULT_ZONA_DIR_NAME = 'ZONA'
+# DEFAULT_ZONA_DIR_EXAMPLE = f"C:\\SteamLibrary\\steamapps\\common\\{DEFAULT_ZONA_DIR_NAME}"
+# DEFAULT_ZONA_DATA_DIR_NAME = 'ZONA_Data'
+# DEFAULT_ZONA_DATA_DIR = f"./{DEFAULT_ZONA_DATA_DIR_NAME}"
+# DEFAULT_ZONA_GLOBAL_GM = 'globalgamemanagers'
+# DEFAULT_ZONA_VERSION_REGEX = [ rb'(1\.0[0-9]\.[0-9][0-9])' ]
+# DEFAULT_ZONA_TRANSLATE_LANG_SRC = 'uk'
+# DEFAULT_ZONA_TRANSLATE_LANG_SRC_FORCE = False
+# # END Z.O.N.A PROJECT X
 
 # # BEGIN Z.O.N.A ORIGIN
 # DEFAULT_ZONA_GAME_NAME = 'Z.O.N.A Origin'
@@ -113,20 +155,37 @@ DEFAULT_ZONA_FILENAME_LIST = [ 'ZONAORIGIN.exe', 'ZONA.exe' ]
 # DEFAULT_ZONA_DATA_DIR_NAME = 'ZONAORIGIN_Data'
 # DEFAULT_ZONA_DATA_DIR = f"./{DEFAULT_ZONA_DATA_DIR_NAME}"
 # DEFAULT_ZONA_GLOBAL_GM = 'globalgamemanagers'
-# DEFAULT_ZONA_VERSION_REGEX = rb'(0\.0[0-9][0-9])'
-# DEFAULT_ZONA_TRANSLATE_LANG_SRC = 'ru'
+# DEFAULT_ZONA_VERSION_REGEX = [ rb'(0\.0[0-9][0-9])' ]
+# DEFAULT_ZONA_TRANSLATE_LANG_SRC = 'uk'
+# DEFAULT_ZONA_TRANSLATE_LANG_SRC_FORCE = False
 # # END Z.O.N.A ORIGIN
 
-# BEGIN Z.O.N.A PROJECT X
-DEFAULT_ZONA_GAME_NAME = 'Z.O.N.A Project X'
-DEFAULT_ZONA_DIR_NAME = 'ZONA'
-DEFAULT_ZONA_DIR_EXAMPLE = f"C:\\SteamLibrary\\steamapps\\common\\{DEFAULT_ZONA_DIR_NAME}"
-DEFAULT_ZONA_DATA_DIR_NAME = 'ZONA_Data'
-DEFAULT_ZONA_DATA_DIR = f"./{DEFAULT_ZONA_DATA_DIR_NAME}"
-DEFAULT_ZONA_GLOBAL_GM = 'globalgamemanagers'
-DEFAULT_ZONA_VERSION_REGEX = rb'(1\.0[0-9]\.[0-9][0-9])'
-DEFAULT_ZONA_TRANSLATE_LANG_SRC = 'uk'
-# END Z.O.N.A PROJECT X
+# # BEGIN Paradox of Hope
+# DEFAULT_ZONA_GAME_NAME = 'Paradox of Hope'
+# DEFAULT_ZONA_DIR_NAME = 'Paradox of Hope'
+# DEFAULT_ZONA_DIR_EXAMPLE = f"C:\\SteamLibrary\\steamapps\\common\\{DEFAULT_ZONA_DIR_NAME}"
+# DEFAULT_ZONA_DATA_DIR_NAME = 'Paradox of Hope_Data'
+# DEFAULT_ZONA_DATA_DIR = f"./{DEFAULT_ZONA_DATA_DIR_NAME}"
+# DEFAULT_ZONA_GLOBAL_GM = 'globalgamemanagers'
+# DEFAULT_ZONA_VERSION_REGEX = [ rb'(0\.4\.[0-9])' ] # No update because game is not available anymore
+# DEFAULT_ZONA_TRANSLATE_LANG_SRC = 'uk'
+# DEFAULT_ZONA_TRANSLATE_LANG_SRC_FORCE = True
+# # END Paradox of Hope
+
+# # BEGIN CONVERGENCE
+# DEFAULT_ZONA_GAME_NAME = 'CONVRGENCE'
+# DEFAULT_ZONA_DIR_NAME = 'CONVRGENCE'
+# DEFAULT_ZONA_DIR_EXAMPLE = f"C:\\SteamLibrary\\steamapps\\common\\{DEFAULT_ZONA_DIR_NAME}"
+# DEFAULT_ZONA_DATA_DIR_NAME = 'CONVRGENCE_Data'
+# DEFAULT_ZONA_DATA_DIR = f"./{DEFAULT_ZONA_DATA_DIR_NAME}"
+# DEFAULT_ZONA_GLOBAL_GM = 'globalgamemanagers'
+# DEFAULT_ZONA_VERSION_REGEX = [
+#     rb'([0-9]\.[0-9]\.[0-9]\.[0-9])',
+#     rb'([0-9]\.[0-9]\.[0-9])',
+# ]
+# DEFAULT_ZONA_TRANSLATE_LANG_SRC = 'uk'
+# DEFAULT_ZONA_TRANSLATE_LANG_SRC_FORCE = True
+# # END CONVERGENCE
 
 ALL_SUPPORTED_SOURCE_LANGS = ['uk', 'ru']
 ALL_SUPPORTED_LANGS = ['cs', 'da', 'de', 'en', 'es', 'fi', 'fr', 'hu', 'it', 'nl', 'pl', 'pt', 'ro', 'sv']
@@ -145,8 +204,8 @@ ALL_SUPPORTED_LANGS_DB = {
     "pt": "Português",
     "ro": "Română",
     "sv": "Svenska",
-    "ru": "Russian",  # Source language
-    "uk": "Ukrainian"  # Source language
+    "ru": "Russian",  # Only for source language
+    "uk": "Ukrainian"  # Only for source language
 }
 # Supported sources languages
 ALL_SUPPORTED_SOURCE_LANGS_DESCRIPTION_LIST = [
@@ -172,144 +231,15 @@ ALL_SUPPORTED_LANGS_DESCRIPTION_LIST = [
 ALL_SUPPORTED_LANGS_DESCRIPTION = " Supported languages:\n" + ''.join(ALL_SUPPORTED_LANGS_DESCRIPTION_LIST)
 ALL_SUPPORTED_LANGS_SRC = ['empty', 'uk', 'ru']
 
-# Regular expression for Cyrillic bytes (Russian + Specific + Ukrainian pattern)
-# CYRILLIC_BYTES = rb'\xD0[\x90-\xBF]|\xD1[\x80-\x8F]'  # OK
-# CYRILLIC_BYTES = rb'\xD0[\x80-\xBF]|\xD1[\x80-\xBF]|\xD2[\x80-\xBF]|\xD3[\x80-\xBF]'  # BETTER
-CYRILLIC_BYTES = {
-    'ru': rb'\xD0[\x80-\xBF]|\xD1[\x80-\xBF]|\xD2[\x80-\xBF]|\xD3[\x80-\xBF]|\xD4[\x80-\x8F]',  # TO BE VALIDATED
-    # 'uk': rb'\xD0[\x90-\xBF]|\xD0[\xA0-\xFF]|\xD1[\x00-\x8F]',  # NOK (too short list)
-    'uk': rb'\xD0[\x80-\xBF]|\xD0[\xA0-\xFF]|\xD1[\x00-\xBF]|\xD3[\x80-\xBF]|\xD4[\x80-\x8F]',  # TO BE VALIDATED
-}
-
-# Specific Cyrillic bytes
-SPECIFIC_CYRILLIC_BYTES_VR = rb'\x56\x52\x3F\x20'  # 'VR? '
-# SPECIFIC_BYTES_NO = rb'\xE2\x84\x96'  # '№' (finally not translated because translation in french is quite bad: no)
-# SPECIFIC_BYTES_DASH = rb'\xE2\x80\x94'  # '—' (long dash) (finally not translated because translation in french is not usefull: no)
-
-# Latin punctuation bytes
-LATIN_PUNCTUATION_BYTES = rb'\x0a|\x20|\x21|\x22|\x27|\x28|\x29|\x2B|\x2C|\x2D|\x2E|\x2F|\x3A|\x3F|\x5C|\x5F'
-
-# Regular expression for Cyrillic characters (Russian + Specific + Ukrainian pattern) and Latin punctuation
-# CYRILLIC_PATTERN = rb'(\xD0[\x90-\xBF]|\xD1[\x80-\x8F]|\x0a|\x20|\x21|\x22|\x27|\x28|\x29|\x2B|\x2C|\x2D|\x2E|\x2F|\x5C|\x5F)'
-# CYRILLIC_PATTERN = rb'(\xE2\x80\x94|\xD0[\x81\x86-\xBF]|\xD1[\x80-\x8F]|\xD2[\x90-\x91]|\xD2[\x84\x94]|\xD1\x96|\xD0[\x90-\xAF]|\x0a|\x20|\x21|\x22|\x27|\x28|\x29|\x2B|\x2C|\x2D|\x2E|\x2F|\x3A|\x3F\x5C|\x5F)'  # Regular expression for Cyrillic characters + CRLF + Latin punctuation
-# CYRILLIC_PATTERN = rb'(\x56\x52\x3F\x20|\xE2\x80\x94|'+ CYRILLIC_BYTES + rb'|\x0a|\x20|\x21|\x22|\x27|\x28|\x29|\x2B|\x2C|\x2D|\x2E|\x2F|\x3A|\x3F|\x5C|\x5F)'  # Regular expression for Cyrillic characters + CRLF + Latin punctuation
-# CYRILLIC_PATTERN = rb'(' + SPECIFIC_CYRILLIC_BYTES_VR + rb'|' + CYRILLIC_BYTES[DEFAULT_ZONA_TRANSLATE_LANG_SRC] + rb'|' + LATIN_PUNCTUATION_BYTES + rb')'  # Regular expression for Cyrillic characters + CRLF + Latin punctuation
-CYRILLIC_PATTERN = rb''  # See initialization in main() rigth after arguments parsing
-
-# \x56\x52\x3F\x20 = 'VR? '
-# \xE2\x84\x96 = '№' (finally not translated because translation in french is quite bad: no)
-# \xE2\x80\x94 = '—' (long dash) (finally not translated because translation in french is not usefull: no)
-# \xD0[\x81\x86-\xBF]|\xD1[\x80-\x8F]|\xD2[\x90-\x91]|\xD2[\x84\x94]|\xD1\x96|\xD0[\x90-\xAF] = Cyrillic
-# \x0a|\x20|\x21|\x22|\x27|\x28|\x29|\x2B|\x2C|\x2D|\x2E|\x2F|\x3A|\x3F|\x5C|\x5F = Punctuation
-
-# # Cyrillic bytes to select
-# \xD0[\x81\x86-\xBF] : Correspond aux caractères UTF-8 cyrilliques dans la plage D0 81, D0 86, et de D0 90 à D0 BF.
-# \xD1[\x80-\x8F] : Correspond aux caractères cyrilliques de D1 80 à D1 8F.
-# \xD2[\x90-\x91] et \xD2[\x84\x94] : Correspond aux caractères spécifiques comme Ґ et Є.
-# \xD1\x96 et \xD0[\x90-\xAF] : Inclut le caractère ukrainien і et d'autres caractères de base de la langue russe et ukrainienne.
-# cyrillic_bytes = [
-#     b'\xD0\x90', b'\xD0\x91', b'\xD0\x92', b'\xD0\x93', b'\xD0\x94',
-#     b'\xD0\x95', b'\xD0\x81', b'\xD0\x96', b'\xD0\x97', b'\xD0\x98',
-#     b'\xD0\x99', b'\xD0\x9A', b'\xD0\x9B', b'\xD0\x9C', b'\xD0\x9D',
-#     b'\xD0\x9E', b'\xD0\x9F', b'\xD0\xA0', b'\xD0\xA1', b'\xD0\xA2',
-#     b'\xD0\xA3', b'\xD0\xA4', b'\xD0\xA5', b'\xD0\xA6', b'\xD0\xA7',
-#     b'\xD0\xA8', b'\xD0\xA9', b'\xD0\xAA', b'\xD0\xAB', b'\xD0\xAC',
-#     b'\xD0\xAD', b'\xD0\xAE', b'\xD0\xAF', b'\xD0\xB0', b'\xD0\xB1',
-#     b'\xD0\xB2', b'\xD0\xB3', b'\xD0\xB4', b'\xD0\xB5', b'\xD0\xB6',
-#     b'\xD0\xB7', b'\xD0\xB8', b'\xD0\xB9', b'\xD0\xBA', b'\xD0\xBB',
-#     b'\xD0\xBC', b'\xD0\xBD', b'\xD0\xBE', b'\xD0\xBF', b'\xD1\x80',
-#     b'\xD1\x81', b'\xD1\x82', b'\xD1\x83', b'\xD1\x84', b'\xD1\x85',
-#     b'\xD1\x86', b'\xD1\x87', b'\xD1\x88', b'\xD1\x89', b'\xD1\x8A',
-#     b'\xD1\x8B', b'\xD1\x8C', b'\xD1\x8D', b'\xD1\x8E', b'\xD1\x8F',
-#     # Special characters
-#     b'\x0a',   # LF
-#     b'\x20'    # Whitespace
-#     b'\x21',   # !
-#     b'\x22',   # "
-#     b'\x27',   # '
-#     b'\x28',   # (
-#     b'\x29',   # )
-#     b'\x2B',   # +
-#     b'\x2C',   # ,
-#     b'\x2D',   # -
-#     b'\x2E',   # .
-#     b'\x2F',   # /
-#     b'\x3A',   # :
-#     b'\x3F',   # ?
-#     b'\x5C',   # \
-#     b'\x5F',   # _
-# ]
-
-# To fix (level11)
-# заброшенне cело||D0 97 D0 B0 D0 B1 D1 80 D1 BE D1 88 D0 B5 D0 BD D0 BD D0 BE D0 B5
-
-# Latin	Char Unicode	Hex (UTF-8)	Binaire (UTF-8)
-# A	    А	U+0410	D0 90	11010000 10100000
-# B	    Б	U+0411	D0 91	11010000 10100001
-# V	    В	U+0412	D0 92	11010000 10100010
-# G	    Г	U+0413	D0 93	11010000 10100011
-# D	    Д	U+0414	D0 94	11010000 10100100
-# E	    Е	U+0415	D0 95	11010000 10100101
-# Yo	Ё	U+0401	D0 81	11010000 10000001
-# Zh	Ж	U+0416	D0 96	11010000 10100110
-# Z 	З	U+0417	D0 97	11010000 10100111
-# I 	И	U+0418	D0 98	11010000 10101000
-# Y 	Й	U+0419	D0 99	11010000 10101001
-# K 	К	U+041A	D0 9A	11010000 10101010
-# L 	Л	U+041B	D0 9B	11010000 10101011
-# M 	М	U+041C	D0 9C	11010000 10101100
-# N 	Н	U+041D	D0 9D	11010000 10101101
-# O 	О	U+041E	D0 9E	11010000 10101110
-# P 	П	U+041F	D0 9F	11010000 10101111
-# R 	Р	U+0420	D0 A0	11010000 10110000
-# S 	С	U+0421	D0 A1	11010000 10110001
-# T 	Т	U+0422	D0 A2	11010000 10110010
-# U 	У	U+0423	D0 A3	11010000 10110011
-# F 	Ф	U+0424	D0 A4	11010000 10110100
-# Kh	Х	U+0425	D0 A5	11010000 10110101
-# Ts	Ц	U+0426	D0 A6	11010000 10110110
-# Ch	Ч	U+0427	D0 A7	11010000 10110111
-# Sh	Ш	U+0428	D0 A8	11010000 10111000
-# Shch	Щ	U+0429	D0 A9	11010000 10111001
-# Hard Sign	Ъ	U+042A	D0 AA	11010000 10111010
-# Y (with hook)	Ы	U+042B	D0 AB	11010000 10111011
-# Soft Sign	Ь	U+042C	D0 AC	11010000 10111100
-# E 	Э	U+042D	D0 AD	11010000 10111101
-# Yu	Ю	U+042E	D0 AE	11010000 10111110
-# Ya	Я	U+042F	D0 AF	11010000 10111111
-# a	    а	U+0430	D0 B0	11010000 10110000
-# b	    б   U+0431	D0 B1	11010000 10110001
-# v	    в	U+0432	D0 B2	11010000 10110010
-# g 	г	U+0433	D0 B3	11010000 10110011
-# d 	д	U+0434	D0 B4	11010000 10110100
-# e 	е	U+0435	D0 B5	11010000 10110101
-# yo	ё	U+0451	D1 91	11010001 10010001
-# zh	ж	U+0436	D0 B6	11010000 10110110
-# z 	з	U+0437	D0 B7	11010000 10110111
-# i 	и	U+0438	D0 B8	11010000 10111000
-# y 	й	U+0439	D0 B9	11010000 10111001
-# k 	к	U+043A	D0 BA	11010000 10111010
-# l 	л	U+043B	D0 BB	11010000 10111011
-# m 	м	U+043C	D0 BC	11010000 10111100
-# n 	н	U+043D	D0 BD	11010000 10111101
-# o 	о	U+043E	D0 BE	11010000 10111110
-# p 	п	U+043F	D0 BF	11010000 10111111
-# r 	р	U+0440	D1 80	11010001 10000000
-# s 	с	U+0441	D1 81	11010001 10000001
-# t 	т	U+0442	D1 82	11010001 10000010
-# u 	у	U+0443	D1 83	11010001 10000011
-# f 	ф	U+0444	D1 84	11010001 10000100
-# kh	х	U+0445	D1 85	11010001 10000101
-# ts	ц	U+0446	D1 86	11010001 10000110
-# ch	ч	U+0447	D1 87	11010001 10000111
-# sh	ш	U+0448	D1 88	11010001 10001000
-# shch	щ	U+0449	D1 89	11010001 10001001
-# hard sign	ъ	U+044A	D1 8A	11010001 10001010
-# y (with hook)	ы	U+044B	D1 8B	11010001 10001011
-# soft sign	ь	U+044C	D1 8C	11010001 10001100
-# e 	э	U+044D	D1 8D	11010001 10001101
-# yu	ю	U+044E	D1 8E	11010001 10001110
-# ya	я	U+044F	D1 8F	11010001 10001111
+# # See auto_ZONA\utils\cyrillic_unicode.py
+# # Regular expression for Cyrillic bytes (Russian + Specific + Ukrainian pattern)
+# CYRILLIC_BYTES = {}
+# # Specific Cyrillic bytes
+# SPECIFIC_CYRILLIC_BYTES_VR = rb''
+# # Latin punctuation bytes
+# LATIN_PUNCTUATION_BYTES = {}
+# # Regular expression for Cyrillic characters (Russian + Specific + Ukrainian pattern) and Latin punctuation
+# CYRILLIC_PATTERN = rb''  # See initialization in main() rigth after arguments parsing
 
 String = namedtuple("String", ["s", "offset", "binary_length", "ascii_length"])
 
@@ -324,138 +254,25 @@ CUSTOM_TARGET_STOPWORDS = {
     "pl": [ 'a', 'ale', 'by', 'c', 'co', 'd', 'da', 'dla', 'do', 'i', 'jak', 'je', 'jeden', 'jedna', 'kiedy', 'ktory', 'moze', 'na', 'ni', 'o', 'od', 'ona', 'oni', 'po', 'pomiedzy', 'przeciwko', 'przed', 'przy', 'sa', 'si', 'tak', 'to', 'tryb', 'tu', 'w', 'wszystko', 'z', 'za' ]
 }
 
-RESTORE_SPECIFIC_WORDS = {
-    "cs": [
-        { "from": "tracker", "to": "Stalker", "case_sensitive": False },
-        { "from": "psi", "to": "Psych", "case_sensitive": False }
-    ],
-    "da": [],
-    "de": [
-        { "from": "tracker", "to": "Stalker", "case_sensitive": False }
-    ],
-    "en": [
-        { "from": "tracker", "to": "Stalker", "case_sensitive": False },
-        { "from": "SOLE DEVELOPER", "to": "THE INDEPENDANT SOLO DEVELOPER OF", "case_sensitive": False },  # Origin / Ukrainian + Russian / level1
-        { "from": "smaller video cards.", "to": "weaker video cards.", "case_sensitive": False },  # Origin / Ukrainian + Russian / level1 
-        { "from": "video cards.", "to": "video cards.  (TRANSLATION BY PEURKE)", "case_sensitive": False },  # Origin / Ukrainian + Russian / level1 
-        { "from": "grey-haired", "to": "Sedoy", "case_sensitive": False },
-        { "from": "grey", "to": "Sedoy", "case_sensitive": False },  # Origin / Ukrainian + Russian
-        { "from": "gray", "to": "Sedoy", "case_sensitive": False },  # Origin / Ukrainian + Russian
-        { "from": "sedoi", "to": "Sedoy", "case_sensitive": False },  # Origin / Ukrainian + Russian
-        { "from": "free stalker", "to": "Free Stalker", "case_sensitive": False },
-        { "from": "Judgment Day", "to": "Doomsday", "case_sensitive": False },
-        { "from": "Day of Judgment", "to": "Doomsday", "case_sensitive": False },
-        { "from": "bandit ", "to": "Bandits ", "case_sensitive": False },
-        { "from": "bandits", "to": "Bandits", "case_sensitive": True },
-        { "from": "special forces", "to": "AFU Special Forces", "case_sensitive": False },
-        { "from": "Crow", "to": "Raven", "case_sensitive": True },
-        { "from": "Vorone", "to": "Raven", "case_sensitive": True },
-        { "from": "refugees", "to": "Shelters", "case_sensitive": False },  # Origin / Ukrainian + Russian / level11
-        { "from": "refuge", "to": "Shelter", "case_sensitive": False },  # Origin / Ukrainian + Russian / level11
-        { "from": "asylum", "to": "Shelter", "case_sensitive": False },  # Origin / Ukrainian + Russian / level11
-        { "from": "goal. menu", "to": "Back to menu", "case_sensitive": False },
-        { "from": "golovne menu ", "to": "Back to menu", "case_sensitive": False },
-        { "from": "Entree", "to": "Quitter", "case_sensitive": True },  # Origin / Ukrainian
-        { "from": "Yes, Exodus", "to": "Yes, Quit", "case_sensitive": True },  # Origin / Ukrainian
-        { "from": "Economy", "to": "Low", "case_sensitive": True },  # Origin / Ukrainian / level11
-        { "from": "Download", "to": "Load", "case_sensitive": True },  # Origin / Ukrainian
-        { "from": "a case for you", "to": "a deal for you", "case_sensitive": False },  # Origin / Ukrainian
-        { "from": "Military dormitory", "to": "Militaire Town", "case_sensitive": True },  # Origin / Ukrainian / level11
-        { "from": "Topp village", "to": "Marshes of the village", "case_sensitive": True },  # Origin / Ukrainian / level11
-        { "from": "Neglected", "to": "Abandoned", "case_sensitive": True }
-    ],
-    "es": [
-        { "from": "acosador", "to": "Stalker", "case_sensitive": False },
-        { "from": "rastreador", "to": "Stalker", "case_sensitive": False }
-    ],
-    "fr": [
-        { "from": "UNIQUE DEVELOPPEUR", "to": "LE DEVELOPPEUR INDEPENDANT DE", "case_sensitive": False },  # Origin / Ukrainian + Russian / level1
-        { "from": "rejoignez-nous", "to": ", rejoignez notre", "case_sensitive": False },  # Origin / Ukrainian + Russian / level1 
-        { "from": "les cartes video", "to": "les cartes graphiques", "case_sensitive": False },  # Origin / Ukrainian + Russian / level1 
-        { "from": "des cartes graphiques moins puissantes", "to": "les cartes graphiques les plus faibles", "case_sensitive": False },  # Origin / Ukrainian + Russian / level1 
-        { "from": "graphiques les plus faibles", "to": "graphiques les plus faibles.  (TRADUCTION PAR PEURKE)", "case_sensitive": False },  # Origin / Ukrainian + Russian / level1 
-        { "from": "hz en", "to": "Hz dans", "case_sensitive": False },  # Origin / Ukrainian + Russian / level1 
-        { "from": "Nouveau venu", "to": "Debutant", "case_sensitive": False },  # Origin / Ukrainian + Russian
-        { "from": "creneaux", "to": "emplacements", "case_sensitive": False },  # Origin / Ukrainian + Russian
-        { "from": "preservation", "to": "Sauvegarde", "case_sensitive": False },  # Origin / Ukrainian + Russian
-        { "from": "cheveux gris", "to": "Sedoy", "case_sensitive": False },
-        { "from": "grey", "to": "Sedoy", "case_sensitive": False },  # Origin / Ukrainian + Russian
-        { "from": "gray", "to": "Sedoy", "case_sensitive": False },  # Origin / Ukrainian + Russian
-        { "from": "sedoi", "to": "Sedoy", "case_sensitive": False },  # Origin / Ukrainian + Russian
-        { "from": "harceleur", "to": "Stalker", "case_sensitive": False },
-        { "from": "traqueur", "to": "Stalker", "case_sensitive": False },
-        { "from": "stalkers gratuits", "to": "Free Stalkers", "case_sensitive": False },
-        { "from": "stalkers libres", "to": "Free Stalkers", "case_sensitive": False },
-        { "from": "jour du jugement", "to": "Doomsday", "case_sensitive": False },
-        { "from": "jour du jugement dernier", "to": "Doomsday", "case_sensitive": False },
-        { "from": "greve", "to": "Strike", "case_sensitive": False },
-        { "from": "frapper", "to": "Strike", "case_sensitive": False },
-        { "from": "frappe de base", "to": "Base des Strike", "case_sensitive": False },
-        { "from": "base de frappe", "to": "base des Strike", "case_sensitive": False },
-        { "from": "bandits", "to": "Bandits", "case_sensitive": False },
-        { "from": "forces speciales", "to": "Forces Speciales AFU", "case_sensitive": False },
-        { "from": "ihor", "to": "IGOR", "case_sensitive": False },
-        { "from": "corbeau", "to": "Raven", "case_sensitive": False },
-        { "from": "voron", "to": "Raven", "case_sensitive": False },
-        { "from": "abri", "to": "Shelter", "case_sensitive": False },  # Origin / Ukrainian + Russian / level11
-        { "from": "refuge", "to": "Shelter", "case_sensitive": False },  # Origin / Ukrainian + Russian / level11
-        { "from": "asile", "to": "Shelter", "case_sensitive": False },  # Origin / Ukrainian + Russian / level11
-        { "from": "de shelter", "to": "du Shelter", "case_sensitive": False },  # Origin / Ukrainian + Russian / level11
-        { "from": "but. menu", "to": "Retour", "case_sensitive": False },
-        { "from": "plus loin", "to": "Suivant", "case_sensitive": False },
-        { "from": "le bon controleur", "to": "Le controleur droit", "case_sensitive": False },
-        { "from": "œ", "to": "oe", "case_sensitive": False },
-        { "from": "comme 'val'", "to": "AS 'Val'", "case_sensitive": False },
-        { "from": "comme \"val\"", "to": "AS 'Val'", "case_sensitive": False },
-        { "from": "Entree", "to": "Quitter", "case_sensitive": True },  # Origin / Ukrainian
-        { "from": "l'Exode", "to": "quitter", "case_sensitive": True },  # Origin / Ukrainian
-        { "from": "Exode", "to": "Quitter", "case_sensitive": True },  # Origin / Ukrainian
-        { "from": "Economie", "to": "Faible", "case_sensitive": True },  # Origin / Ukrainian / level11
-        { "from": "Tache", "to": "Quete", "case_sensitive": True },  # Origin / Ukrainian
-        { "from": "Retirer", "to": "supprimer", "case_sensitive": True },  # Origin / Ukrainian
-        { "from": "Telecharger", "to": "charger", "case_sensitive": True },  # Origin / Ukrainian
-        { "from": "un cas pour toi", "to": "une offre pour toi", "case_sensitive": False },  # Origin / Ukrainian
-        { "from": "une chose pour toi", "to": "une offre pour toi", "case_sensitive": True },  # Origin / Russian
-        { "from": "Forgotten Warehouse", "to": "Entrepot oublie", "case_sensitive": True },  # Origin / Ukrainian / level11
-        { "from": "Cantonnement", "to": "Ville militaire", "case_sensitive": True },  # Origin / Ukrainian / level11
-        { "from": "Gage", "to": "Avant-poste", "case_sensitive": True },  # Origin / Ukrainian / level11
-        { "from": "Village Topp", "to": "Marais du village", "case_sensitive": True },  # Origin / Ukrainian / level11
-        { "from": "a mange", "to": "ite", "case_sensitive": True },  # Origin / Russian / level11 / 'Cело' with a latin 'C' = Village Russian / 'ело' = a mangé / 'Cело' = 'Ca mang' => Cite 
-        { "from": "sont les ames des stalkers morts,", "to": "sont les ames des stalkers morts venues hanter Le Cameleons,", "case_sensitive": False } # Easter Egg Le Cameleons!
-    ],
-    "fi": [],
-    "hu": [],
-    "it": [
-        { "from": "tracker", "to": "Stalker", "case_sensitive": False }
-    ],
-    "nl": [],
-    "pl": [
-        { "from": "tracker", "to": "Stalker", "case_sensitive": False }
-    ],
-    "pt": [],
-    "ro": [
-        { "from": "urmaritor", "to": "Stalker", "case_sensitive": False },
-        { "from": "tracker", "to": "Stalker", "case_sensitive": False }
-    ],
-    "sv": [],
-    "all": [
-        { "from": "pripiat", "to": "Prypiat", "case_sensitive": False },  # Origin / Ukrainian + Russian / level11
-        { "from": "  ", "to": " ", "case_sensitive": False },
-        { "from": " # ", "to": "#", "case_sensitive": False },
-        { "from": " :", "to": ": ", "case_sensitive": False },
-        { "from": " ,", "to": ",", "case_sensitive": False },
-        { "from": " .", "to": ".", "case_sensitive": False },
-        { "from": " !", "to": "!", "case_sensitive": False },
-        { "from": " ?", "to": "?", "case_sensitive": False },
-        { "from": " ’’ ", "to": " ", "case_sensitive": False },
-        { "from": "’’", "to": "'", "case_sensitive": False },
-        { "from": " ’ ", "to": " ", "case_sensitive": False },
-        { "from": " ' ", "to": " ", "case_sensitive": False },
-        { "from": "’", "to": "'", "case_sensitive": False },
-    ]
-}
+# # See auto_ZONA\utils\specific_words.py
+# # WORDS AND SENTENCES TO RESTORE AFTER TRANSLATION
+# RESTORE_SPECIFIC_WORDS = {}
 
+# Initialize global 'i_debug' flag to False
 i_debug = False
+
+
+def ascii_strings_version(buf):
+    for reg in DEFAULT_ZONA_VERSION_REGEX:
+        ascii_re = re.compile(reg)
+        for match in ascii_re.finditer(buf):
+            ascii_string = match.group().decode("ascii")
+            ascii_length = len(ascii_string)
+            ascii_address = match.start()
+            printc(f" {DEFAULT_ZONA_GAME_NAME}:{DEFAULT_ZONA_DIR_NAME}:{DEFAULT_ZONA_DATA_DIR_NAME}:{DEFAULT_ZONA_GLOBAL_GM}:0x{ascii_address:x} (v{ascii_string}) \n", bcolors.NOTIF)
+            yield String(ascii_string, ascii_address, 0, ascii_length)
+            # Only the first one
+            break
 
 
 def get_current_version(file_ggm):
@@ -466,24 +283,13 @@ def get_current_version(file_ggm):
         # Search for first '0.0NN' version pattern
         for version in ascii_strings_version(b):
             current_version_patch = version.s
+            if current_version_patch is not None:
+                break
     if current_version_patch is None:
-        printc(f" No '0.0NN' version patch found in '{file_ggm}' binary file.\n", bcolors.FAIL)
+        printc(f" No valid version patch found in '{file_ggm}' binary file.\n", bcolors.FAIL)
         inputc(f" Press Enter to exit...\n", bcolors.ASK)
         sys.exit(-1)
     return current_version_patch
-
-
-def ascii_strings_version(buf):
-    reg = DEFAULT_ZONA_VERSION_REGEX
-    ascii_re = re.compile(reg)
-    for match in ascii_re.finditer(buf):
-        ascii_string = match.group().decode("ascii")
-        ascii_length = len(ascii_string)
-        ascii_address = match.start()
-        printc(f" {DEFAULT_ZONA_GAME_NAME}:{DEFAULT_ZONA_DIR_NAME}:{DEFAULT_ZONA_DATA_DIR_NAME}:{DEFAULT_ZONA_GLOBAL_GM}:0x{ascii_address:x} (v{ascii_string}) \n", bcolors.NOTIF)
-        yield String(ascii_string, ascii_address, 0, ascii_length)
-        # Only the first one
-        break
 
 
 def get_config(var):
@@ -590,13 +396,19 @@ def remove_specials(text):
 def replace_accents(text):
     # text = unicodedata.normalize('NFKD', text)
     # return "".join([c for c in text if not unicodedata.combining(c)])
-    return unidecode(text)
+    # return unidecode(text)
+    
+    # Decompose the string into characters and diacritics
+    nfkd_form = unicodedata_normalize('NFKD', text)
+    # Filter out diacritic marks (category 'Mn') and recompose the string
+    return ''.join(char for char in nfkd_form if not unicodedata_category(char).startswith('M'))
 
 
 def restore_translated_words(text, lang='uk'):
     # # FOR TESTING PURPOSES ONLY
     # text_save = text
-    for restore_word in RESTORE_SPECIFIC_WORDS[lang]:
+    restore_words = RESTORE_SPECIFIC_WORDS.get(DEFAULT_ZONA_DIR_NAME.upper(), []).get(lang, [])
+    for restore_word in restore_words:
         # # CASE SENSITIVE
         # pattern = re.compile(re.escape(restore_word['from']), re.IGNORECASE)
         # text = pattern.sub(restore_word['to'], text)
@@ -717,11 +529,14 @@ def backup_files(version):
     if i_debug:
         printc(f" • [Create backup in '{backup_dir}/' directory] ...\n", bcolors.INFO)
 
-    os_makedirs(backup_dir)
+    if not os_path.exists(backup_dir):
+        os_makedirs(backup_dir)
+
     # All 'levelNN' original files
     files_to_copy = [os_path.join(DEFAULT_ZONA_DATA_DIR, f) for f in os_listdir(DEFAULT_ZONA_DATA_DIR) if f.startswith('level') and not f.endswith('.resS')]
     # Unique 'resources.assets' original file
-    files_to_copy.append(f"{DEFAULT_ZONA_DATA_DIR}/resources.assets")
+    if DEFAULT_ZONA_DIR_NAME.upper() in DEFAULT_ZONA_TRANSLATE_RESOURCES_ASSETS_FILE:
+        files_to_copy.append(f"{DEFAULT_ZONA_DATA_DIR}/resources.assets")
     
     # Copy all original files in backup directory
     for file in files_to_copy:
@@ -730,13 +545,21 @@ def backup_files(version):
         if validation_original_data_files(file):
             shutil.copy2(file, backup_file)
         else:
-            # # Remove backup directory to force recreation at next launch
-            # os_rmdir(backup_dir)
+            try:
+                # Remove backup directory to force recreation at next launch
+                for file_name in os_listdir(backup_dir):
+                    file_path = os_path.join(backup_dir, file_name)
+                    if os_path.isfile(file_path):
+                        os_remove(file_path)
+                os_rmdir(backup_dir)
+            except Exception as e:
+                raise RuntimeError(f"Function '{currentframe().f_code.co_name}': God! invalid '{backup_dir}' cannot be deleted.\n")
 
-            # Rename directory name with date and time appended (Don't remove because directory can contains files)
-            current_time = datetime.now().strftime('%Y%m%d-%H%M%S')
-            os_rename(backup_dir, f"{backup_dir}_{current_time}")
-            raise RuntimeError(f"Function '{currentframe().f_code.co_name}': Humm! '{DEFAULT_ZONA_DATA_DIR}' are not original files\n Use the Steam 'Check integrity of game files' button located in 'Installed files' tab in the {DEFAULT_ZONA_GAME_NAME}'s game properties to restore original data files.\n")
+            # # Rename directory name with date and time appended (Don't remove because directory can contains files)
+            # current_time = datetime.now().strftime('%Y%m%d-%H%M%S')
+            # os_rename(backup_dir, f"{backup_dir}_{current_time}")
+
+            return False
 
     if i_debug:
         printc(f" • [Create backup in '{backup_dir}/' directory] OK\n", bcolors.OK)
@@ -817,11 +640,11 @@ def create_restore_shortcut():
     return shortcut_name
 
 
-def printc(msg, c=None):
+def printc(msg, c=None, end='\n'):
     if not c:
-        print(msg)
+        print(msg, end=end)
     else:
-        print(f"{c}{msg}{bcolors.ENDC}")
+        print(f"{c}{msg}{bcolors.ENDC}", end=end)
 
     # Open the log file in 'append' mode
     with open(DEFAULT_ZONA_TRANSLATE_LOG_FILE, 'a') as f:
@@ -852,11 +675,87 @@ def extract_cyrillic_sequences(buf, min_size=2, start_from=0):
             )
 
 
+# Function to get the current timestamp in YYYY-MM-DD HH:MM:SS format
+def get_current_timestamp():
+    return datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+
+
+# Function to execute the Steam integrity check in the background
+def verify_steam_game_integrity(app_id):
+    # command = f'{steam_path} -applaunch {app_id} validate'  # Command to launch the integrity check
+    command = f"\"C:\\Program Files (x86)\\Steam\\steam.exe\" -silent steam://validate/{app_id}"  # Command to launch the integrity check
+    
+    # Run the command in the background
+    process = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    return process
+
+
+# Function to read the log file and check if the "Fully Installed" status is found
+def check_log_for_integrity_verification(log_file, app_id, last_check_timestamp):
+    # Regular expression pattern to find lines with the timestamp and "Fully Installed" status
+    pattern = r'^\[(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2})\] AppID (\d+) state changed : Fully Installed,$'
+    
+    # Open the log file and read each line
+    with open(log_file, 'r', encoding='utf-8') as file:
+        for line in file:
+            # Search for matching lines using the pattern
+            match = re.match(pattern, line.strip())
+            if match:
+                timestamp_str = match.group(1)  # Extract timestamp from the line
+                app_id_found = match.group(2)  # Extract AppID (optional if needed)
+                
+                # Convert the timestamp from the log to a datetime object for comparison
+                log_timestamp = datetime.strptime(timestamp_str, '%Y-%m-%d %H:%M:%S')
+                last_check_time = datetime.strptime(last_check_timestamp, '%Y-%m-%d %H:%M:%S')
+                
+                # print(f"if ({app_id_found} == {app_id}) and ({log_timestamp} > {last_check_time}) ?")
+                # Check if app_id is le good one AND the log timestamp is later than the timestamp of the integrity check
+                if (str(app_id_found) == str(app_id)) and (log_timestamp > last_check_time):
+                    return True
+    return False
+
+
+def validate_steam_game_and_wait(app_id, steam_log_path=r'C:\Program Files (x86)\Steam\logs\content_log.txt'):
+    """
+    Validates the integrity of a Steam game's files using its app ID.
+    """
+    # App ID negative is not Steam game (see 'DEFAULT_ZONA_GAME_ID' variables)
+    if app_id < 0:
+        return False
+    else:
+        # Get the timestamp before starting the integrity check
+        start_timestamp = get_current_timestamp()
+        # Run the integrity check in the background
+        process = verify_steam_game_integrity(app_id)
+        
+        # Periodically check the logs while the integrity check continues in the background
+        while process.poll() is None:  # While the process is still running
+            time_sleep(5)  # Wait for 5 seconds before checking the logs again
+        
+        # Once the verification is complete, check the logs for the "Fully Installed" status
+        while not check_log_for_integrity_verification(steam_log_path, app_id, start_timestamp):
+            time_sleep(5)  # Wait for 5 seconds before checking the logs again
+        
+        # Minimize all open Steam windows
+        # Retrieve all open windows containing "Steam" in their title
+        steam_windows = [window for window in gw.getAllWindows() if 'Steam' in window.title]
+        # Minimize each Steam window
+        for window in steam_windows:
+            window.minimize()
+
+        printc(f" • [Validate '{DEFAULT_ZONA_GAME_NAME}' (app ID '{app_id}') files integrity from Steam console. Monitoring logs] OK\n", bcolors.OK)
+        return True
+        
+        # printc(f" • [Validate '{DEFAULT_ZONA_GAME_NAME}' (app ID '{app_id}') files integrity from Steam console. Monitoring logs] Failed\n", bcolors.FAIL)
+        # return False
+        
+
 def main():
     # Set CYRILLIC_PATTERN as global variable
     global CYRILLIC_PATTERN
     # Set default global variables
     global DEFAULT_ZONA_EXE_FILENAME
+    global DEFAULT_ZONA_GAME_ID
     global DEFAULT_ZONA_GAME_NAME
     global DEFAULT_ZONA_DIR_NAME
     global DEFAULT_ZONA_DIR_EXAMPLE
@@ -882,25 +781,50 @@ def main():
 
         # Check current working directory is valid
         DEFAULT_ZONA_EXE_FILENAME = None
-        for game_exec in DEFAULT_ZONA_FILENAME_LIST:
+        for game_exec in DEFAULT_ZONA_EXE_FILENAME_LIST:
             if os_path.exists(game_exec):
-                if game_exec == 'ZONAORIGIN.exe':
-                    DEFAULT_ZONA_EXE_FILENAME = game_exec
+                # Set specific game global variables
+                if game_exec == 'Paradox of Hope.exe':
+                    DEFAULT_ZONA_GAME_ID = -1
+                    DEFAULT_ZONA_GAME_NAME = 'Paradox of Hope'
+                    DEFAULT_ZONA_DIR_NAME = 'Paradox of Hope'
+                    DEFAULT_ZONA_DATA_DIR_NAME = 'Paradox of Hope_Data'
+                    DEFAULT_ZONA_VERSION_REGEX = [ rb'(0\.4\.[0-9])' ] # No update because game is not available anymore
+                    DEFAULT_ZONA_TRANSLATE_LANG_SRC = 'uk'
+                    DEFAULT_ZONA_TRANSLATE_LANG_SRC_FORCE = True
+                elif game_exec == 'CONVRGENCE.exe':
+                    DEFAULT_ZONA_GAME_ID = 2609610  # https://store.steampowered.com/app/2609610/CONVRGENCE/
+                    DEFAULT_ZONA_GAME_NAME = 'CONVRGENCE'
+                    DEFAULT_ZONA_DIR_NAME = 'CONVRGENCE'
+                    DEFAULT_ZONA_DATA_DIR_NAME = 'CONVRGENCE_Data'
+                    DEFAULT_ZONA_VERSION_REGEX = [ rb'([0-1]\.[0-9]\.[0-9]\.[0-9])', rb'([0-1]\.[0-9]\.[0-9])' ] # Update when game will be v2.x.x.x
+                    DEFAULT_ZONA_TRANSLATE_LANG_SRC = 'uk'
+                    DEFAULT_ZONA_TRANSLATE_LANG_SRC_FORCE = True
+                elif game_exec == 'ZONA.exe':
+                    DEFAULT_ZONA_GAME_ID = 2142450  # https://store.steampowered.com/app/2142450/ZONA_Project_X_VR/
+                    DEFAULT_ZONA_GAME_NAME = 'Z.O.N.A Project X'
+                    DEFAULT_ZONA_DIR_NAME = 'ZONA'
+                    DEFAULT_ZONA_DATA_DIR_NAME = 'ZONA_Data'
+                    DEFAULT_ZONA_VERSION_REGEX = [ rb'(1\.0[0-9]\.[0-9][0-9])' ] # Update when game will be v2.xx.x.x
+                    DEFAULT_ZONA_TRANSLATE_LANG_SRC = 'uk'
+                    DEFAULT_ZONA_TRANSLATE_LANG_SRC_FORCE = False
+                elif game_exec == 'ZONAORIGIN.exe':
+                    DEFAULT_ZONA_GAME_ID = 2539520  # https://store.steampowered.com/app/2539520/ZONA_Origin/
                     DEFAULT_ZONA_GAME_NAME = 'Z.O.N.A Origin'
                     DEFAULT_ZONA_DIR_NAME = 'ZONAORIGIN'
-                    DEFAULT_ZONA_DIR_EXAMPLE = f"C:\\SteamLibrary\\steamapps\\common\\{DEFAULT_ZONA_DIR_NAME}"
                     DEFAULT_ZONA_DATA_DIR_NAME = 'ZONAORIGIN_Data'
-                    DEFAULT_ZONA_DATA_DIR = f"./{DEFAULT_ZONA_DATA_DIR_NAME}"
-                    DEFAULT_ZONA_GLOBAL_GM = 'globalgamemanagers'
-                    DEFAULT_ZONA_GLOBAL_GM_DIR = f"{DEFAULT_ZONA_DATA_DIR}/{DEFAULT_ZONA_GLOBAL_GM}"
-                    DEFAULT_ZONA_VERSION_REGEX = rb'(0\.0[0-9][0-9])'
+                    DEFAULT_ZONA_VERSION_REGEX = [ rb'([0-1]\.0[0-9][0-9])' ] # Update when game will be v2.xxx
                     DEFAULT_ZONA_TRANSLATE_LANG_SRC = 'uk'
-                elif game_exec == 'ZONA.exe':
-                    DEFAULT_ZONA_EXE_FILENAME = game_exec
-                    DEFAULT_ZONA_GLOBAL_GM_DIR = f"{DEFAULT_ZONA_DATA_DIR}/{DEFAULT_ZONA_GLOBAL_GM}"
+                    DEFAULT_ZONA_TRANSLATE_LANG_SRC_FORCE = False
+                # Set common global variables
+                DEFAULT_ZONA_EXE_FILENAME = game_exec
+                DEFAULT_ZONA_DIR_EXAMPLE = f"C:\\SteamLibrary\\steamapps\\common\\{DEFAULT_ZONA_DIR_NAME}"
+                DEFAULT_ZONA_DATA_DIR = f"./{DEFAULT_ZONA_DATA_DIR_NAME}"
+                DEFAULT_ZONA_GLOBAL_GM = 'globalgamemanagers'
+                DEFAULT_ZONA_GLOBAL_GM_DIR = f"{DEFAULT_ZONA_DATA_DIR}/{DEFAULT_ZONA_GLOBAL_GM}"
 
         if not DEFAULT_ZONA_EXE_FILENAME:
-            raise RuntimeError(f"Function '{currentframe().f_code.co_name}': Heck! The script is not where it should be. Move this script in one of the same directory as the {'\' or \''.join(DEFAULT_ZONA_FILENAME_LIST)}' executable files (Example: usually in the '{DEFAULT_ZONA_DIR_EXAMPLE}' directory). Then run this moved script again ;)\n")
+            raise RuntimeError(f"Function '{currentframe().f_code.co_name}': Heck! The script is not where it should be. Move this script in one of the same directory as the {'\' or \''.join(DEFAULT_ZONA_EXE_FILENAME_LIST)}' executable files (Example: usually in the '{DEFAULT_ZONA_DIR_EXAMPLE}' directory). Then run this moved script again ;)\n")
 
         # Get game current version
         current_version_patch = get_current_version(DEFAULT_ZONA_GLOBAL_GM_DIR)
@@ -974,10 +898,11 @@ def main():
                     restore_files(version=restore_version)
                     printc(f" • [Restore original files] OK\n", bcolors.OK)
             else:
-                printc(f" • [Restore all binary files impossible because there is no backup for '{restore_version}' version] Failed\n", bcolors.FAIL)
-                printc(f" Tip: Use the Steam 'Check integrity of game files' button located in 'Installed files' tab in the {DEFAULT_ZONA_GAME_NAME}'s game properties to restore original binary files.\n", bcolors.INFO)
-                inputc(f" Press Enter to exit...\n", bcolors.ASK)
-                sys.exit(-1)
+                if not validate_steam_game_and_wait(DEFAULT_ZONA_GAME_ID):
+                    printc(f" • [Restore all binary files impossible because there is no valid backup for '{restore_version}' version] Failed\n", bcolors.FAIL)
+                    printc(f" Tip: Use the Steam 'Check integrity of game files' button located in 'Installed files' tab in the {DEFAULT_ZONA_GAME_NAME}'s game properties to restore original binary files.\n", bcolors.INFO)
+                    inputc(f" Press Enter to exit...\n", bcolors.ASK)
+                    sys.exit(-1)
 
         # TRANSLATE
         else:
@@ -1013,21 +938,30 @@ def main():
                         # # # END FOR TESTING PURPOSES ONLY
             # GUI execution requiert 'i_lang_src'
             # Write new preferred source lang in config file (only if 'i_lang_src' is not 'empty')
-            if i_lang_src not in ['empty']:
+
+            # Does the game has only one source language ?
+            if DEFAULT_ZONA_TRANSLATE_LANG_SRC_FORCE:
+                # Force the only one source language (Ukrainian OR Russian)
+                i_lang_src = DEFAULT_ZONA_TRANSLATE_LANG_SRC
                 set_config('i_lang_src', i_lang_src)
-            if i_lang_src == 'empty':
-                # Get source language from config file
-                i_lang = get_config('i_lang_src')
-                if not i_lang:
-                    printc(f" • [Get 'i_lang_src' from '{DEFAULT_ZONA_TRANSLATE_CFG_FILE}'] Not found\n", bcolors.WARN)
-                    i_lang = ''
-                    printc(ALL_SUPPORTED_SOURCE_LANGS_DESCRIPTION, bcolors.INFO)
-                    while i_lang not in ALL_SUPPORTED_SOURCE_LANGS:
-                        i_lang = str(inputc(f" Language to translate from (specify the 2-letter language code): ", bcolors.ASK)).lower().strip()
-                    print()
-                # Set new preferred source lang 'i_lang_src'
-                i_lang_src = i_lang
-                set_config('i_lang_src', i_lang_src)
+                printc(f" • ['{DEFAULT_ZONA_GAME_NAME}' offers only one source language. Force source language to '{DEFAULT_ZONA_TRANSLATE_LANG_SRC}'] OK\n", bcolors.WARN)
+            else:
+                # Game has multiple source languages (Ukrainian AND Russian)
+                if i_lang_src not in ['empty']:
+                    set_config('i_lang_src', i_lang_src)
+                if i_lang_src == 'empty':
+                    # Get source language from config file
+                    i_lang = get_config('i_lang_src')
+                    if not i_lang:
+                        printc(f" • [Get 'i_lang_src' from '{DEFAULT_ZONA_TRANSLATE_CFG_FILE}'] Not found\n", bcolors.WARN)
+                        i_lang = ''
+                        printc(ALL_SUPPORTED_SOURCE_LANGS_DESCRIPTION, bcolors.INFO)
+                        while i_lang not in ALL_SUPPORTED_SOURCE_LANGS:
+                            i_lang = str(inputc(f" Language to translate from (specify the 2-letter language code): ", bcolors.ASK)).lower().strip()
+                        print()
+                    # Set new preferred source lang 'i_lang_src'
+                    i_lang_src = i_lang
+                    set_config('i_lang_src', i_lang_src)
             # GUI execution requiert only one unique 'i_lang' in 'i_langs' destination list
             # Write new preferred lang in config file (only if 'i_langs' is not ['all'] or ['empty'])
             if i_langs not in [['all'], ['empty']]:
@@ -1054,8 +988,10 @@ def main():
             # CYRILLIC_PATTERN = rb'(\xD0[\x90-\xBF]|\xD1[\x80-\x8F]|\x0a|\x20|\x21|\x22|\x27|\x28|\x29|\x2B|\x2C|\x2D|\x2E|\x2F|\x5C|\x5F)'
             # CYRILLIC_PATTERN = rb'(\xE2\x80\x94|\xD0[\x81\x86-\xBF]|\xD1[\x80-\x8F]|\xD2[\x90-\x91]|\xD2[\x84\x94]|\xD1\x96|\xD0[\x90-\xAF]|\x0a|\x20|\x21|\x22|\x27|\x28|\x29|\x2B|\x2C|\x2D|\x2E|\x2F|\x3A|\x3F\x5C|\x5F)'  # Regular expression for Cyrillic characters + CRLF + Latin punctuation
             # CYRILLIC_PATTERN = rb'(\x56\x52\x3F\x20|\xE2\x80\x94|'+ CYRILLIC_BYTES + rb'|\x0a|\x20|\x21|\x22|\x27|\x28|\x29|\x2B|\x2C|\x2D|\x2E|\x2F|\x3A|\x3F|\x5C|\x5F)'  # Regular expression for Cyrillic characters + CRLF + Latin punctuation
-            # CYRILLIC_PATTERN = rb'(' + SPECIFIC_CYRILLIC_BYTES_VR + rb'|' + CYRILLIC_BYTES[DEFAULT_ZONA_TRANSLATE_LANG_SRC] + rb'|' + LATIN_PUNCTUATION_BYTES + rb')'  # Regular expression for Cyrillic characters + CRLF + Latin punctuation
-            CYRILLIC_PATTERN = rb'(' + SPECIFIC_CYRILLIC_BYTES_VR + rb'|' + CYRILLIC_BYTES[i_lang_src] + rb'|' + LATIN_PUNCTUATION_BYTES + rb')'  # Regular expression for Cyrillic characters + CRLF + Latin punctuation
+            CYRILLIC_PATTERN = rb'(' + SPECIFIC_CYRILLIC_BYTES_VR + \
+                               rb'|' + CYRILLIC_BYTES[i_lang_src] + \
+                               rb'|' + LATIN_PUNCTUATION_BYTES[DEFAULT_ZONA_DIR_NAME.upper()] + \
+                               rb')'  # Regular expression for Cyrillic characters + CRLF + Latin punctuation
 
             # Save 'i_min_size' for 'resources.assets'
             i_min_size_saved = i_min_size
@@ -1063,7 +999,9 @@ def main():
             # Default 'i_files'
             if i_files == ['empty']:
                 i_files = [f for f in os_listdir(DEFAULT_ZONA_DATA_DIR) if f.startswith('level') and not f.endswith('.resS')]
-                i_files.append('resources.assets')
+                # Unique 'resources.assets' original file
+                if DEFAULT_ZONA_DIR_NAME.upper() in DEFAULT_ZONA_TRANSLATE_RESOURCES_ASSETS_FILE:
+                    i_files.append('resources.assets')
 
             print()
             print(f" /// PARAMETERS:\n")
@@ -1128,8 +1066,16 @@ def main():
                 else:
                     # Remove empty 'backup_dir' file
                     os_remove(backup_dir)
+            # Execute backup
             if backup_need:
-                backup_files(current_version_patch)
+                # Does backup has failed ?
+                if not backup_files(current_version_patch):
+                    # Attempt to validate Steam game
+                    if validate_steam_game_and_wait(DEFAULT_ZONA_GAME_ID):
+                        # Does validate Steam game succeed ?
+                        backup_files(current_version_patch)
+                    else:
+                        raise RuntimeError(f"Function '{currentframe().f_code.co_name}': Humm! '{DEFAULT_ZONA_DATA_DIR}' are not original files\n Use the Steam 'Check integrity of game files' button located in 'Installed files' tab in the {DEFAULT_ZONA_GAME_NAME}'s game properties to restore original data files.\n")
                 printc(f" • [Backup in '{backup_dir}/' directory] OK\n", bcolors.OK)
             
             # TESTING PURPOSE ONLY
@@ -1146,7 +1092,10 @@ def main():
             for i_lang in i_langs:
 
                 # Create or get existing DB for translation
-                db = DBManager(db_name=f"{DEFAULT_ZONA_TRANSLATE_DB_DIR}/{DEFAULT_ZONA_TRANSLATE_DB_NAME[DEFAULT_ZONA_DIR_NAME.lower()]}_{i_lang.lower()}{DEFAULT_ZONA_TRANSLATE_DB_EXTENTION}")
+                # db_file format is '{DB_DIR}/{GAME_NAME}_{i_lang}.db'
+                db_file = f"{DEFAULT_ZONA_TRANSLATE_DB_DIR}/{DEFAULT_ZONA_TRANSLATE_DB_NAME[DEFAULT_ZONA_DIR_NAME.upper()]}_{i_lang.lower()}{DEFAULT_ZONA_TRANSLATE_DB_EXTENTION}"
+                db = DBManager(db_name=db_file)
+
                 # Add source lang to DB
                 src_lang_id = db.add_lang(i_lang_src, ALL_SUPPORTED_LANGS_DB[i_lang_src], i_verbose)
 
@@ -1237,11 +1186,11 @@ def main():
                                 # 'i_min_size' for 'resources.assets' cannot be too big. Some quests (as 'Explore ' one ) are truncated with non-ascii characters.
                                 if i_min_size > 6:
                                     i_min_size = 6
-                                # Only 'resources.assets' file
+                                # BEGIN Z.O.N.A
+                                # Only Z.O.N.A 'resources.assets' file
                                 start_from_hex_0 = "41 46 55 20 5F 4F 54 53 54 55 50 4E 49 4B"  # AFU _OTSTUPNIK
                                 start_from_int_0 = get_address_from_binary(f, i_file, start_from_hex_0, 'AFU _OTSTUPNIK')
-                                # end_from_hex_0 = "53 68 6F 6F 74 69 6E 67 20 73 66 78"  # Shooting sfx
-                                # end_from_int_0 = get_address_from_binary(f, i_file, end_from_hex_0, 'Shooting sfx')
+                                # END Z.O.N.A
                                 allowed_ranges = [
                                     {
                                         "begin_int": start_from_int_0,  # 131796768/0x07db0f20
@@ -1393,6 +1342,7 @@ def main():
         Failure = True
 
     finally:
+        # Wait user input
         inputc(f" Press Enter to exit...", bcolors.ASK)
         if Failure:
             sys.exit(-1)

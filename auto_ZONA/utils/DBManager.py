@@ -2,6 +2,15 @@ import sqlite3
 from inspect import currentframe
 from typing import Optional, List, Tuple
 
+class bcolors:
+    OK = '\033[92m'
+    INFO = '\033[93m'
+    WARN = '\033[38;5;208m'
+    FAIL = '\033[91m'
+    ASK = '\033[96m'
+    NOTIF = '\033[42m'
+    ENDC = '\033[0m'
+
 class DBManager:
     def __init__(self, db_name: str = 'translation.db', reindex: list = ['all']):
         self.db_name = db_name
@@ -68,7 +77,7 @@ class DBManager:
             self.cursor.execute('INSERT INTO langs (name, code) VALUES (?, ?)', (name, code))
             self.connection.commit()
             if verbose:
-                print(f"Added language: {code} ({name})")
+                print(f"{bcolors.ASK}Added language: {code} ({name}){bcolors.ENDC}")
             return self.cursor.lastrowid  # Return the ID of the newly created record
 
         except sqlite3.IntegrityError:
@@ -77,10 +86,10 @@ class DBManager:
             result = self.cursor.fetchone()
             if result:
                 if verbose:
-                    print(f"Duplicate entry found in 'lang'. Returning existing ID {result[0]}.")
+                    print(f"{bcolors.ASK}Duplicate entry found in 'lang'. Returning existing ID {result[0]}.{bcolors.ENDC}")
                 return result[0]  # Return the existing record's ID
             else:
-                print("An unexpected error occurred.")
+                print(f"{bcolors.FAIL}An unexpected error occurred.{bcolors.ENDC}")
                 return None
 
     def add_to_text(self, text: str, verbose: Optional[bool] = False) -> Optional[int]:
@@ -89,7 +98,7 @@ class DBManager:
             self.cursor.execute('INSERT INTO to_text (text) VALUES (?)', (text,))
             self.connection.commit()
             if verbose:
-                print(f"Added to_text : {text}")
+                print(f"{bcolors.ASK}Added to_text : {text}{bcolors.ENDC}")
             return self.cursor.lastrowid  # Return the ID of the newly created record
 
         except sqlite3.IntegrityError:
@@ -98,10 +107,10 @@ class DBManager:
             result = self.cursor.fetchone()
             if result:
                 if verbose:
-                    print(f"Duplicate entry found in 'to_text'. Returning existing ID {result[0]}.")
+                    print(f"{bcolors.ASK}Duplicate entry found in 'to_text'. Returning existing ID {result[0]}.{bcolors.ENDC}")
                 return result[0]  # Return the existing record's ID
             else:
-                print("An unexpected error occurred.")
+                print(f"{bcolors.FAIL}An unexpected error occurred.{bcolors.ENDC}")
                 return None
 
     def add_from_text(self, text: str, verbose: Optional[bool] = False) -> Optional[int]:
@@ -110,7 +119,7 @@ class DBManager:
             self.cursor.execute('INSERT INTO from_text (text) VALUES (?)', (text,))
             self.connection.commit()
             if verbose:
-                print(f"Added from_text : {text}")
+                print(f"{bcolors.ASK}Added from_text : {text}{bcolors.ENDC}")
             return self.cursor.lastrowid  # Return the ID of the newly created record
 
         except sqlite3.IntegrityError:
@@ -119,10 +128,10 @@ class DBManager:
             result = self.cursor.fetchone()
             if result:
                 if verbose:
-                    print(f"Duplicate entry found in 'from_text'. Returning existing ID {result[0]}.")
+                    print(f"{bcolors.ASK}Duplicate entry found in 'from_text'. Returning existing ID {result[0]}.{bcolors.ENDC}")
                 return result[0]  # Return the existing record's ID
             else:
-                print("An unexpected error occurred.")
+                print(f"{bcolors.FAIL}An unexpected error occurred.{bcolors.ENDC}")
                 return None
 
     def add_translation(self, from_lang_id: int, from_text: str, to_lang_id: int, to_text: str, verbose: Optional[bool] = False) -> Optional[int]:
@@ -139,8 +148,8 @@ class DBManager:
                 to_lang_code = self.get_code_lang_by_id(to_lang_id)
                 from_lang_code = self.get_code_lang_by_id(from_lang_id)
                 if not to_lang_code or not from_lang_code:
-                    raise RuntimeError(f"Function '{currentframe().f_code.co_name}': No way! SQLite failed to get lang codes :/")
-                print(f"Added translation: {to_text} ({to_lang_code}) --> {from_text} ({from_lang_code})")
+                    raise RuntimeError(f"{bcolors.FAIL}Function '{currentframe().f_code.co_name}': No way! SQLite failed to get lang codes :/{bcolors.ENDC}")
+                print(f"{bcolors.ASK}Added translation: {from_text} ({from_lang_code}) --> {to_text} ({to_lang_code}){bcolors.ENDC}")
             return self.cursor.lastrowid  # Return the ID of the newly created record
 
         except sqlite3.IntegrityError:
@@ -152,10 +161,10 @@ class DBManager:
             result = self.cursor.fetchone()
             if result:
                 if verbose:
-                    print(f"Duplicate entry found in 'translation'. Returning existing ID {result[0]}.")
+                    print(f"{bcolors.ASK}Duplicate entry found in 'translation'. Returning existing ID {result[0]}.{bcolors.ENDC}")
                 return result[0]  # Return the existing record's ID
             else:
-                raise RuntimeError(f"Function '{currentframe().f_code.co_name}': No way! SQLite failed to get record :/")
+                raise RuntimeError(f"{bcolors.FAIL}Function '{currentframe().f_code.co_name}': No way! SQLite failed to get record :/{bcolors.ENDC}")
 
     def get_lang(self, id: int) -> Optional[Tuple[int, str, str]]:
         # Retrieving a record from 'langs'
@@ -178,24 +187,17 @@ class DBManager:
             return result[0]  # Return code if found
         return None
 
-    def get_text(self, text_table: str, id: int) -> Optional[str]:
-        # Retrieving a record from 'from_text' or 'to_text'
-        self.cursor.execute(f"SELECT text FROM {text_table} WHERE id = ?", (id,))
-        result =  self.cursor.fetchone()
-        if result:
-            print(f"#### to_text='{result[0]}'")
-            return result[0]  # Return text if found
-        return None
-
     def get_translation(self, id: int) -> Optional[Tuple[int, int, str, int, str, int, int]]:
         # Retrieving a record from 'translation'
         self.cursor.execute('SELECT * FROM translation WHERE id = ?', (id,))
         return self.cursor.fetchone()
 
-    def get_translation_to_text_by_from_text(self, from_text: str, from_lang_id: int, to_lang_id: int, verbose: bool):
+    def get_translation_to_text_by_from_text(self, from_text: str, from_lang_id: int, to_lang_id: int, verbose: Optional[bool] = False):
         # Get translation to_text by from_text
         query = '''
-            SELECT to_text.text
+            SELECT
+                to_text.text,
+                to_text.id
             FROM translation
             JOIN from_text ON translation.from_text_id = from_text.id
             JOIN to_text ON translation.to_text_id = to_text.id
@@ -210,9 +212,17 @@ class DBManager:
             self.cursor.execute(query, (from_lang_id, to_lang_id, from_text_id))
             result = self.cursor.fetchone()
             if result:
+                # # Too much verbose 
+                # if verbose:
+                #     print(f"{bcolors.ASK}to_text: {result[0]} ({result[1]}){bcolors.ENDC}")
                 return result[0]  # Return the translated text
             else:
+                # # Too much verbose 
+                # if verbose:
+                #     print(f"{bcolors.ASK}to_text: {None} ({None}) no translation is found for '{from_text}'{bcolors.ENDC}")
                 return None  # Return None if no translation is found
+        if verbose:
+            print(f"{bcolors.ASK}to_text: {None} ({None}) from_text does not exist for '{from_text}'{bcolors.ENDC}")
         return None  # Return None if the from_text does not exist
 
     # def get_all_langs(self) -> List[Tuple[int, str, str]]:
@@ -230,8 +240,8 @@ class DBManager:
         self.cursor.execute('SELECT * FROM from_text')
         return self.cursor.fetchall()
 
-    def close(self, verbose: bool):
+    def close(self, verbose: Optional[bool] = False):
         # Closing the connection
         self.connection.close()
         if verbose:
-            print("Closed connection.")
+            print(f"{bcolors.ASK}Closed connection.{bcolors.ENDC}")

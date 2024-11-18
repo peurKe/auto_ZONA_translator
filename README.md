@@ -1,6 +1,11 @@
 # auto_ZONA_translator
 
-Project for translating all Ukrainian or Russian texts of the Steam games '**Z.O.N.A Origin**' and '**Z.O.N.A Project X**' by **AGaming+** and enjoy Ukrainian or Russian voices while having all the texts in your native language!
+Project for translating all Ukrainian or Russian texts of the following Steam games:
+- 'Z.O.N.A Origin' by AGaming+
+- 'Z.O.N.A Project X' by AGaming+
+- 'Paradox of Hope' by NikZ
+- 'CONVRGENCE' by NikZ
+And enjoy Ukrainian or Russian voices while having all the texts in your native language!
 
 <!-- TOC -->
 - [Discord](#Discord)
@@ -17,7 +22,7 @@ Project for translating all Ukrainian or Russian texts of the Steam games '**Z.O
 
 # Prerequisites
 
-- Your 'Z.O.N.A' game must be up to date.
+- Your 'Z.O.N.A' or 'CONVRGENCE' game must be up to date.
 - Your PC must have an Internet connection for Google Translator or Deepl API requests.
 - You must have a valid API auth key if you use Deepl API requests with the "-t 'deepl'" and "-ta 'xxx'" parameters.
 
@@ -53,22 +58,26 @@ There is a specific version for each language
 - etc.
 - **auto_ZONA_translator_installer.exe** embedding texts and subtitles for all supported languages
 
+Choose **auto_CONVRGENCE_translator_installer.exe** for CONVRGENCE game translation
+
 ## Copy the downloaded EXE installer into game folder
 
-- Copy it to your **Z.O.N.A Project X** or **Z.O.N.A Origin** game folder in your Steam library.
+- Copy it to your **Z.O.N.A Project X** or **Z.O.N.A Origin** or **CONVRGENCE** game folder in your Steam library.
   By default in :
     - **Z.O.N.A Project X** :arrow_right: C:\Program Files (x86)\Steam\steamapps\common\ZONA\
     - **Z.O.N.A Origin** :arrow_right: C:\Program Files (x86)\Steam\steamapps\common\ZONAORIGIN\
+    - **CONVRGENCE** :arrow_right: C:\Program Files (x86)\Steam\steamapps\common\CONVRGENCE\
 
    NB: If your Z.O.N.A game is installed on a drive other than the C: system drive, your game folder could be in the following location:
     - **Z.O.N.A Project X** :arrow_right: E:\SteamLibrary\steamapps\common\ZONA\
     - **Z.O.N.A Origin** :arrow_right: E:\Steam\Library\steamapps\common\ZONAORIGIN\
+    - **CONVRGENCE** :arrow_right: E:\Steam\Library\steamapps\common\CONVRGENCE\
 
-   If you want to retrieve your Z.O.N.A game folder, go to your library in Steam and:
-    - Right-click on your Z.O.N.A. game in your list of games in the left-hand panel.
+   If you want to retrieve your game folder, go to your library in Steam and:
+    - Right-click on your game in your list of games in the left-hand panel.
     - Click on 'Properties...'
     - Click on 'Browse...'
-   An explorer window will appear showing the folder for your Z.O.N.A. game.
+   An explorer window will appear showing the folder for your game.
  
 ## Go to your game directory.
 
@@ -122,11 +131,11 @@ There is a specific version for each language
 - If installation succeed then this message will appears.
 ```
     To play with this translation:
-        1. Just launch 'Z.O.N.A' game from Steam as usual.
-        2. Be sure to select 'Ukrainian/Russian' language in 'Z.O.N.A' game's settings.
+        1. Just launch your game from Steam as usual.
+        2. Be sure to select 'Ukrainian/Russian' language in your game's settings.
 
     /!\ Over the next few days:
-        If 'Z.O.N.A' no longer launches correctly or if a new update has been made by AGaming+
+        If your translated game no longer launches correctly or if a new update has been made by AGaming+ or NikZ
         You will need to run this script again to update the translation.
 
     Press Enter to exit...
@@ -135,14 +144,14 @@ There is a specific version for each language
 
 ## Enjoy Ukrainian or Russian voices while having all the texts in your native language!
 
-- Just launch 'Z.O.N.A' game from Steam as usual.
-- Make sure you select the 'Ukrainian' or 'Russian' language in your 'Z.O.N.A' game settings according to your choice of VOICES in the installation executable.
+- Just launch your game from Steam as usual.
+- Make sure you select the 'Ukrainian' or 'Russian' language in your your game settings according to your choice of VOICES in the installation executable.
 
 ## Restoring original subtitles
 
 - There are two methods available:
-  - Either select 'English' in your Z.O.N.A game settings,
-  - Or run the shortcut '**auto_ZONA_translator (restore)**' created by the executable in your Z.O.N.A game directory, and confirm that you want to restore the original translation by typing 'y'.
+  - Either select 'English' in your game settings,
+  - Or run the shortcut '**auto_ZONA_translator (restore)**' created by the executable in your game directory, and confirm that you want to restore the original translation by typing 'y'.
 ```
  Confirm you want to restore all '0.045' backup binary files (y/n): 
 ```
@@ -158,7 +167,7 @@ There is a specific version for each language
 ## Open python installed console, upgrade pip package and install all following additional packages
 ```
 pip install --upgrade pip
-pip install tqdm deepl googletrans==3.1.0a0 legacy-cgi nltk unidecode pywin32
+pip install tqdm deepl googletrans==3.1.0a0 legacy-cgi nltk unidecode pywin32 pyinstaller pygetwindow
 ```
 
 ## Go to the Latest release:
@@ -171,22 +180,24 @@ pip install tqdm deepl googletrans==3.1.0a0 legacy-cgi nltk unidecode pywin32
 
 ## Extract the **Source code (zip)** archive
 
-- Extract it into your **Z.O.N.A Project X** or **Z.O.N.A Origin** game folder in your Steam library.
+- Extract it into your **Z.O.N.A Project X** or **Z.O.N.A Origin** or **CONVRGENCE** game folder in your Steam library.
   By default in :
     - **Z.O.N.A Project X** :arrow_right: C:\Program Files (x86)\Steam\steamapps\common\ZONA\
     - **Z.O.N.A Origin** :arrow_right: C:\Program Files (x86)\Steam\steamapps\common\ZONAORIGIN\
+    - **CONVRGENCE** :arrow_right: C:\Program Files (x86)\Steam\steamapps\common\CONVRGENCE\
 
-   NB: if your Z.O.N.A game is installed on a drive other than the C: system drive, your game folder could be in the following location:
+   NB: If your Z.O.N.A game is installed on a drive other than the C: system drive, your game folder could be in the following location:
     - **Z.O.N.A Project X** :arrow_right: E:\SteamLibrary\steamapps\common\ZONA\
     - **Z.O.N.A Origin** :arrow_right: E:\Steam\Library\steamapps\common\ZONAORIGIN\
+    - **CONVRGENCE** :arrow_right: E:\Steam\Library\steamapps\common\CONVRGENCE\
 
-   If you want to retrieve your Z.O.N.A game folder, go to your library in Steam and:
-    - Right-click on your Z.O.N.A. game in your list of games in the left-hand panel.
+   If you want to retrieve your game folder, go to your library in Steam and:
+    - Right-click on your game in your list of games in the left-hand panel.
     - Click on 'Properties...'
     - Click on 'Browse...'
-   An explorer window will appear showing the folder for your Z.O.N.A. game.
+   An explorer window will appear showing the folder for your game.
 
-## IMPORTANT Be sure your 'Z.O.N.A' game directory contains:
+## IMPORTANT Be sure your game directory contains:
 
 - \\_ auto_ZONA\\ (folder)
 - \\_ auto_ZONA_translator\\ (folder)
@@ -236,11 +247,11 @@ Not:
 ## Wait for the translation ending, if installation succeed then this message will appears.
 ```
     To play with this translation:
-        1. Just launch 'Z.O.N.A' game from Steam as usual.
-        2. Be sure to select 'Ukrainian/Russian' language in 'Z.O.N.A' game's settings.
+        1. Just launch your game from Steam as usual.
+        2. Be sure to select 'Ukrainian/Russian' language in your game's settings.
 
     /!\ Over the next few days:
-        If 'Z.O.N.A' no longer launches correctly or if a new update has been made by AGaming+
+        If your translated game no longer launches correctly or if a new update has been made by AGaming+
         You will need to run this script again to update the translation.
 
     Press Enter to exit...
@@ -248,14 +259,14 @@ Not:
 
 ## Enjoy Russian voices while having all the texts in your native language!
 
-- Just launch 'Z.O.N.A' game from Steam as usual.
-- Make sure you select the 'Ukrainian' or 'Russian' language in your 'Z.O.N.A' game settings according to your choice of source language during the python script execution.
+- Just launch your game from Steam as usual.
+- Make sure you select the 'Ukrainian' or 'Russian' language in your game settings according to your choice of source language during the python script execution.
 
 ## Restoring original subtitles
 
 - There are two methods available:
-  - Either select 'English' in your Z.O.N.A game settings,
-  - Or run the shortcut '**auto_ZONA_translator (restore)**' created by the executable in your Z.O.N.A game directory, and confirm that you want to restore the original translation by typing 'y'.
+  - Either select 'English' in your game settings,
+  - Or run the shortcut '**auto_ZONA_translator (restore)**' created by the executable in your game directory, and confirm that you want to restore the original translation by typing 'y'.
 ```
  Confirm you want to restore all '0.045' backup binary files (y/n): 
 ```
@@ -284,4 +295,9 @@ Not:
   - Innosetup's dedicated German installer has been added, with a German-language interface.
   - Innosetup's dedicated English installer has been added, with an English-language interface.
   - Innosetup's dedicated Polish installer has been added, with a Polish-language interface.
-  
+
+- v0.2.0
+  - Added support for the games “CONVRGENCE” and “Paradox of Hope”.
+  - If the game's save files are invalid, the Steam game file integrity check is now automatically performed by the Steam console, with no manual action required.
+  - When the translation is successful, the installation window closes automatically (new behavior).
+  - If the translation fails, the installation window waits for user intervention with an error message (as usual).
