@@ -308,4 +308,4 @@ Not:
 
 - v0.2.1
   - Fic wrong installeur name in **README.md** documentation (Thanks @cameleons)
-  - improve **README.md** documentation and format
+  - Improve **README.md** documentation and format
