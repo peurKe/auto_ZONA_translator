@@ -306,6 +306,6 @@ Not:
   - When the translation is successful, the installation window closes automatically (new behavior).
   - If the translation fails, the installation window waits for user intervention with an error message (as usual).
 
-- v0.2.0.5
+- v0.2.1
   - Fic wrong installeur name in **README.md** documentation (Thanks @cameleons)
   - improve **README.md** documentation and format
