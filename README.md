@@ -3,8 +3,8 @@
 Project for translating all Ukrainian or Russian texts of the following Steam games:
 - 'Z.O.N.A Origin' by AGaming+
 - 'Z.O.N.A Project X' by AGaming+
-- 'Paradox of Hope' by NikZ
 - 'CONVRGENCE' by NikZ
+- 'Paradox of Hope' by NikZ
 And enjoy Ukrainian or Russian voices while having all the texts in your native language!
 
 <!-- TOC -->
@@ -49,16 +49,20 @@ And enjoy Ukrainian or Russian voices while having all the texts in your native 
 
 - [Latest release](https://github.com/peurKe/auto_ZONA_translator/releases)
 
-## Download the EXE installer "**auto_ZONA_translator_installer.exe**" from the release assets
+## Download the EXE installer '**auto_ZONA_translator_installer.exe**' from the release assets
 
-There is a specific version for each language
+The '**auto_ZONA_translator_installer.exe**' installer can be used for all **Z.O.N.A**, **CONVRGENCE** and **Paradox of Hope** games.
 
-- **auto_ZONA_translator_installer_FR.exe** embedding texts and subtitles for French only
-- **auto_ZONA_translator_installer_CS.exe** embedding texts and subtitles for Czech only
-- etc.
-- **auto_ZONA_translator_installer.exe** embedding texts and subtitles for all supported languages
+Choose your preferred language:
+- **auto_ZONA_translator_installer_CS.exe** embedding texts and subtitles for **Czech** only
+- **auto_ZONA_translator_installer_DE.exe** embedding texts and subtitles for **German** only
+- **auto_ZONA_translator_installer_EN.exe** embedding texts and subtitles for **English** only
+- **auto_ZONA_translator_installer_FR.exe** embedding texts and subtitles for **French** only
+- **auto_ZONA_translator_installer_FR.exe** embedding texts and subtitles for **Polish** only
+- **auto_ZONA_translator_installer_FR.exe** embedding texts and subtitles for **Romanian** only
 
-Choose **auto_CONVRGENCE_translator_installer.exe** for CONVRGENCE game translation
+Or choose the default installer for all other languages:
+- **auto_ZONA_translator_installer.exe** embedding texts and subtitles for **all supported languages**
 
 ## Copy the downloaded EXE installer into game folder
 
@@ -145,13 +149,13 @@ Choose **auto_CONVRGENCE_translator_installer.exe** for CONVRGENCE game translat
 ## Enjoy Ukrainian or Russian voices while having all the texts in your native language!
 
 - Just launch your game from Steam as usual.
-- Make sure you select the 'Ukrainian' or 'Russian' language in your your game settings according to your choice of VOICES in the installation executable.
+- Make sure you select the '**Ukrainian**' or '**Russian**' language in your your game settings according to your choice of VOICES in the installation executable.
 
 ## Restoring original subtitles
 
 - There are two methods available:
-  - Either select 'English' in your game settings,
-  - Or run the shortcut '**auto_ZONA_translator (restore)**' created by the executable in your game directory, and confirm that you want to restore the original translation by typing 'y'.
+  - Either select '**English**' in your game settings,
+  - Or run the shortcut '**auto_ZONA_translator (restore)**' created by the executable in your game directory, and confirm that you want to restore the original translation by typing '**y**'.
 ```
  Confirm you want to restore all '0.045' backup binary files (y/n): 
 ```
@@ -215,7 +219,7 @@ Not:
 
 ## The installation python script then starts automatically
 
-- Select the language you want to translate English from:
+- Select the VOICE language you wish to hear in the game:
 ```
  Supported source languages:
    uk (ukrainian)
@@ -224,7 +228,7 @@ Not:
  Language to translate from (specify the 2-letter language code):
 ```
 
-- Select the language you want to translate English to:
+- Select the language of the TEXT and SUBTITLES you wish to read in the game:
 ```
  Supported languages:
    en (English)
@@ -260,13 +264,13 @@ Not:
 ## Enjoy Russian voices while having all the texts in your native language!
 
 - Just launch your game from Steam as usual.
-- Make sure you select the 'Ukrainian' or 'Russian' language in your game settings according to your choice of source language during the python script execution.
+- Make sure you select the '**Ukrainian**' or '**Russian**' language in your game settings according to your choice of source language during the python script execution.
 
 ## Restoring original subtitles
 
 - There are two methods available:
-  - Either select 'English' in your game settings,
-  - Or run the shortcut '**auto_ZONA_translator (restore)**' created by the executable in your game directory, and confirm that you want to restore the original translation by typing 'y'.
+  - Either select '**English**' in your game settings,
+  - Or run the shortcut '**auto_ZONA_translator (restore)**' created by the executable in your game directory, and confirm that you want to restore the original translation by typing '**y**'.
 ```
  Confirm you want to restore all '0.045' backup binary files (y/n): 
 ```
@@ -297,7 +301,11 @@ Not:
   - Innosetup's dedicated Polish installer has been added, with a Polish-language interface.
 
 - v0.2.0
-  - Added support for the games “CONVRGENCE” and “Paradox of Hope”.
+  - Added support for **CONVRGENCE** and **Paradox of Hope** games.
   - If the game's save files are invalid, the Steam game file integrity check is now automatically performed by the Steam console, with no manual action required.
   - When the translation is successful, the installation window closes automatically (new behavior).
   - If the translation fails, the installation window waits for user intervention with an error message (as usual).
+
+- v0.2.0.5
+  - Fic wrong installeur name in **README.md** documentation (Thanks @cameleons)
+  - improve **README.md** documentation and format

@@ -6,13 +6,13 @@ Description :
   Project for translating all Ukrainian or Russian texts of the following Steam games:
     - 'Z.O.N.A Origin' by AGaming+
     - 'Z.O.N.A Project X' by AGaming+
-    - 'Paradox of Hope'by NikZ
     - 'CONVRGENCE'by NikZ
+    - 'Paradox of Hope'by NikZ
   And enjoy Ukrainian or Russian voices while having all the texts in your native language!
 Author: peurKe
 Creation Date: 2024-10-31
-Last Modified: 2024-11-18
-Version: 0.2.0-alpha
+Last Modified: 2024-11-19
+Version: 0.2.1-alpha
 License: MIT
 """
 
@@ -743,6 +743,15 @@ def validate_steam_game_and_wait(app_id, steam_log_path=r'C:\Program Files (x86)
         for window in steam_windows:
             window.minimize()
 
+        try:
+            # Get the window for the current translator Python process
+            current_window = gw.getWindowsWithTitle('')  # This will get the window that matches an empty title, i.e., the current script's window
+            if current_window:
+                # Activate the current translator window
+                current_window[0].activate()
+        except Exception as e:
+            printc(f" • [No current translator Python process found] WARN\n", bcolors.WARN)
+
         printc(f" • [Validate '{DEFAULT_ZONA_GAME_NAME}' (app ID '{app_id}') files integrity from Steam console. Monitoring logs] OK\n", bcolors.OK)
         return True
         
@@ -1342,9 +1351,9 @@ def main():
         Failure = True
 
     finally:
-        # Wait user input
-        inputc(f" Press Enter to exit...", bcolors.ASK)
         if Failure:
+            # Wait user input
+            inputc(f" Press Enter to exit...", bcolors.ASK)
             sys.exit(-1)
 
 if __name__ == '__main__':
