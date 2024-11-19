@@ -307,5 +307,5 @@ Not:
   - If the translation fails, the installation window waits for user intervention with an error message (as usual).
 
 - v0.2.1
-  - Fic wrong installeur name in **README.md** documentation (Thanks @cameleons)
+  - Fix wrong installeur name in **README.md** documentation (Thanks @cameleons)
   - Improve **README.md** documentation and format
