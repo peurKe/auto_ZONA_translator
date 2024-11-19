@@ -307,5 +307,8 @@ Not:
   - If the translation fails, the installation window waits for user intervention with an error message (as usual).
 
 - v0.2.1
-  - Fix wrong installeur name in **README.md** documentation (Thanks @cameleons)
-  - Improve **README.md** documentation and format
+  - Fixed wrong installer name in **README.md** documentation (Thanks @cameleons).
+  - Improve **README.md** documentation and format.
+
+- v0.2.2
+  - Fixed a bug in the backup game files function that forced Steam game files to be validated even if the game files were valid.

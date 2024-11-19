@@ -539,30 +539,39 @@ def backup_files(version):
         files_to_copy.append(f"{DEFAULT_ZONA_DATA_DIR}/resources.assets")
     
     # Copy all original files in backup directory
+    all_original_files = True
     for file in files_to_copy:
         backup_file = os_path.join(backup_dir, os_path.basename(file))
         # Check file is a real original file
         if validation_original_data_files(file):
             shutil.copy2(file, backup_file)
         else:
-            try:
-                # Remove backup directory to force recreation at next launch
-                for file_name in os_listdir(backup_dir):
-                    file_path = os_path.join(backup_dir, file_name)
-                    if os_path.isfile(file_path):
-                        os_remove(file_path)
-                os_rmdir(backup_dir)
-            except Exception as e:
-                raise RuntimeError(f"Function '{currentframe().f_code.co_name}': God! invalid '{backup_dir}' cannot be deleted.\n")
-
-            # # Rename directory name with date and time appended (Don't remove because directory can contains files)
-            # current_time = datetime.now().strftime('%Y%m%d-%H%M%S')
-            # os_rename(backup_dir, f"{backup_dir}_{current_time}")
-
-            return False
+            printc(f" • [Game file '{file}' is not an original file.] WARN\n", bcolors.WARN)
+            all_original_files = False
+            break
+    
+    if not all_original_files:
+        printc(f" • [Remove backup '{backup_dir}' directory] ...\n", bcolors.INFO)
+        try:
+            # Remove backup directory to force recreation at next launch
+            for file_name in os_listdir(backup_dir):
+                file_path = os_path.join(backup_dir, file_name)
+                if os_path.isfile(file_path):
+                    os_remove(file_path)
+            os_rmdir(backup_dir)
+        except Exception as e:
+            printc(f" • [Remove backup '{backup_dir}' directory] Failed\n", bcolors.FAIL)
+            raise RuntimeError(f"Function '{currentframe().f_code.co_name}': God! invalid '{backup_dir}' cannot be deleted.\n")
+        printc(f" • [Remove backup '{backup_dir}' directory] OK\n", bcolors.OK)
+        # # Rename directory name with date and time appended (Don't remove because directory can contains files)
+        # current_time = datetime.now().strftime('%Y%m%d-%H%M%S')
+        # os_rename(backup_dir, f"{backup_dir}_{current_time}")
+        return False
 
     if i_debug:
         printc(f" • [Create backup in '{backup_dir}/' directory] OK\n", bcolors.OK)
+
+    return True
 
 
 def restore_files(version=None, src=None):
@@ -723,6 +732,7 @@ def validate_steam_game_and_wait(app_id, steam_log_path=r'C:\Program Files (x86)
     if app_id < 0:
         return False
     else:
+        printc(f" • [Validate '{DEFAULT_ZONA_GAME_NAME}' (app ID '{app_id}') files integrity from Steam console. Monitoring logs] ...\n", bcolors.INFO)
         # Get the timestamp before starting the integrity check
         start_timestamp = get_current_timestamp()
         # Run the integrity check in the background
@@ -855,6 +865,7 @@ def main():
         argparser.add_argument("-df", "--debug-file", action='store_true', help="Print debug in 'auto_ZO_translate_DEBUG.log' file")
         argparser.add_argument("-r", "--restore", action='store_true', help="Restore backup files (reset)")
         argparser.add_argument("-rv", "--restore-version", type=str, default=None, help="Specify the '0.0NN' patch version to restore. Default will be the current version. (reset)")
+        argparser.add_argument("-w", "--wait-on-success", action='store_true', help="Allow to wait input when script succeed.")
         argparser.add_argument("--force", action='store_true', help=f"Force translate even if translated files are already existing in '{DEFAULT_ZONA_TRANSLATE_DIR}/' directory")
         argparser.add_argument("--delay", type=int, default=1, help="Delay in secondes between each attempt after an error with Google Translator (default value is 1)")
         argparser.add_argument("--retries", type=int, default=2, help="Number of attempts after an error with Google Translator (default value: 2). Parameter disabled.")
@@ -874,6 +885,7 @@ def main():
         i_debug_file = args.debug_file
         i_restore = args.restore
         i_restore_version = args.restore_version
+        i_wait_on_success = args.wait_on_success
         i_delay = args.delay
         i_retries = args.retries
 
@@ -1351,9 +1363,10 @@ def main():
         Failure = True
 
     finally:
-        if Failure:
+        if Failure or i_wait_on_success:
             # Wait user input
             inputc(f" Press Enter to exit...", bcolors.ASK)
+        if Failure:
             sys.exit(-1)
 
 if __name__ == '__main__':
