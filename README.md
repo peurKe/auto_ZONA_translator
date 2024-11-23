@@ -107,7 +107,7 @@ Or choose the default installer for all other languages:
 ```
 - Clic on "Next" button *(Only for non specific language installer)*
 
-- Tick the box corresponding to the VOICE language you wish to hear in the game:
+- Tick the box corresponding to the VOICE language you wish to hear in the game: *(Only for non specific language installer)*
 ```
   Choose your preferred language for VOICES:
     (X)  Ukrainian
@@ -312,3 +312,6 @@ Not:
 
 - v0.2.2
   - Fixed a bug in the backup game files function that forced Steam game files to be validated even if the game files were valid.
+
+- v0.3.0
+  - Improved translation system - unified for all 4 games

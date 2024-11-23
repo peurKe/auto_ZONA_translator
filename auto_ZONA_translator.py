@@ -11,8 +11,8 @@ Description :
   And enjoy Ukrainian or Russian voices while having all the texts in your native language!
 Author: peurKe
 Creation Date: 2024-10-31
-Last Modified: 2024-11-19
-Version: 0.2.1-alpha
+Last Modified: 2024-11-23
+Version: 0.3.0-alpha
 License: MIT
 """
 
@@ -55,10 +55,10 @@ import shutil
 import subprocess
 import pygetwindow as gw
 from collections import namedtuple
-from auto_ZONA.utils.DBManager import DBManager # type: ignore
-from auto_ZONA.utils.specific_words import RESTORE_SPECIFIC_WORDS
-from auto_ZONA.utils.cyrillic_unicode import CYRILLIC_BYTES, SPECIFIC_CYRILLIC_BYTES_VR, LATIN_PUNCTUATION_BYTES, CYRILLIC_PATTERN
 try:
+    from auto_ZONA.utils.DBManager import DBManager # type: ignore
+    from auto_ZONA.utils.specific_words import RESTORE_SPECIFIC_WORDS
+    from auto_ZONA.utils.cyrillic_unicode import CYRILLIC_BYTES, WSPACE_BYTE, DASH_BYTES, LATIN_BYTES, CRLF_BYTES, NUMBERS_BYTES, PUNCTUATION_BYTES, CYRILLIC_CONTENT_PATTERN
     # from nltk.corpus import stopwords
     from nltk import download as nltk_download
     from nltk.tokenize import word_tokenize
@@ -108,7 +108,20 @@ DEFAULT_ZONA_TRANSLATE_DB_NAME = {
 }
 DEFAULT_ZONA_TRANSLATE_DB_EXTENTION = '.db'
 DEFAULT_ZONA_TRANSLATE_BACKUP_DIR_NAME = 'BACKUP'
-DEFAULT_ZONA_TRANSLATE_RESOURCES_ASSETS_FILE = [ 'ZONA', 'ZONAORIGIN' ] # Currently only ZONA games need translation in 'resources.assets' file
+# DEFAULT_ZONA_TRANSLATE_RESOURCES_ASSETS_FILE = [ 'ZONA', 'ZONAORIGIN' ]  # Currently only ZONA games need translation in 'resources.assets' file
+DEFAULT_ZONA_TRANSLATE_ASSETS_FILE = {
+    "ZONA": [ 'resources.assets' ],
+    "ZONAORIGIN": [ 'resources.assets' ],
+    "PARADOX OF HOPE": [],
+    "CONVRGENCE": [ 'sharedassets1.assets', 'sharedassets2.assets' ]
+}
+DEFAULT_ZONA_TRANSLATE_DEFAULT_ALLOWED_RANGES_ASSETS = { "start_from_hex_label": "....Ç?..Ç?..Ç?..Ç?", "start_from_hex": "00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 80 3F 00 00 80 3F 00 00 80 3F 00 00 80 3F" }
+DEFAULT_ZONA_TRANSLATE_DEFAULT_ALLOWED_RANGES_LEVELS = { "start_from_hex_label": "....Ç?..Ç?..Ç?..Ç?", "start_from_hex": "00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 80 3F 00 00 80 3F 00 00 80 3F 00 00 80 3F" }
+DEFAULT_ZONA_TRANSLATE_DEFAULT_ALLOWED_RANGES = {
+    "assets": DEFAULT_ZONA_TRANSLATE_DEFAULT_ALLOWED_RANGES_ASSETS, 
+    "levels": DEFAULT_ZONA_TRANSLATE_DEFAULT_ALLOWED_RANGES_LEVELS
+}
+
 # '@PLACEHOLDER_VERSION_DIR' will be replaced with current game version
 DEFAULT_ZONA_TRANSLATE_BACKUP_DIR = f"{DEFAULT_ZONA_TRANSLATE_DIR}/@PLACEHOLDER_VERSION_DIR/{DEFAULT_ZONA_TRANSLATE_BACKUP_DIR_NAME}"
 # Flag for data binary file translated
@@ -137,6 +150,7 @@ DEFAULT_ZONA_TRANSLATE_LANG_SRC = ''
 # END DEFAULT Z.O.N.A
 
 # # BEGIN Z.O.N.A PROJECT X
+# DEFAULT_ZONA_GAME_AUTHOR = 'AGaming+'
 # DEFAULT_ZONA_GAME_NAME = 'Z.O.N.A Project X'
 # DEFAULT_ZONA_DIR_NAME = 'ZONA'
 # DEFAULT_ZONA_DIR_EXAMPLE = f"C:\\SteamLibrary\\steamapps\\common\\{DEFAULT_ZONA_DIR_NAME}"
@@ -145,10 +159,11 @@ DEFAULT_ZONA_TRANSLATE_LANG_SRC = ''
 # DEFAULT_ZONA_GLOBAL_GM = 'globalgamemanagers'
 # DEFAULT_ZONA_VERSION_REGEX = [ rb'(1\.0[0-9]\.[0-9][0-9])' ]
 # DEFAULT_ZONA_TRANSLATE_LANG_SRC = 'uk'
-# DEFAULT_ZONA_TRANSLATE_LANG_SRC_FORCE = False
+# DEFAULT_ZONA_TRANSLATE_LANG_SRC_FORCE = True
 # # END Z.O.N.A PROJECT X
 
 # # BEGIN Z.O.N.A ORIGIN
+# DEFAULT_ZONA_GAME_AUTHOR = 'AGaming+'
 # DEFAULT_ZONA_GAME_NAME = 'Z.O.N.A Origin'
 # DEFAULT_ZONA_DIR_NAME = 'ZONAORIGIN'
 # DEFAULT_ZONA_DIR_EXAMPLE = f"C:\\SteamLibrary\\steamapps\\common\\{DEFAULT_ZONA_DIR_NAME}"
@@ -161,6 +176,7 @@ DEFAULT_ZONA_TRANSLATE_LANG_SRC = ''
 # # END Z.O.N.A ORIGIN
 
 # # BEGIN Paradox of Hope
+# DEFAULT_ZONA_GAME_AUTHOR = 'NikZ'
 # DEFAULT_ZONA_GAME_NAME = 'Paradox of Hope'
 # DEFAULT_ZONA_DIR_NAME = 'Paradox of Hope'
 # DEFAULT_ZONA_DIR_EXAMPLE = f"C:\\SteamLibrary\\steamapps\\common\\{DEFAULT_ZONA_DIR_NAME}"
@@ -168,11 +184,12 @@ DEFAULT_ZONA_TRANSLATE_LANG_SRC = ''
 # DEFAULT_ZONA_DATA_DIR = f"./{DEFAULT_ZONA_DATA_DIR_NAME}"
 # DEFAULT_ZONA_GLOBAL_GM = 'globalgamemanagers'
 # DEFAULT_ZONA_VERSION_REGEX = [ rb'(0\.4\.[0-9])' ] # No update because game is not available anymore
-# DEFAULT_ZONA_TRANSLATE_LANG_SRC = 'uk'
+# DEFAULT_ZONA_TRANSLATE_LANG_SRC = 'ru'
 # DEFAULT_ZONA_TRANSLATE_LANG_SRC_FORCE = True
 # # END Paradox of Hope
 
 # # BEGIN CONVERGENCE
+# DEFAULT_ZONA_GAME_AUTHOR = 'NikZ'
 # DEFAULT_ZONA_GAME_NAME = 'CONVRGENCE'
 # DEFAULT_ZONA_DIR_NAME = 'CONVRGENCE'
 # DEFAULT_ZONA_DIR_EXAMPLE = f"C:\\SteamLibrary\\steamapps\\common\\{DEFAULT_ZONA_DIR_NAME}"
@@ -183,7 +200,7 @@ DEFAULT_ZONA_TRANSLATE_LANG_SRC = ''
 #     rb'([0-9]\.[0-9]\.[0-9]\.[0-9])',
 #     rb'([0-9]\.[0-9]\.[0-9])',
 # ]
-# DEFAULT_ZONA_TRANSLATE_LANG_SRC = 'uk'
+# DEFAULT_ZONA_TRANSLATE_LANG_SRC = 'ru'
 # DEFAULT_ZONA_TRANSLATE_LANG_SRC_FORCE = True
 # # END CONVERGENCE
 
@@ -233,13 +250,15 @@ ALL_SUPPORTED_LANGS_SRC = ['empty', 'uk', 'ru']
 
 # # See auto_ZONA\utils\cyrillic_unicode.py
 # # Regular expression for Cyrillic bytes (Russian + Specific + Ukrainian pattern)
-# CYRILLIC_BYTES = {}
-# # Specific Cyrillic bytes
-# SPECIFIC_CYRILLIC_BYTES_VR = rb''
+# CYRILLIC_BYTES = = rb''
+# # Line Feed byte
+# CRLF_BYTES = rb''
+# # Numbers bytes
+# NUMBERS_BYTES = rb''
 # # Latin punctuation bytes
-# LATIN_PUNCTUATION_BYTES = {}
+# PUNCTUATION_BYTES = rb''
 # # Regular expression for Cyrillic characters (Russian + Specific + Ukrainian pattern) and Latin punctuation
-# CYRILLIC_PATTERN = rb''  # See initialization in main() rigth after arguments parsing
+# CYRILLIC_CONTENT_PATTERN = rb''  # See initialization in main() rigth after arguments parsing
 
 String = namedtuple("String", ["s", "offset", "binary_length", "ascii_length"])
 
@@ -385,7 +404,12 @@ def validation_original_data_files(file):
 
 
 def remove_specials(text):
-    # return text.replace('"', '')
+    # Google Translator double-quotes
+    text = text.replace('« ', '"').replace(' »', '"')
+    # DeepL Translator double-quotes
+    text = text.replace('“', '"').replace('”', '"')
+    # Google and DeepL Translator ligature
+    text = text.replace('œ', 'oe')
     # Replace special characters with one whitepace (can generate double whitespace)
     text = re.sub(r'[^a-zA-Z0-9\s\.\'",!?\\/\(\)-:]', ' ', text)
     # Remove double whitespaces
@@ -444,6 +468,10 @@ def dialog_filter(dialog, lang='uk'):
 # Dynamic function for Google translator
 def dialog_translate_google(translator, dialog='(OUPS)', lang_from=DEFAULT_ZONA_TRANSLATE_LANG_SRC, lang_to='fr'):
     return translator.translate(dialog, src=lang_from, dest=lang_to, raise_exception=True).text
+    # if '\n' in dialog:
+    #     return '\n'.join([translation.text for translation in translator.translate(dialog.split('\n'), src=lang_from, dest=lang_to, raise_exception=True)])
+    # else:
+    #     return translator.translate(dialog, src=lang_from, dest=lang_to, raise_exception=True).text
 
 
 # Dynamic function for Deepl translator
@@ -456,6 +484,17 @@ def dialog_translate(translator, file='(NO_F)', dialog='(OUPS)', lang_from=DEFAU
     # /!\ This method isn't pretty, but it takes much less time than the 'for attempt in range(retries+1)' loop.
     if dialog is None or dialog == '':
         return '(OUPS)'
+
+    # # Replace all whitespaces with unbreakable spaces and all escaped LF with LF
+    # dialog = dialog.replace(" ", "\u00A0").replace("\n", "\u200B")
+    # dialog = dialog.replace(" ", "\u00A0").replace("\n", "\u2060")
+    # dialog = dialog.replace(" ", "\u00A0").replace("\n", "\\n")
+    # dialog = dialog.replace(" ", "\u00A0").replace("\n", "<LF>")
+    # dialog = dialog.replace(" ", " ___ ").replace("\n", " /// ")
+    
+    # Replace all whitespaces with unbreakable spaces and all escaped LF with LF
+    dialog = dialog.replace("\n", "<LF>").replace(" ", "\u00A0")
+    
     try:
         # dialog_tr = translator.translate(dialog, src=DEFAULT_ZONA_TRANSLATE_LANG_SRC, dest=to).text
         dialog_tr = globals()[DEFAULT_TRANSLATE_FUNCTION](translator, dialog, lang_from, lang_to)
@@ -497,10 +536,22 @@ def dialog_translate(translator, file='(NO_F)', dialog='(OUPS)', lang_from=DEFAU
     #             # If all attempts fail, raise an exception
     #             raise RuntimeError(f"Function '{currentframe().f_code.co_name}': Rats! Google Translator failed after 3 attemps on a translation in '{file}'. Exception {type(e).__name__}: {e}. Just bad luck :/\n")
 
-    # Add a whitespace as first character if original 'dialog' has a this first whitespace (deleted by translation)
-    if dialog[0] == ' ':
-        dialog_tr = ' ' + dialog_tr
-    dialog = dialog_tr
+    # # Add a whitespace as first character if original 'dialog' has this first whitespace (deleted by translation)
+    # if dialog[0] == ' ':
+    #     dialog_tr = ' ' + dialog_tr
+    # Replace all whitespaces with unbreakable spaces and all escaped LF with LF
+    dialog = dialog_tr.replace("<LF>", "\n").replace("\u00A0", " ")
+
+    # print(dialog)
+    # print(dialog_tr)
+
+    # Replace all escaped LF with LF and all unbreakable spaces with whitespaces
+    # dialog = dialog_tr.replace("\u200B", "\n").replace("\u00A0", " ")
+    # dialog = dialog_tr.replace("\u2060", "\n").replace("\u00A0", " ")
+    # dialog = dialog_tr.replace("\\n", "\n").replace("\u00A0", " ")
+    # dialog = dialog_tr.replace("<LF>", "\n").replace("\u00A0", " ")
+    # dialog = dialog_tr.replace(" /// ", "\n").replace(" ___ ", " ")
+    
     # Replace all accentuation characters
     dialog = replace_accents(dialog)
     # Remove all special characters
@@ -534,10 +585,10 @@ def backup_files(version):
 
     # All 'levelNN' original files
     files_to_copy = [os_path.join(DEFAULT_ZONA_DATA_DIR, f) for f in os_listdir(DEFAULT_ZONA_DATA_DIR) if f.startswith('level') and not f.endswith('.resS')]
-    # Unique 'resources.assets' original file
-    if DEFAULT_ZONA_DIR_NAME.upper() in DEFAULT_ZONA_TRANSLATE_RESOURCES_ASSETS_FILE:
-        files_to_copy.append(f"{DEFAULT_ZONA_DATA_DIR}/resources.assets")
-    
+    # '*.assets' original files
+    assets_files = [os_path.join(DEFAULT_ZONA_DATA_DIR, f) for f in os_listdir(DEFAULT_ZONA_DATA_DIR) if f.endswith('.assets')]
+    files_to_copy.extend(assets_files)
+
     # Copy all original files in backup directory
     all_original_files = True
     for file in files_to_copy:
@@ -620,7 +671,7 @@ def translate_ended_message(src_language):
     print(f"    2. Be sure to select '{ALL_SUPPORTED_LANGS_DB[src_language]}' language in '{DEFAULT_ZONA_GAME_NAME}' game settings.\n")
     printc(f"                                                                                                         ", bcolors.NOTIF)
     printc(f"    /!\\ Over the next few days:                                                                          ", bcolors.NOTIF)
-    printc(f"        If '{DEFAULT_ZONA_GAME_NAME}' no longer launches correctly or if a new update has been made by AGaming+    ", bcolors.NOTIF)
+    printc(f"        If '{DEFAULT_ZONA_GAME_NAME}' no longer launches correctly or if a new update has been made by {DEFAULT_ZONA_GAME_AUTHOR} ", bcolors.NOTIF)
     printc(f"        You will need to run this script again to update the translation.                                ", bcolors.NOTIF)
     printc(f"                                                                                                         ", bcolors.NOTIF)
     print()
@@ -668,10 +719,104 @@ def inputc(prompt, c=None):
     return res
 
 
-# Fonction pour extraire les sequences cyrilliques
+# # Fonction pour extraire les sequences cyrilliques
+# def extract_cyrillic_sequences(buf, min_size=2, start_from=0):
+#     cyrillic_reg = rb'(%s{%d,})' % (CYRILLIC_CONTENT_PATTERN, min_size)
+#     cyrillic_pattern_min = rb'((?:' + CYRILLIC_BYTES[DEFAULT_ZONA_TRANSLATE_LANG_SRC] + rb'){2,})'  # Regex pour trouver au moins 2 caractères cyrilliques
+#     for match in re.finditer(cyrillic_reg, buf):  # Chercher toutes les occurrences
+#         cyrillic_binary = match.group(0)  # Retourner les bytes cyrilliques trouvés
+#         if re.search(cyrillic_pattern_min, cyrillic_binary):
+#             cyrillic_string = cyrillic_binary.decode('utf-8', errors='ignore')
+#             yield String(
+#                 cyrillic_string,  # Cyrillic string found (string)
+#                 start_from + match.start(),  # Cyrillic string found offset (int)
+#                 len(cyrillic_binary),  # Cyrillic binary found length (int)
+#                 len(cyrillic_string)  # Cyrillic string found length (int)
+#             )
+
+# def extract_cyrillic_sequences(buf, min_size=2, start_from=0):
+#     # Construction de la regex pour trouver les séquences contenant au moins min_size caractères
+#     cyrillic_reg = rb'(%s{%d,})' % (CYRILLIC_CONTENT_PATTERN, min_size)
+#     # Regex pour trouver au moins 2 caractères cyrilliques
+#     cyrillic_pattern_min = rb'((?:' + CYRILLIC_BYTES[DEFAULT_ZONA_TRANSLATE_LANG_SRC] + rb'){2,})'
+#     # Regex pour détecter des caractères cyrilliques uniquement au début
+#     cyrillic_start_pattern = rb'^(?:' + CYRILLIC_BYTES[DEFAULT_ZONA_TRANSLATE_LANG_SRC] + rb')'
+    
+#     for match in re.finditer(cyrillic_reg, buf):  # Chercher toutes les occurrences
+#         cyrillic_binary = match.group(0)  # Retourner les bytes cyrilliques trouvés
+        
+#         # Vérifie que la séquence contient au moins deux caractères cyrilliques
+#         # ET qu'un des caractères est situé au début de la chaîne trouvée
+#         if re.search(cyrillic_pattern_min, cyrillic_binary) and re.match(cyrillic_start_pattern, cyrillic_binary):
+#             cyrillic_string = cyrillic_binary.decode('utf-8', errors='ignore')
+#             yield String(
+#                 cyrillic_string,  # Cyrillic string found (string)
+#                 start_from + match.start(),  # Cyrillic string found offset (int)
+#                 len(cyrillic_binary),  # Cyrillic binary found length (int)
+#                 len(cyrillic_string)  # Cyrillic string found length (int)
+#             )
+
 def extract_cyrillic_sequences(buf, min_size=2, start_from=0):
-    cyrillic_reg = rb'(%s{%d,})' % (CYRILLIC_PATTERN, min_size)
-    cyrillic_pattern_min = rb'((?:' + CYRILLIC_BYTES[DEFAULT_ZONA_TRANSLATE_LANG_SRC] + rb'){2,})'  # Regex pour trouver au moins 2 caractères cyrilliques
+    # Construction de la regex pour trouver les séquences contenant au moins min_size caractère + au moins un caractères cyrilliques au début
+    #   Le premier caractère doit être cyrillique
+    #   Puis au moins un autre caractère éligible
+    #   Le dernier caractère doit être cyrillique ou nombre ou ponctuation
+    #   L'ensemble doit contenir au moins 'min_size' caractères cyrilliques
+    # cyrillic_reg = (
+    #     rb'((?:' + CYRILLIC_BYTES + rb')'
+    #     + rb'(?:' + CYRILLIC_CONTENT_PATTERN + rb'){%d,}'
+    #     + rb'(?:' + CYRILLIC_BYTES + rb'|' + NUMBERS_BYTES + rb'|' + PUNCTUATION_BYTES + rb'))'
+    # ) % (min_size)
+    # cyrillic_reg = (
+    #     rb'((?:' + CYRILLIC_BYTES + rb')'  # Commence par un caractère cyrillique
+    #     + rb'(?:' + CYRILLIC_CONTENT_PATTERN + rb'){%d,}'  # Contient des caractères selon le pattern
+    #     + rb'(?:' + CYRILLIC_BYTES + rb'|' + NUMBERS_BYTES + rb'|' + PUNCTUATION_BYTES + rb')'  # Se termine par un caractère valide
+    #     + rb'(?=.*' + CYRILLIC_BYTES + rb'))'  # Vérifie qu'il y a au moins un caractère cyrillique dans l'ensemble
+    # ) % (min_size)
+    
+    # Lookahead :
+    # La partie [^' + CYRILLIC_BYTES + rb']* permet de trouver tout texte qui ne contient pas de caractères cyrilliques.
+    # Le groupe CYRILLIC_BYTES capture un caractère cyrillique.
+    
+    # cyrillic_reg = (
+    #     rb'((?:' + CYRILLIC_BYTES + rb')'  # Commence par un caractère cyrillique
+    #     + rb'(?:' + CYRILLIC_CONTENT_PATTERN + rb')+'  # Contient des caractères selon le pattern
+    #     + rb'(?:' + CYRILLIC_BYTES + rb'|' + NUMBERS_BYTES + rb'|' + PUNCTUATION_BYTES + rb')'  # Se termine par un caractère valide
+    #     + rb'(?=(?:[^' + CYRILLIC_BYTES + rb']*' + CYRILLIC_BYTES + rb'){%d,}))'  # Vérifie qu'il y a au moins 'min_size' caractères cyrilliques
+    # ) % (min_size)
+    # cyrillic_reg = (
+    #     rb'((?:' + CYRILLIC_BYTES + rb')'  # Commence par un caractère cyrillique
+    #     + rb'(?:' + CYRILLIC_CONTENT_PATTERN + rb')+'  # Contient des caractères selon le pattern
+    #     + rb'(?:' + CYRILLIC_BYTES + rb'|' + NUMBERS_BYTES + rb'|' + PUNCTUATION_BYTES + rb')'  # Se termine par un caractère valide
+    #     # Vérifie qu'il y a au moins deux caractères cyrilliques consécutifs
+    #     + rb'(?=(?:[^' + CYRILLIC_BYTES + rb']*' + CYRILLIC_BYTES + rb'){%d,}))'
+    # ) % (min_size)
+    
+    # ZONA|ZONAORIGIN
+    # cyrillic_reg = (
+    #     rb'((?:' + CYRILLIC_BYTES + rb')'  # Commence par un caractère cyrillique
+    #     + rb'(?:' + CYRILLIC_CONTENT_PATTERN + rb'){%d,}'  # Contient 'min_size' ou plusieurs caractères selon le pattern de contenu
+    #     + rb'(?:' + CYRILLIC_BYTES + rb'|' + PUNCTUATION_BYTES + rb'))'  # Se termine par un caractère valide
+    # ) % (min_size)
+    # cyrillic_reg = (
+    #     rb'((?:' + CYRILLIC_CONTENT_PATTERN + rb')+'  # Contient un ou plusieurs caractères selon le pattern de contenu
+    #     + rb'(?:' + CYRILLIC_BYTES + rb'|' + PUNCTUATION_BYTES + rb'))'  # Se termine par un caractère valide
+    # )
+    # Paradox of Hope|CONVRGENCE
+    # cyrillic_reg = (
+    #     rb'((?:' + CYRILLIC_CONTENT_PATTERN + rb')+'  # Contient un ou plusieurs caractères selon le pattern de contenu
+    #     + rb'(?:' + CYRILLIC_BYTES + rb'|' + NUMBERS_BYTES + rb'|' + PUNCTUATION_BYTES + rb'))'  # Se termine par un caractère valide
+    # )
+    cyrillic_reg = (
+        rb'((?:' + CYRILLIC_BYTES + rb')'  # Premier caractère : cyrillique
+        + rb'(?:' + CYRILLIC_CONTENT_PATTERN + rb')*'  # Contenu valide
+        + rb'(?:' + CYRILLIC_LAST_BYTES[DEFAULT_ZONA_GAME_AUTHOR] + rb')'  # Dernier caractère
+        # + rb'(?=(?:' + CYRILLIC_BYTES + rb'{%d,}))'  # Au moins 'min_size' caractères cyrilliques
+        # + rb'(?=(?:.*?' + CYRILLIC_BYTES + rb'.*?' + CYRILLIC_BYTES + rb'))'  # Minimum 2 caractères cyrilliques
+        # + rb'(?=.{4,})'  # Vérifie que la longueur totale est d'au moins 4 bytes
+        + rb')'
+    )
+    cyrillic_pattern_min = rb'(?:' + CYRILLIC_BYTES + rb'){%d,}' % min_size  # Regex pour trouver au moins 'min_size' caractères cyrilliques consécutifs
     for match in re.finditer(cyrillic_reg, buf):  # Chercher toutes les occurrences
         cyrillic_binary = match.group(0)  # Retourner les bytes cyrilliques trouvés
         if re.search(cyrillic_pattern_min, cyrillic_binary):
@@ -682,6 +827,7 @@ def extract_cyrillic_sequences(buf, min_size=2, start_from=0):
                 len(cyrillic_binary),  # Cyrillic binary found length (int)
                 len(cyrillic_string)  # Cyrillic string found length (int)
             )
+
 
 
 # Function to get the current timestamp in YYYY-MM-DD HH:MM:SS format
@@ -770,11 +916,14 @@ def validate_steam_game_and_wait(app_id, steam_log_path=r'C:\Program Files (x86)
         
 
 def main():
-    # Set CYRILLIC_PATTERN as global variable
-    global CYRILLIC_PATTERN
+    # Set CYRILLIC_CONTENT_PATTERN and CYRILLIC_LAST_BYTES as global variables
+    global CYRILLIC_CONTENT_PATTERN
+    global CYRILLIC_LAST_BYTES
+
     # Set default global variables
     global DEFAULT_ZONA_EXE_FILENAME
     global DEFAULT_ZONA_GAME_ID
+    global DEFAULT_ZONA_GAME_AUTHOR
     global DEFAULT_ZONA_GAME_NAME
     global DEFAULT_ZONA_DIR_NAME
     global DEFAULT_ZONA_DIR_EXAMPLE
@@ -786,6 +935,9 @@ def main():
     global DEFAULT_TRANSLATE_FUNCTION
     global DEFAULT_ZONA_TRANSLATE_DEBUG_FILE
     global DEFAULT_ZONA_TRANSLATE_LOG_FILE
+    global DEFAULT_ZONA_TRANSLATE_DEFAULT_ALLOWED_RANGES_ASSETS
+    global DEFAULT_ZONA_TRANSLATE_DEFAULT_ALLOWED_RANGES_LEVELS
+    global DEFAULT_ZONA_TRANSLATE_DEFAULT_ALLOWED_RANGES
     global i_debug
 
     # Main code with global exception management
@@ -805,36 +957,60 @@ def main():
                 # Set specific game global variables
                 if game_exec == 'Paradox of Hope.exe':
                     DEFAULT_ZONA_GAME_ID = -1
+                    DEFAULT_ZONA_GAME_AUTHOR = 'NikZ'
                     DEFAULT_ZONA_GAME_NAME = 'Paradox of Hope'
+                    DEFAULT_ZONA_GAME_NAME_REGEX = rb'\x50\x61\x72\x61\x64\x6F\x78\x20\x6F\x66\x20\x48\x6F\x70\x65'  # 'Paradox of Hope'
                     DEFAULT_ZONA_DIR_NAME = 'Paradox of Hope'
                     DEFAULT_ZONA_DATA_DIR_NAME = 'Paradox of Hope_Data'
                     DEFAULT_ZONA_VERSION_REGEX = [ rb'(0\.4\.[0-9])' ] # No update because game is not available anymore
-                    DEFAULT_ZONA_TRANSLATE_LANG_SRC = 'uk'
+                    DEFAULT_ZONA_TRANSLATE_LANG_SRC = 'ru'
                     DEFAULT_ZONA_TRANSLATE_LANG_SRC_FORCE = True
+                    DEFAULT_ZONA_TRANSLATE_ALLOWED_RANGES = DEFAULT_ZONA_TRANSLATE_DEFAULT_ALLOWED_RANGES
                 elif game_exec == 'CONVRGENCE.exe':
                     DEFAULT_ZONA_GAME_ID = 2609610  # https://store.steampowered.com/app/2609610/CONVRGENCE/
+                    DEFAULT_ZONA_GAME_AUTHOR = 'NikZ'
                     DEFAULT_ZONA_GAME_NAME = 'CONVRGENCE'
+                    DEFAULT_ZONA_GAME_NAME_REGEX = rb'\x43\x4F\x4E\x56\x52\x47\x45\x4E\x43\x45'  # 'CONVRGENCE'
                     DEFAULT_ZONA_DIR_NAME = 'CONVRGENCE'
                     DEFAULT_ZONA_DATA_DIR_NAME = 'CONVRGENCE_Data'
                     DEFAULT_ZONA_VERSION_REGEX = [ rb'([0-1]\.[0-9]\.[0-9]\.[0-9])', rb'([0-1]\.[0-9]\.[0-9])' ] # Update when game will be v2.x.x.x
-                    DEFAULT_ZONA_TRANSLATE_LANG_SRC = 'uk'
+                    DEFAULT_ZONA_TRANSLATE_LANG_SRC = 'ru'
                     DEFAULT_ZONA_TRANSLATE_LANG_SRC_FORCE = True
+                    DEFAULT_ZONA_TRANSLATE_ALLOWED_RANGES = DEFAULT_ZONA_TRANSLATE_DEFAULT_ALLOWED_RANGES
                 elif game_exec == 'ZONA.exe':
                     DEFAULT_ZONA_GAME_ID = 2142450  # https://store.steampowered.com/app/2142450/ZONA_Project_X_VR/
+                    DEFAULT_ZONA_GAME_AUTHOR = 'AGaming+'
                     DEFAULT_ZONA_GAME_NAME = 'Z.O.N.A Project X'
+                    DEFAULT_ZONA_GAME_NAME_REGEX = rb'\x5A\x2E\x4F\x2E\x4E\x2E\x41'  # 'Z.O.N.A'
                     DEFAULT_ZONA_DIR_NAME = 'ZONA'
                     DEFAULT_ZONA_DATA_DIR_NAME = 'ZONA_Data'
                     DEFAULT_ZONA_VERSION_REGEX = [ rb'(1\.0[0-9]\.[0-9][0-9])' ] # Update when game will be v2.xx.x.x
                     DEFAULT_ZONA_TRANSLATE_LANG_SRC = 'uk'
-                    DEFAULT_ZONA_TRANSLATE_LANG_SRC_FORCE = False
+                    DEFAULT_ZONA_TRANSLATE_LANG_SRC_FORCE = True
+                    DEFAULT_ZONA_TRANSLATE_ALLOWED_RANGES = {
+                        "assets": {
+                            "start_from_hex_label": "AFU _OTSTUPNIK",
+                            "start_from_hex": "41 46 55 20 5F 4F 54 53 54 55 50 4E 49 4B"
+                        }, 
+                        "levels": DEFAULT_ZONA_TRANSLATE_DEFAULT_ALLOWED_RANGES_LEVELS
+                    }
                 elif game_exec == 'ZONAORIGIN.exe':
                     DEFAULT_ZONA_GAME_ID = 2539520  # https://store.steampowered.com/app/2539520/ZONA_Origin/
+                    DEFAULT_ZONA_GAME_AUTHOR = 'AGaming+'
                     DEFAULT_ZONA_GAME_NAME = 'Z.O.N.A Origin'
+                    DEFAULT_ZONA_GAME_NAME_REGEX = rb'\x5A\x2E\x4F\x2E\x4E\x2E\x41\x20\x4F\x52\x49\x47\x49\x4E'  # 'Z.O.N.A ORIGIN'
                     DEFAULT_ZONA_DIR_NAME = 'ZONAORIGIN'
                     DEFAULT_ZONA_DATA_DIR_NAME = 'ZONAORIGIN_Data'
                     DEFAULT_ZONA_VERSION_REGEX = [ rb'([0-1]\.0[0-9][0-9])' ] # Update when game will be v2.xxx
                     DEFAULT_ZONA_TRANSLATE_LANG_SRC = 'uk'
                     DEFAULT_ZONA_TRANSLATE_LANG_SRC_FORCE = False
+                    DEFAULT_ZONA_TRANSLATE_ALLOWED_RANGES = {
+                        "assets": {
+                            "start_from_hex_label": "AFU _OTSTUPNIK",
+                            "start_from_hex": "41 46 55 20 5F 4F 54 53 54 55 50 4E 49 4B"
+                        }, 
+                        "levels": DEFAULT_ZONA_TRANSLATE_DEFAULT_ALLOWED_RANGES_LEVELS
+                    }
                 # Set common global variables
                 DEFAULT_ZONA_EXE_FILENAME = game_exec
                 DEFAULT_ZONA_DIR_EXAMPLE = f"C:\\SteamLibrary\\steamapps\\common\\{DEFAULT_ZONA_DIR_NAME}"
@@ -856,8 +1032,10 @@ def main():
         argparser.add_argument("-t", "--translator", type=str, default='google', choices=['google', 'deepl'], help="Translator to use to translate to. (default value: google)")
         argparser.add_argument("-ta", "--auth-key", type=str, default='', help="Your Translator API authentivation key. (default value: '')")
         argparser.add_argument("-ls", "--lang-src", type=str, default='empty', choices=ALL_SUPPORTED_LANGS_SRC, help="Language to translate from. (default value: 'empty').")
-        argparser.add_argument("-l", "--langs", type=str, default='empty', choices=ALL_SUPPORTED_LANGS+['empty', 'all'], help="Languages to translate to. if more than one language then '--langs' parameter must be comma separated (eg. 'fr,cs')")
-        argparser.add_argument("-f", "--files", type=str, default='empty', help="Comma separated str. Default is with all 'levelNN' and 'resources.assets' files. if '--file' is specified then '--files' parameter must be comma separated (eg. 'level7,level11')")
+        # # Allow to use 'fr,en,cs' with CLI execution
+        # argparser.add_argument("-l", "--langs", type=str, default='empty', choices=ALL_SUPPORTED_LANGS+['empty', 'all'], help="Languages to translate to. if more than one language then '--langs' parameter must be comma separated (eg. 'fr,cs')")
+        argparser.add_argument("-l", "--langs", type=str, default='empty', help="Languages to translate to. if more than one language then '--langs' parameter must be comma separated (eg. 'fr,cs')")
+        argparser.add_argument("-f", "--files", type=str, default='empty', help="Comma separated str. Default is with all 'levelNN' and '.assets' files. if '--file' is specified then '--files' parameter must be comma separated (eg. 'level7,level11')")
         argparser.add_argument("-s", "--min-size", type=int, default=2, help="Minimum size for string to translate is set to 2")
         argparser.add_argument("-v", "--verbose", action='store_true', help="Execute verbose mode (show translation results")
         argparser.add_argument("--sep", type=str, default=';', help="String separator for verbose mode. (default value: ';')")
@@ -1006,23 +1184,52 @@ def main():
             # END GUI execution
 
             # Regular expression for Cyrillic characters (Russian + Specific + Ukrainian pattern) and Latin punctuation
-            # CYRILLIC_PATTERN = rb'(\xD0[\x90-\xBF]|\xD1[\x80-\x8F]|\x0a|\x20|\x21|\x22|\x27|\x28|\x29|\x2B|\x2C|\x2D|\x2E|\x2F|\x5C|\x5F)'
-            # CYRILLIC_PATTERN = rb'(\xE2\x80\x94|\xD0[\x81\x86-\xBF]|\xD1[\x80-\x8F]|\xD2[\x90-\x91]|\xD2[\x84\x94]|\xD1\x96|\xD0[\x90-\xAF]|\x0a|\x20|\x21|\x22|\x27|\x28|\x29|\x2B|\x2C|\x2D|\x2E|\x2F|\x3A|\x3F\x5C|\x5F)'  # Regular expression for Cyrillic characters + CRLF + Latin punctuation
-            # CYRILLIC_PATTERN = rb'(\x56\x52\x3F\x20|\xE2\x80\x94|'+ CYRILLIC_BYTES + rb'|\x0a|\x20|\x21|\x22|\x27|\x28|\x29|\x2B|\x2C|\x2D|\x2E|\x2F|\x3A|\x3F|\x5C|\x5F)'  # Regular expression for Cyrillic characters + CRLF + Latin punctuation
-            CYRILLIC_PATTERN = rb'(' + SPECIFIC_CYRILLIC_BYTES_VR + \
-                               rb'|' + CYRILLIC_BYTES[i_lang_src] + \
-                               rb'|' + LATIN_PUNCTUATION_BYTES[DEFAULT_ZONA_DIR_NAME.upper()] + \
-                               rb')'  # Regular expression for Cyrillic characters + CRLF + Latin punctuation
+            # CYRILLIC_CONTENT_PATTERN = rb'(\xD0[\x90-\xBF]|\xD1[\x80-\x8F]|\x0a|\x20|\x21|\x22|\x27|\x28|\x29|\x2B|\x2C|\x2D|\x2E|\x2F|\x5C|\x5F)'
+            # CYRILLIC_CONTENT_PATTERN = rb'(\xE2\x80\x94|\xD0[\x81\x86-\xBF]|\xD1[\x80-\x8F]|\xD2[\x90-\x91]|\xD2[\x84\x94]|\xD1\x96|\xD0[\x90-\xAF]|\x0a|\x20|\x21|\x22|\x27|\x28|\x29|\x2B|\x2C|\x2D|\x2E|\x2F|\x3A|\x3F\x5C|\x5F)'  # Regular expression for Cyrillic characters + CRLF + Latin punctuation
+            # CYRILLIC_CONTENT_PATTERN = rb'(\x56\x52\x3F\x20|\xE2\x80\x94|'+ CYRILLIC_BYTES + rb'|\x0a|\x20|\x21|\x22|\x27|\x28|\x29|\x2B|\x2C|\x2D|\x2E|\x2F|\x3A|\x3F|\x5C|\x5F)'  # Regular expression for Cyrillic characters + CRLF + Latin punctuation
+            # CYRILLIC_CONTENT_PATTERN = rb'(' + CYRILLIC_BYTES + \
+            #                            rb'|' + CRLF_BYTES + \
+            #                            rb'|' + PUNCTUATION_BYTES + \
+            #                            rb')'  # Regular expression for Cyrillic characters + CRLF + Latin punctuation + Numbers + LF not at end of string
+            # CYRILLIC_CONTENT_PATTERN = (
+            #     rb'(' + CYRILLIC_BYTES + rb'|'
+            #           + DEFAULT_ZONA_GAME_NAME_REGEX + rb'|'
+            #           + WSPACE_BYTE + rb'|'
+            #           + DASH_BYTES + rb'|'
+            #           + LATIN_BYTES + rb'|'
+            #           + CRLF_BYTES + rb'|'
+            #           + NUMBERS_BYTES + rb'|'
+            #           + PUNCTUATION_BYTES + rb')'
+            # )
+            CYRILLIC_CONTENT_PATTERN = (
+                rb'(?:' + CYRILLIC_BYTES +
+                rb'|' + DEFAULT_ZONA_GAME_NAME_REGEX +
+                rb'|' + WSPACE_BYTE +
+                rb'|' + DASH_BYTES +
+                rb'|' + LATIN_BYTES +
+                rb'|' + CRLF_BYTES +
+                rb'|' + NUMBERS_BYTES +
+                rb'|' + PUNCTUATION_BYTES + rb')'
+            )
+            CYRILLIC_LAST_BYTES =  {
+                "AGaming+": CYRILLIC_BYTES + rb'|' + PUNCTUATION_BYTES,
+                "NikZ": CYRILLIC_BYTES + rb'|' + PUNCTUATION_BYTES + rb'|' + NUMBERS_BYTES
+            }
+            # rb'^(?:\xD0[\x80-\xBF]|\xD0[\xA0-\xFF]|\xD1[\x80-\xBF]|\xD2[\x80-\xBF]|\xD3[\x80-\xBF]|\xD4[\x80-\x8F])(?:\xD0[\x80-\xBF]|\xD0[\xA0-\xFF]|\xD1[\x80-\xBF]|\xD2[\x80-\xBF]|\xD3[\x80-\xBF]|\xD4[\x80-\x8F]|\xC2\xAB|\xC2\xBB|\x20|\x21|\x22|\x27|\x28|\x29|\x2B|\x2C|\x2D|\x2E|\x2F|\x3A|\x3F|\x5C|\x5F|(?<=\x20|\x21|\x22|\x27|\x28|\x29|\x2B|\x2C|\x2D|\x2E|\x2F|\x3A|\x3F|\x5C|\x5F|\xD0|\xD1|\xD2|\xD3|\xD4)\x0A|(\x0A)(?=\x20|\x21|\x22|\x27|\x28|\x29|\x2B|\x2C|\x2D|\x2E|\x2F|\x3A|\x3F|\x5C|\x5F|\xD0|\xD1|\xD2|\xD3|\xD4)|[\x30-\x39]|\x56\x52\x3F\x20)*'
 
-            # Save 'i_min_size' for 'resources.assets'
+            # Save 'i_min_size' for '.assets'
             i_min_size_saved = i_min_size
 
             # Default 'i_files'
             if i_files == ['empty']:
                 i_files = [f for f in os_listdir(DEFAULT_ZONA_DATA_DIR) if f.startswith('level') and not f.endswith('.resS')]
-                # Unique 'resources.assets' original file
-                if DEFAULT_ZONA_DIR_NAME.upper() in DEFAULT_ZONA_TRANSLATE_RESOURCES_ASSETS_FILE:
-                    i_files.append('resources.assets')
+                # 'resources.assets' or 'sharedassetsN.assets' original files
+                i_files.extend(DEFAULT_ZONA_TRANSLATE_ASSETS_FILE[DEFAULT_ZONA_DIR_NAME.upper()])
+                # # 'resources.assets' original files
+                # if DEFAULT_ZONA_DIR_NAME.upper() in DEFAULT_ZONA_TRANSLATE_RESOURCES_ASSETS_FILE:
+                #     assets_files = [f for f in os_listdir(DEFAULT_ZONA_DATA_DIR) if f.startswith('sharedassets') and f.endswith('.assets')]
+                #     i_files.extend(assets_files)
+                #     # i_files.append('resources.assets')
 
             print()
             print(f" /// PARAMETERS:\n")
@@ -1203,14 +1410,23 @@ def main():
                             continue
                         
                         with open(i_file, 'rb') as f:
-                            if i_file == 'resources.assets':
-                                # 'i_min_size' for 'resources.assets' cannot be too big. Some quests (as 'Explore ' one ) are truncated with non-ascii characters.
+                            # if 'resources.assets' in i_file:
+                            if '.assets' in i_file:
+                                # 'i_min_size' for 'resources.assets' files cannot be too big. Some quests (as 'Explore ' one ) are truncated with non-ascii characters.
                                 if i_min_size > 6:
                                     i_min_size = 6
+                                # 'i_min_size' for 'sharedassetsN.assets' files cannot be too small. Some very small cyrillic strings are not game's text.
+                                if i_min_size < 4:
+                                    i_min_size = 4
+                                start_from_hex_0 = "00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 80 3F 00 00 80 3F 00 00 80 3F 00 00 80 3F"  # ....Ç?..Ç?..Ç?..Ç?
+                                start_from_int_0 = get_address_from_binary(f, i_file, start_from_hex_0, '....Ç?..Ç?..Ç?..Ç?')
                                 # BEGIN Z.O.N.A
-                                # Only Z.O.N.A 'resources.assets' file
-                                start_from_hex_0 = "41 46 55 20 5F 4F 54 53 54 55 50 4E 49 4B"  # AFU _OTSTUPNIK
-                                start_from_int_0 = get_address_from_binary(f, i_file, start_from_hex_0, 'AFU _OTSTUPNIK')
+                                # Only Z.O.N.A 'resources.assets' files
+                                # start_from_hex_0 = "41 46 55 20 5F 4F 54 53 54 55 50 4E 49 4B"  # "41 46 55 20 5F 4F 54 53 54 55 50 4E 49 4B"
+                                # start_from_int_0 = get_address_from_binary(f, i_file, start_from_hex_0, 'AFU _OTSTUPNIK')
+                                start_from_hex_label = DEFAULT_ZONA_TRANSLATE_ALLOWED_RANGES['assets']['start_from_hex_label']
+                                start_from_hex_0 = DEFAULT_ZONA_TRANSLATE_ALLOWED_RANGES['assets']['start_from_hex']
+                                start_from_int_0 = get_address_from_binary(f, i_file, start_from_hex_0, start_from_hex_label)
                                 # END Z.O.N.A
                                 allowed_ranges = [
                                     {
@@ -1226,8 +1442,11 @@ def main():
                             else:
                                 i_min_size = i_min_size_saved
                                 # All 'levelNN' files
-                                start_from_hex_0 = "00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 80 3F 00 00 80 3F 00 00 80 3F 00 00 80 3F"  # ....Ç?..Ç?..Ç?..Ç?
-                                start_from_int_0 = get_address_from_binary(f, i_file, start_from_hex_0, '....Ç?..Ç?..Ç?..Ç?')
+                                # start_from_hex_0 = "00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 80 3F 00 00 80 3F 00 00 80 3F 00 00 80 3F"  # ....Ç?..Ç?..Ç?..Ç?
+                                # start_from_int_0 = get_address_from_binary(f, i_file, start_from_hex_0, '....Ç?..Ç?..Ç?..Ç?')
+                                start_from_hex_label = DEFAULT_ZONA_TRANSLATE_ALLOWED_RANGES['levels']['start_from_hex_label']
+                                start_from_hex_0 = DEFAULT_ZONA_TRANSLATE_ALLOWED_RANGES['levels']['start_from_hex']
+                                start_from_int_0 = get_address_from_binary(f, i_file, start_from_hex_0, start_from_hex_label)
                                 allowed_ranges = [
                                     {
                                         "begin_int": start_from_int_0,  # 0
@@ -1250,6 +1469,7 @@ def main():
                                 # for s in tqdm(cyrillic_sequences):
                                 for s in extract_cyrillic_sequences(bytes_to_translate, min_size=i_min_size, start_from=start_from_int_0):
                                     
+                                    # print(f"[DEBUG] '{s.s}'")
                                     break_requested = False
                                     # Check if we are in allowed range
                                     for range in allowed_ranges:
@@ -1359,7 +1579,7 @@ def main():
     except Exception as e:
         exc_type, exc_obj, exc_tb = sys.exc_info()
         fname = os_path.split(exc_tb.tb_frame.f_code.co_filename)[1]
-        printc(f" Error: {e}\n {exc_type}\n {fname}\n {exc_tb.tb_lineno}", bcolors.FAIL)
+        printc(f" Error: {e}\n {exc_type}\n {exc_obj}\n {fname}\n {exc_tb.tb_lineno}", bcolors.FAIL)
         Failure = True
 
     finally:
