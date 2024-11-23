@@ -5,6 +5,7 @@ Project for translating all Ukrainian or Russian texts of the following Steam ga
 - 'Z.O.N.A Project X' by AGaming+
 - 'CONVRGENCE' by NikZ
 - 'Paradox of Hope' by NikZ
+
 And enjoy Ukrainian or Russian voices while having all the texts in your native language!
 
 <!-- TOC -->
