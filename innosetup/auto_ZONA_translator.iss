@@ -1,7 +1,7 @@
 [Setup]
 AppName=auto_ZONA_translator
 OutputBaseFilename=auto_ZONA_translator_installer
-AppVersion=v0.1.5-alpha
+AppVersion=v0.3.0-alpha
 DefaultDirName={src}
 UsePreviousAppDir=no
 DisableProgramGroupPage=yes
@@ -18,6 +18,13 @@ Source: "resources\*"; DestDir: "{app}\"; Flags: ignoreversion recursesubdirs cr
 
 [Code]
 var
+  // BEGIN CONVRGENCE + Paradox of Hope are only Russian Voices / Z.O.N.A project X is only Ukrainian Voices
+  SourceDir: String;
+  Only_OneLang: Boolean;
+  Only_OneLang_1: String;
+  Only_OneLang_2: String;
+  Only_OneLang_3: String;
+  // END CONVRGENCE + Paradox of Hope are only Russian Voices / Z.O.N.A project X is only Ukrainian Voices
   SRC_Page: TInputOptionWizardPage;
   SRC_LanguageCode: String;
   SRC_LanguageName: String;
@@ -29,11 +36,35 @@ var
 
 procedure InitializeWizard;
 begin
-  // Source language (Voices)
-  SRC_Page := CreateInputOptionPage(wpWelcome, 'VOICES selection', '', 'Choose your preferred language for VOICES:', True, False);
-  SRC_Page.Add('Ukrainian (Prypiat''s native tongue, maximum immersion!)');
-  SRC_Page.Add('Russian');
-  SRC_Page.Values[0] := True;
+  // BEGIN CONVRGENCE + Paradox of Hope are only Russian Voices / Z.O.N.A project X is only Ukrainian Voices
+  SourceDir := ExpandConstant('{src}');
+  Only_OneLang_1 := 'CONVRGENCE';
+  Only_OneLang_2 := 'Paradox of Hope';
+  Only_OneLang_3 := 'ZONA';
+
+  Only_OneLang := False;
+  if (Pos(Only_OneLang_1, SourceDir) > 0) or (Pos(Only_OneLang_2, SourceDir) > 0) then
+  begin
+    Only_OneLang := True;
+    SRC_LanguageCode := 'ru';
+    SRC_LanguageName := 'RUSSIAN'
+  end;
+  if (Pos(Only_OneLang_3, SourceDir) > 0) then
+  begin
+    Only_OneLang := True;
+    SRC_LanguageCode := 'uk';
+    SRC_LanguageName := 'UKRAINIAN';
+  end;
+
+  if not Only_OneLang then
+  begin
+    // Source language (Voices)
+    SRC_Page := CreateInputOptionPage(wpWelcome, 'VOICES selection', '', 'Choose your preferred language for VOICES:', True, False);
+    SRC_Page.Add('Ukrainian (Prypiat''s native tongue, maximum immersion!)');
+    SRC_Page.Add('Russian');
+    SRC_Page.Values[0] := True;
+  end;
+  // END CONVRGENCE + Paradox of Hope are only Russian Voices / Z.O.N.A project X is only Ukrainian Voices
 
   // Destination language (Texts and Subtitles)
   DST_Page := CreateInputOptionPage(wpWelcome, 'TEXTS and SUBTITLES selection', '', 'Choose your preferred language for TEXTS and SUBTITLES:', True, True);
@@ -58,20 +89,25 @@ procedure CurStepChanged(CurStep: TSetupStep);
 begin
   if CurStep = ssPostInstall then
   begin
-    // Source language (Voices)
-    if SRC_Page.Values[0] then
+    // BEGIN CONVRGENCE + Paradox of Hope are only Russian Voices / Z.O.N.A project X is only Ukrainian Voices
+    if not Only_OneLang then
     begin
-      SRC_LanguageCode := 'uk';
-      SRC_LanguageName := 'UKRAINIAN';
-    end
-    else
-    begin
-      SRC_LanguageCode := 'ru';
-      SRC_LanguageName := 'RUSSIAN';
+      // Source language (Voices)
+      if SRC_Page.Values[0] then
+      begin
+        SRC_LanguageCode := 'uk';
+        SRC_LanguageName := 'UKRAINIAN';
+      end
+      else
+      begin
+        SRC_LanguageCode := 'ru';
+        SRC_LanguageName := 'RUSSIAN';
+      end;
     end;
+    // END CONVRGENCE + Paradox of Hope are only Russian Voices / Z.O.N.A project X is only Ukrainian Voices
     
     // Destination language (Texts and Subtitles)
-    DST_LanguageMsg := 'Launch your Z.O.N.A game and select ''' + SRC_LanguageName + ''' language in game settings.'
+    DST_LanguageMsg := 'Launch your game and select ''' + SRC_LanguageName + ''' language in game settings.'
 
     if DST_Page.Values[0] then
       DST_LanguageCode := 'cs'
@@ -84,7 +120,7 @@ begin
     else if DST_Page.Values[4] then
     begin
       DST_LanguageCode := 'fr'
-      DST_LanguageMsg := 'Lancez votre jeu Z.O.N.A et sélectionnez la langue ''' + SRC_LanguageName + ''' dans les paramètres du jeu.'
+      DST_LanguageMsg := 'Lancez votre jeu et sélectionnez la langue ''' + SRC_LanguageName + ''' dans les paramètres du jeu.'
     end
     else if DST_Page.Values[5] then
       DST_LanguageCode := 'de'

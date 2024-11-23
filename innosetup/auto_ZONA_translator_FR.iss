@@ -1,7 +1,7 @@
 [Setup]
 AppName=auto_ZONA_translator
 OutputBaseFilename=auto_ZONA_translator_installer_FR
-AppVersion=v0.1.5-alpha
+AppVersion=v0.3.0-alpha
 DefaultDirName={src}
 UsePreviousAppDir=no
 DisableProgramGroupPage=yes
@@ -18,6 +18,13 @@ Source: "resources\*"; DestDir: "{app}\"; Flags: ignoreversion recursesubdirs cr
 
 [Code]
 var
+  // BEGIN CONVRGENCE + Paradox of Hope are only Russian Voices / Z.O.N.A project X is only Ukrainian Voices
+  SourceDir: String;
+  Only_OneLang: Boolean;
+  Only_OneLang_1: String;
+  Only_OneLang_2: String;
+  Only_OneLang_3: String;
+  // END CONVRGENCE + Paradox of Hope are only Russian Voices / Z.O.N.A project X is only Ukrainian Voices
   SRC_Page: TInputOptionWizardPage;
   SRC_LanguageCode: String;
   SRC_LanguageName: String;
@@ -28,11 +35,35 @@ var
 
 procedure InitializeWizard;
 begin
-  // Source language (Voices)
-  SRC_Page := CreateInputOptionPage(wpWelcome, 'Sélection des VOIX du jeu', '', 'Choisissez votre langue préférée pour les VOIX du jeu:', True, False);
-  SRC_Page.Add('Ukrainien (Langue natale de Prypiat, immersion maximale!)');
-  SRC_Page.Add('Russe');
-  SRC_Page.Values[0] := True;
+  // BEGIN CONVRGENCE + Paradox of Hope are only Russian Voices / Z.O.N.A project X is only Ukrainian Voices
+  SourceDir := ExpandConstant('{src}');
+  Only_OneLang_1 := 'CONVRGENCE';
+  Only_OneLang_2 := 'Paradox of Hope';
+  Only_OneLang_3 := 'ZONA';
+
+  Only_OneLang := False;
+  if (Pos(Only_OneLang_1, SourceDir) > 0) or (Pos(Only_OneLang_2, SourceDir) > 0) then
+  begin
+    Only_OneLang := True;
+    SRC_LanguageCode := 'ru';
+    SRC_LanguageName := 'RUSSE'
+  end;
+  if (Pos(Only_OneLang_3, SourceDir) > 0) then
+  begin
+    Only_OneLang := True;
+    SRC_LanguageCode := 'uk';
+    SRC_LanguageName := 'UKRAINIEN';
+  end;
+
+  if not Only_OneLang then
+  begin
+    // Source language (Voices)
+    SRC_Page := CreateInputOptionPage(wpWelcome, 'Sélection des VOIX du jeu', '', 'Choisissez votre langue préférée pour les VOIX du jeu:', True, False);
+    SRC_Page.Add('Ukrainien (Langue natale de Prypiat, immersion maximale!)');
+    SRC_Page.Add('Russe');
+    SRC_Page.Values[0] := True;
+  end;
+  // END CONVRGENCE + Paradox of Hope are only Russian Voices / Z.O.N.A project X is only Ukrainian Voices
 
   // Destination language (Texts and Subtitles)
   DST_LanguageCode := 'fr'
@@ -42,20 +73,25 @@ procedure CurStepChanged(CurStep: TSetupStep);
 begin
   if CurStep = ssPostInstall then
   begin
-    // Source language (Voices)
-    if SRC_Page.Values[0] then
+    // BEGIN CONVRGENCE + Paradox of Hope are only Russian Voices / Z.O.N.A project X is only Ukrainian Voices
+    if not Only_OneLang then
     begin
-      SRC_LanguageCode := 'uk';
-      SRC_LanguageName := 'UKRAINIEN';
-    end
-    else
-    begin
-      SRC_LanguageCode := 'ru';
-      SRC_LanguageName := 'RUSSE';
+      // Source language (Voices)
+      if SRC_Page.Values[0] then
+      begin
+        SRC_LanguageCode := 'uk';
+        SRC_LanguageName := 'UKRAINIEN';
+      end
+      else
+      begin
+        SRC_LanguageCode := 'ru';
+        SRC_LanguageName := 'RUSSE';
+      end;
     end;
+    // END CONVRGENCE + Paradox of Hope are only Russian Voices / Z.O.N.A project X is only Ukrainian Voices
     
     // Destination language (Texts and Subtitles)
-    DST_LanguageMsg := 'Pour profiter des TEXTES en FRANCAIS et des voix en ' + SRC_LanguageName + ' : Lancez votre jeu Z.O.N.A depuis Steam puis sélectionnez ''' + SRC_LanguageName + ''' dans les paramètres de langue du jeu. AMUSEZ-VOUS BIEN DANS LA ZONE!'
+    DST_LanguageMsg := 'Pour profiter des TEXTES en FRANCAIS et des voix en ' + SRC_LanguageName + ' : Lancez votre jeu depuis Steam puis sélectionnez ''' + SRC_LanguageName + ''' dans les paramètres de langue du jeu. AMUSEZ-VOUS BIEN DANS LA ZONE!'
       
     // Execute auto_ZONA_translator.exe with the selected language and capture the return code
     Exec(ExpandConstant('{app}\auto_ZONA_translator.exe'), '-ls ' + SRC_LanguageCode + ' -l ' + DST_LanguageCode + ' --force', '', SW_SHOW, ewWaitUntilTerminated, ResultCode);

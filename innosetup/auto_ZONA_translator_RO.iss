@@ -1,7 +1,7 @@
 [Setup]
 AppName=auto_ZONA_translator
 OutputBaseFilename=auto_ZONA_translator_installer_RO
-AppVersion=v0.1.5-alpha
+AppVersion=v0.3.0-alpha
 DefaultDirName={src}
 UsePreviousAppDir=no
 DisableProgramGroupPage=yes
@@ -10,7 +10,6 @@ DisableDirPage=no
 SetupIconFile=.\auto_ZONA_translator.ico
 
 [Languages]
-// https://jrsoftware.org/files/istrans/
 Name: "ro"; MessagesFile: "compiler:Languages\Romanian.isl"
 
 [Files]
@@ -19,6 +18,13 @@ Source: "resources\*"; DestDir: "{app}\"; Flags: ignoreversion recursesubdirs cr
 
 [Code]
 var
+  // BEGIN CONVRGENCE + Paradox of Hope are only Russian Voices / Z.O.N.A project X is only Ukrainian Voices
+  SourceDir: String;
+  Only_OneLang: Boolean;
+  Only_OneLang_1: String;
+  Only_OneLang_2: String;
+  Only_OneLang_3: String;
+  // END CONVRGENCE + Paradox of Hope are only Russian Voices / Z.O.N.A project X is only Ukrainian Voices
   SRC_Page: TInputOptionWizardPage;
   SRC_LanguageCode: String;
   SRC_LanguageName: String;
@@ -29,11 +35,36 @@ var
 
 procedure InitializeWizard;
 begin
-  // Source language (Voices)
-  SRC_Page := CreateInputOptionPage(wpWelcome, 'Selecție de VOCI în joc', '', 'Alegeți limba preferată pentru VOCILE jocului:', True, False);
-  SRC_Page.Add('Ucraineană (limba maternă a lui Prypiat, imersiune maximă!)');
-  SRC_Page.Add('Rusă');
-  SRC_Page.Values[0] := True;
+
+  // BEGIN CONVRGENCE + Paradox of Hope are only Russian Voices / Z.O.N.A project X is only Ukrainian Voices
+  SourceDir := ExpandConstant('{src}');
+  Only_OneLang_1 := 'CONVRGENCE';
+  Only_OneLang_2 := 'Paradox of Hope';
+  Only_OneLang_3 := 'ZONA';
+
+  Only_OneLang := False;
+  if (Pos(Only_OneLang_1, SourceDir) > 0) or (Pos(Only_OneLang_2, SourceDir) > 0) then
+  begin
+    Only_OneLang := True;
+    SRC_LanguageCode := 'ru';
+    SRC_LanguageName := 'RUSĂ'
+  end;
+  if (Pos(Only_OneLang_3, SourceDir) > 0) then
+  begin
+    Only_OneLang := True;
+    SRC_LanguageCode := 'uk';
+    SRC_LanguageName := 'UCRAINEANĂ';
+  end;
+
+  if not Only_OneLang then
+  begin
+    // Source language (Voices)
+    SRC_Page := CreateInputOptionPage(wpWelcome, 'Selecție de VOCI în joc', '', 'Alegeți limba preferată pentru VOCILE jocului:', True, False);
+    SRC_Page.Add('Ucraineană (limba maternă a lui Prypiat, imersiune maximă!)');
+    SRC_Page.Add('Rusă');
+    SRC_Page.Values[0] := True;
+  end;
+  // END CONVRGENCE + Paradox of Hope are only Russian Voices / Z.O.N.A project X is only Ukrainian Voices
 
   // Destination language (Texts and Subtitles)
   DST_LanguageCode := 'ro'
@@ -43,20 +74,25 @@ procedure CurStepChanged(CurStep: TSetupStep);
 begin
   if CurStep = ssPostInstall then
   begin
-    // Source language (Voices)
-    if SRC_Page.Values[0] then
+    // BEGIN CONVRGENCE + Paradox of Hope are only Russian Voices / Z.O.N.A project X is only Ukrainian Voices
+    if not Only_OneLang then
     begin
-      SRC_LanguageCode := 'uk';
-      SRC_LanguageName := 'UCRAINEANĂ';
-    end
-    else
-    begin
-      SRC_LanguageCode := 'ru';
-      SRC_LanguageName := 'RUSĂ';
+      // Source language (Voices)
+      if SRC_Page.Values[0] then
+      begin
+        SRC_LanguageCode := 'uk';
+        SRC_LanguageName := 'UCRAINEANĂ';
+      end
+      else
+      begin
+        SRC_LanguageCode := 'ru';
+        SRC_LanguageName := 'RUSĂ';
+      end;
     end;
+    // END CONVRGENCE + Paradox of Hope are only Russian Voices / Z.O.N.A project X is only Ukrainian Voices
     
     // Destination language (Texts and Subtitles)
-    DST_LanguageMsg := 'Pentru a vă bucura de TEXT în FRANCEZĂ și de voci în ' + SRC_LanguageName + ' : Lansați jocul Z.O.N.A de pe Steam, apoi selectați ''' + SRC_LanguageName + ''' în setările de limbă ale jocului. DISTRACȚIE PLĂCUTĂ ÎN ZONĂ!'
+    DST_LanguageMsg := 'Pentru a vă bucura de TEXT în ROMÂNĂ și de voci în ' + SRC_LanguageName + ' : Lansați jocul de pe Steam, apoi selectați ''' + SRC_LanguageName + ''' în setările de limbă ale jocului. DISTRACȚIE PLĂCUTĂ ÎN ZONĂ!'
       
     // Execute auto_ZONA_translator.exe with the selected language and capture the return code
     Exec(ExpandConstant('{app}\auto_ZONA_translator.exe'), '-ls ' + SRC_LanguageCode + ' -l ' + DST_LanguageCode + ' --force', '', SW_SHOW, ewWaitUntilTerminated, ResultCode);

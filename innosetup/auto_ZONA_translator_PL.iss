@@ -1,7 +1,7 @@
 [Setup]
 AppName=auto_ZONA_translator
 OutputBaseFilename=auto_ZONA_translator_installer_PL
-AppVersion=v0.1.5-alpha
+AppVersion=v0.2.3-alpha
 DefaultDirName={src}
 UsePreviousAppDir=no
 DisableProgramGroupPage=yes
@@ -18,6 +18,13 @@ Source: "resources\*"; DestDir: "{app}\"; Flags: ignoreversion recursesubdirs cr
 
 [Code]
 var
+  // BEGIN CONVRGENCE + Paradox of Hope are only Russian Voices / Z.O.N.A project X is only Ukrainian Voices
+  SourceDir: String;
+  Only_OneLang: Boolean;
+  Only_OneLang_1: String;
+  Only_OneLang_2: String;
+  Only_OneLang_3: String;
+  // END CONVRGENCE + Paradox of Hope are only Russian Voices / Z.O.N.A project X is only Ukrainian Voices
   SRC_Page: TInputOptionWizardPage;
   SRC_LanguageCode: String;
   SRC_LanguageName: String;
@@ -28,11 +35,36 @@ var
 
 procedure InitializeWizard;
 begin
-  // Source language (Voices)
-  SRC_Page := CreateInputOptionPage(wpWelcome, 'Wybieranie GŁOSÓW w grze', '', 'Wybierz preferowany język GŁOSÓW w grze:', True, False);
-  SRC_Page.Add('Ukraiński (język ojczysty Prypeci, maksymalne zanurzenie!)');
-  SRC_Page.Add('Rosyjski');
-  SRC_Page.Values[0] := True;
+
+  // BEGIN CONVRGENCE + Paradox of Hope are only Russian Voices / Z.O.N.A project X is only Ukrainian Voices
+  SourceDir := ExpandConstant('{src}');
+  Only_OneLang_1 := 'CONVRGENCE';
+  Only_OneLang_2 := 'Paradox of Hope';
+  Only_OneLang_3 := 'ZONA';
+
+  Only_OneLang := False;
+  if (Pos(Only_OneLang_1, SourceDir) > 0) or (Pos(Only_OneLang_2, SourceDir) > 0) then
+  begin
+    Only_OneLang := True;
+    SRC_LanguageCode := 'ru';
+    SRC_LanguageName := 'ROSYJSKI'
+  end;
+  if (Pos(Only_OneLang_3, SourceDir) > 0) then
+  begin
+    Only_OneLang := True;
+    SRC_LanguageCode := 'uk';
+    SRC_LanguageName := 'UKRAIŃSKI';
+  end;
+
+  if not Only_OneLang then
+  begin
+    // Source language (Voices)
+    SRC_Page := CreateInputOptionPage(wpWelcome, 'Wybieranie GŁOSÓW w grze', '', 'Wybierz preferowany język GŁOSÓW w grze:', True, False);
+    SRC_Page.Add('Ukraiński (język ojczysty Prypeci, maksymalne zanurzenie!)');
+    SRC_Page.Add('Rosyjski');
+    SRC_Page.Values[0] := True;
+  end;
+  // END CONVRGENCE + Paradox of Hope are only Russian Voices / Z.O.N.A project X is only Ukrainian Voices
 
   // Destination language (Texts and Subtitles)
   DST_LanguageCode := 'pl'
@@ -42,20 +74,25 @@ procedure CurStepChanged(CurStep: TSetupStep);
 begin
   if CurStep = ssPostInstall then
   begin
-    // Source language (Voices)
-    if SRC_Page.Values[0] then
+    // BEGIN CONVRGENCE + Paradox of Hope are only Russian Voices / Z.O.N.A project X is only Ukrainian Voices
+    if not Only_OneLang then
     begin
-      SRC_LanguageCode := 'uk';
-      SRC_LanguageName := 'UKRAIŃSKI';
-    end
-    else
-    begin
-      SRC_LanguageCode := 'ru';
-      SRC_LanguageName := 'ROSYJSKI';
+      // Source language (Voices)
+      if SRC_Page.Values[0] then
+      begin
+        SRC_LanguageCode := 'uk';
+        SRC_LanguageName := 'UKRAIŃSKI';
+      end
+      else
+      begin
+        SRC_LanguageCode := 'ru';
+        SRC_LanguageName := 'ROSYJSKI';
+      end;
     end;
+    // END CONVRGENCE + Paradox of Hope are only Russian Voices / Z.O.N.A project X is only Ukrainian Voices
     
     // Destination language (Texts and Subtitles)
-    DST_LanguageMsg := 'Aby cieszyć się TEKSTEM we FRANCUSKIM i głosami w ' + SRC_LanguageName + ' : Uruchom grę Z.O.N.A ze Steam, a następnie wybierz ''' + SRC_LanguageName + ''' w ustawieniach językowych gry. MIŁEJ ZABAWY W STREFIE!'
+    DST_LanguageMsg := 'Aby cieszyć się TEKSTEM we POLSKI i głosami w ' + SRC_LanguageName + ' : Uruchom grę ze Steam, a następnie wybierz ''' + SRC_LanguageName + ''' w ustawieniach językowych gry. MIŁEJ ZABAWY W STREFIE!'
       
     // Execute auto_ZONA_translator.exe with the selected language and capture the return code
     Exec(ExpandConstant('{app}\auto_ZONA_translator.exe'), '-ls ' + SRC_LanguageCode + ' -l ' + DST_LanguageCode + ' --force', '', SW_SHOW, ewWaitUntilTerminated, ResultCode);

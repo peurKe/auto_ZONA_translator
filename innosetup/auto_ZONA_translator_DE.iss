@@ -1,7 +1,7 @@
 [Setup]
 AppName=auto_ZONA_translator
 OutputBaseFilename=auto_ZONA_translator_installer_DE
-AppVersion=v0.1.5-alpha
+AppVersion=v0.3.0-alpha
 DefaultDirName={src}
 UsePreviousAppDir=no
 DisableProgramGroupPage=yes
@@ -18,6 +18,13 @@ Source: "resources\*"; DestDir: "{app}\"; Flags: ignoreversion recursesubdirs cr
 
 [Code]
 var
+  // BEGIN CONVRGENCE + Paradox of Hope are only Russian Voices / Z.O.N.A project X is only Ukrainian Voices
+  SourceDir: String;
+  Only_OneLang: Boolean;
+  Only_OneLang_1: String;
+  Only_OneLang_2: String;
+  Only_OneLang_3: String;
+  // END CONVRGENCE + Paradox of Hope are only Russian Voices / Z.O.N.A project X is only Ukrainian Voices
   SRC_Page: TInputOptionWizardPage;
   SRC_LanguageCode: String;
   SRC_LanguageName: String;
@@ -28,34 +35,63 @@ var
 
 procedure InitializeWizard;
 begin
-  // Source language (Voices)
-  SRC_Page := CreateInputOptionPage(wpWelcome, 'Auswahl der VOICEs im Spiel', '', 'Wählen Sie Ihre bevorzugte Sprache für die VOICEs im Spiel:', True, False);
-  SRC_Page.Add('Ukrainisch (Prypjats Heimatsprache, maximale Immersion!)');
-  SRC_Page.Add('Russisch');
-  SRC_Page.Values[0] := True;
+  // BEGIN CONVRGENCE + Paradox of Hope are only Russian Voices / Z.O.N.A project X is only Ukrainian Voices
+  SourceDir := ExpandConstant('{src}');
+  Only_OneLang_1 := 'CONVRGENCE';
+  Only_OneLang_2 := 'Paradox of Hope';
+  Only_OneLang_3 := 'ZONA';
+
+  Only_OneLang := False;
+  if (Pos(Only_OneLang_1, SourceDir) > 0) or (Pos(Only_OneLang_2, SourceDir) > 0) then
+  begin
+    Only_OneLang := True;
+    SRC_LanguageCode := 'ru';
+    SRC_LanguageName := 'RUSSISCH'
+  end;
+  if (Pos(Only_OneLang_3, SourceDir) > 0) then
+  begin
+    Only_OneLang := True;
+    SRC_LanguageCode := 'uk';
+    SRC_LanguageName := 'UKRAINISCH';
+  end;
+
+  if not Only_OneLang then
+  begin
+    // Source language (Voices)
+    SRC_Page := CreateInputOptionPage(wpWelcome, 'Auswahl der VOICEs im Spiel', '', 'Wählen Sie Ihre bevorzugte Sprache für die VOICEs im Spiel:', True, False);
+    SRC_Page.Add('Ukrainisch (Prypjats Heimatsprache, maximale Immersion!)');
+    SRC_Page.Add('Russisch');
+    SRC_Page.Values[0] := True;
+  end;
+   // END CONVRGENCE + Paradox of Hope are only Russian Voices / Z.O.N.A project X is only Ukrainian Voices
 
   // Destination language (Texts and Subtitles)
-  DST_LanguageCode := 'fr'
+  DST_LanguageCode := 'de'
 end;
 
 procedure CurStepChanged(CurStep: TSetupStep);
 begin
   if CurStep = ssPostInstall then
   begin
-    // Source language (Voices)
-    if SRC_Page.Values[0] then
+    // BEGIN CONVRGENCE + Paradox of Hope are only Russian Voices / Z.O.N.A project X is only Ukrainian Voices
+    if not Only_OneLang then
     begin
-      SRC_LanguageCode := 'uk';
-      SRC_LanguageName := 'UKRAINISCH';
-    end
-    else
-    begin
-      SRC_LanguageCode := 'ru';
-      SRC_LanguageName := 'RUSSISCH';
+      // Source language (Voices)
+      if SRC_Page.Values[0] then
+      begin
+        SRC_LanguageCode := 'uk';
+        SRC_LanguageName := 'UKRAINISCH';
+      end
+      else
+      begin
+        SRC_LanguageCode := 'ru';
+        SRC_LanguageName := 'RUSSISCH';
+      end;
     end;
+    // END CONVRGENCE + Paradox of Hope are only Russian Voices / Z.O.N.A project X is only Ukrainian Voices
     
     // Destination language (Texts and Subtitles)
-    DST_LanguageMsg := 'Um die Texte auf DEUTSCH und die Stimmen in ' + SRC_LanguageName + ' zu genießen: Starten Sie Ihr Spiel Z.O.N.A von Steam aus und wählen Sie ''' + SRC_LanguageName + ''' in den Spracheinstellungen des Spiels. VIEL SPASS IN DER ZONE!'
+    DST_LanguageMsg := 'Um die Texte auf DEUTSCH und die Stimmen in ' + SRC_LanguageName + ' zu genießen: Starten Sie Ihr Spiel von Steam aus und wählen Sie ''' + SRC_LanguageName + ''' in den Spracheinstellungen des Spiels. VIEL SPASS IN DER ZONE!'
       
     // Execute auto_ZONA_translator.exe with the selected language and capture the return code
     Exec(ExpandConstant('{app}\auto_ZONA_translator.exe'), '-ls ' + SRC_LanguageCode + ' -l ' + DST_LanguageCode + ' --force', '', SW_SHOW, ewWaitUntilTerminated, ResultCode);
