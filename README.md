@@ -320,3 +320,4 @@ Not:
 - v0.3.1
   - Fixed translations of 'БАЛАНС: РУБ.' (SOLD: RUB.) in all languages other than French for CONVRGENCE.
   - Fixed translations of 'Требуется реп' (Required rep) in all languages other than French for CONVRGENCE.
+  - Correction of the translation of the innovations 4.0 presentation in CONVRGENCE.
