@@ -409,7 +409,7 @@ RESTORE_SPECIFIC_WORDS = {
                 "case_sensitive": True
             },
             {
-                "from": "nouveau personnage,\nterminez sa chaine de quetes et debloquez l'arbalete",
+                "from": "nouveau personnage, terminez sa chaine de quetes et debloquez l'arbalete",
                 "to": "nouveau personnage,\nterminez sa chaine de quetes\net debloquez l'arbalete",
                 "case_sensitive": True
             },
