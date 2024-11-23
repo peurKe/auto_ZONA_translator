@@ -12,7 +12,7 @@ Description :
 Author: peurKe
 Creation Date: 2024-10-31
 Last Modified: 2024-11-23
-Version: 0.3.0-alpha
+Version: 0.3.1-alpha
 License: MIT
 """
 

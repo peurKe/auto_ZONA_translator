@@ -44,6 +44,7 @@ RESTORE_SPECIFIC_WORDS = {
             { "from": "acosador", "to": "Stalker", "case_sensitive": False },
             { "from": "rastreador", "to": "Stalker", "case_sensitive": False }
         ],
+        "fi": [],
         "fr": [
             { "from": "UNIQUE DEVELOPPEUR", "to": "LE DEVELOPPEUR INDEPENDANT DE", "case_sensitive": False },  # Ukrainian / level1
             { "from": "rejoignez-nous", "to": ", rejoignez notre", "case_sensitive": False },  # Ukrainian / level1 
@@ -104,7 +105,6 @@ RESTORE_SPECIFIC_WORDS = {
             { "from": "Village Topp", "to": "Marais du village", "case_sensitive": True },  # Ukrainian / level11
             { "from": "a mange", "to": "ite", "case_sensitive": True },  # Russian / level11 / 'Cело' with a latin 'C' = Village Russian / 'ело' = a mangé / 'Cело' = 'Ca mang' => Cite 
         ],
-        "fi": [],
         "hu": [],
         "it": [
             { "from": "tracker", "to": "Stalker", "case_sensitive": False }
@@ -164,6 +164,7 @@ RESTORE_SPECIFIC_WORDS = {
             { "from": "acosador", "to": "Stalker", "case_sensitive": False },
             { "from": "rastreador", "to": "Stalker", "case_sensitive": False }
         ],
+        "fi": [],
         "fr": [
             { "from": "UNIQUE DEVELOPPEUR", "to": "LE DEVELOPPEUR INDEPENDANT DE", "case_sensitive": False },  # Ukrainian + Russian / level1
             { "from": "rejoignez-nous", "to": ", rejoignez notre", "case_sensitive": False },  # Ukrainian + Russian / level1 
@@ -230,7 +231,6 @@ RESTORE_SPECIFIC_WORDS = {
             { "from": "a mange", "to": "ite", "case_sensitive": True },  # Russian / level11 / 'Cело' with a latin 'C' = Village Russian / 'ело' = a mangé / 'Cело' = 'Ca mang' => Cite 
             { "from": "sont les ames des stalkers morts,", "to": "sont les ames des stalkers morts venues hanter Le Cameleons,", "case_sensitive": False } # Easter Egg Le Cameleons!
         ],
-        "fi": [],
         "hu": [],
         "it": [
             { "from": "tracker", "to": "Stalker", "case_sensitive": False }
@@ -253,8 +253,8 @@ RESTORE_SPECIFIC_WORDS = {
         "en": [
             { "from": "Plot", "to": "Story", "case_sensitive": True },
         ],
-        "de": [],
         "es": [],
+        "fi": [],
         "fr": [
             # { "from": "Nikita - developpeur", "to": "Nikita - Unique developpeur de", "case_sensitive": True },  # OLD
             { "from": "Bonjour, voici Nikita", "to": "Bonjour, c'est Nikita", "case_sensitive": True },
@@ -280,7 +280,6 @@ RESTORE_SPECIFIC_WORDS = {
             { "from": "Prise", "to": "Tenir", "case_sensitive": True },
             { "from": "Armer le volet", "to": "Armer la culasse", "case_sensitive": True },
         ],
-        "fi": [],
         "hu": [],
         "it": [],
         "nl": [],
@@ -290,12 +289,49 @@ RESTORE_SPECIFIC_WORDS = {
         "sv": []
     },
     "CONVRGENCE": {
-        "cs": [],
-        "da": [],
-        "de": [],
-        "en": [],
-        "de": [],
-        "es": [],
+        # 
+        "cs": [
+            { "from": "ZUSTATEK:                   RUB.", "to": "ZUSTATEK:                                    RUB.", "case_sensitive": True },
+            { "from": "Povinny\nrep", "to": "Povinny\nREP", "case_sensitive": True },
+            { "from": "Povinny zastupce.", "to": "Povinny REP.", "case_sensitive": True },
+        ],
+        "da": [
+            { "from": "BALANCE:                  RUB.", "to": "BALANCE:                                     RUB.", "case_sensitive": True },
+            { "from": "Pakr vet\nrep", "to": "Pakr vet\nREP", "case_sensitive": True },
+            { "from": "Pakr vet rep.", "to": "Pakr vet REP.", "case_sensitive": True },
+        ],
+        "de": [
+            { "from": "GUTHABEN:                   RUB.", "to": "GUTHABEN:                                    RUB.", "case_sensitive": True },
+            { "from": "Erforderlicher\nRep", "to": "Erforderlich\nREP", "case_sensitive": True },
+            { "from": "Erforderlicher Reprasentant.", "to": "Erforderlich REP.", "case_sensitive": True },
+        ],
+        "en": [
+            { "from": "Education", "to": "Tutorial", "case_sensitive": True },
+            { "from": "Creators", "to": "Credits", "case_sensitive": True },
+            { "from": "Name         Account", "to": "Name          Score", "case_sensitive": True },
+            { "from": "Required\nrep", "to": "Required\nREP", "case_sensitive": True },
+            { "from": "Required rep.", "to": "Required REP.", "case_sensitive": True },
+            { "from": "BALANCE:                   RUB.", "to": "BALANCE:                                     RUB.", "case_sensitive": True },
+            { "from": "INCREASE DEMAND", "to": "HIGH DEMAND", "case_sensitive": True },
+            { "from": "(the first\nis free)", "to": "(the first is free)", "case_sensitive": True },
+            # BEGIN Only version 0.4 présentation innovations
+            {
+                "from": "Meet a new character, complete his quest chain and unlock the crossbow",
+                "to": "Meet a new character,\ncomplete his quest chain\nand unlock the crossbow",
+                "case_sensitive": True
+            }
+            # END Only version 0.4 présentation innovations            
+        ],
+        "es": [
+            { "from": "SALDO:                   RUB.", "to": "SALDO:                                       RUB.", "case_sensitive": True },
+            { "from": "Requerido\nrepresentante", "to": "Requerido\nREP", "case_sensitive": True },
+            { "from": "Representante requerido", "to": "REP. requerido", "case_sensitive": True },
+        ],
+        "fi": [
+            { "from": "SALDO:                   RUB.", "to": "SALDO:                                       RUB.", "case_sensitive": True },
+            { "from": "Pakollinen\nrep", "to": "Pakollinen\nREP", "case_sensitive": True },
+            { "from": "Pakollinen edustaja", "to": "Pakollinen REP.", "case_sensitive": True },
+        ],
         "fr": [
             # { "from": "Nikita - developpeur", "to": "Nikita - Unique developpeur de", "case_sensitive": True },  # OLD
             { "from": "Bonjour, voici Nikita", "to": "Bonjour, c'est Nikita", "case_sensitive": True },
@@ -400,7 +436,7 @@ RESTORE_SPECIFIC_WORDS = {
             },
             { "from": "Retour unique de votre materiel", "to": "Un seul retour de votre materiel", "case_sensitive": True },
             { "from": "n inspire pas confiance", "to": "n'inspire pas confiance", "case_sensitive": True },
-            { "from": "tout ranger pour toi,\nce dont vous avez", "to": "te fournir tout ce dont tu as", "case_sensitive": True },                                  
+            { "from": "tout ranger pour toi,\nce dont vous avez", "to": "te fournir tout ce dont tu as", "case_sensitive": True },
             { "from": "flacon dans le fut", "to": "flacon dans ce baril", "case_sensitive": False },
             { "from": " Nom Frotter.", "to": "Rang joueurs par RUB", "case_sensitive": True },
             # { "from": "Nom Compte", "to": "Rang joueurs par SCORE", "case_sensitive": True },  # OLD
@@ -436,18 +472,45 @@ RESTORE_SPECIFIC_WORDS = {
             { "from": "Lancement", "to": "Jetables", "case_sensitive": True },
             { "from": "Revolver.\nbut", "to": "Revolver.\nviseur", "case_sensitive": True },
             # { "from": "SOLDE : FROTTEMENT.", "to": "SOLDE :                                      RUB.", "case_sensitive": True },  # OLD
-            { "from": "SOLDE :                   RUB.", "to": "SOLDE :                                      RUB.", "case_sensitive": True },
+            { "from": "SOLDE :                   RUB.", "to": "SOLDE:                                       RUB.", "case_sensitive": True },
             { "from": "DEMANDE AUGMENTEE", "to": "FORTE DEMANDE", "case_sensitive": True },
             # { "from": "Le mieux est d'essayer :", "to": "Meilleur essai :", "case_sensitive": True },  # OLD
         ],
-        "fi": [],
-        "hu": [],
-        "it": [],
-        "nl": [],
-        "pl": [],
-        "pt": [],
-        "ro": [],
-        "sv": []
+        "hu": [
+            { "from": "EGYENSULY:                   DORSES.", "to": "EGYENSULY:                                   RUB.", "case_sensitive": True },
+            { "from": "Kotelezo\nrep", "to": "Kotelezo\nREP", "case_sensitive": True },
+            { "from": "Kotelezo rep", "to": "Kotelezo REP", "case_sensitive": True },
+        ],
+        "it": [
+            { "from": "SALDO:                   RUB.", "to": "SALDO:                                       RUB.", "case_sensitive": True },
+            { "from": "Richiesto\nrappresentante", "to": "Richiesto\nREP", "case_sensitive": True },
+            { "from": "Rappresentante richiesto", "to": "REP. richiesto", "case_sensitive": True },
+        ],
+        "nl": [
+            { "from": "BALANS:                  RUB.", "to": "BALANS:                                      RUB.", "case_sensitive": True },
+            { "from": "Vereiste\nvertegenwoordiger", "to": "Vereiste\nREP", "case_sensitive": True },
+            { "from": "Vereiste vertegenwoordiger", "to": "Vereiste REP.", "case_sensitive": True },
+        ],
+        "pl": [
+            { "from": "SALDO:                   RUB.", "to": "SALDO:                                       RUB.", "case_sensitive": True },
+            { "from": "Wymagany\nrep", "to": "Wymagany\nREP.", "case_sensitive": True },
+            { "from": "Wymagany przedstawiciel", "to": "Wymagany REP.", "case_sensitive": True },
+        ],
+        "pt": [
+            { "from": "SALDO:                   RUB.", "to": "SALDO:                                       RUB.", "case_sensitive": True },
+            { "from": "Representante\nobrigatorio.", "to": "REP.\nobrigatorio", "case_sensitive": True },
+            { "from": "Representante necessario.", "to": "REP. necessario", "case_sensitive": True },
+        ],
+        "ro": [
+            { "from": "SOLD:                   RUB.", "to": "SOLD:                                        RUB.", "case_sensitive": True },
+            { "from": "Necesar\nrep.", "to": "Necesar\nREP.", "case_sensitive": True },
+            { "from": "Reprezentant necesar", "to": "REP. necesar", "case_sensitive": True },
+        ],
+        "sv": [
+            { "from": "SALDO:                  RUB.", "to": "SALDO:                                       RUB.", "case_sensitive": True },
+            { "from": "Obligatorisk\nrep.", "to": "Obligatorisk REP.", "case_sensitive": True },
+            { "from": "Obligatorisk representant.", "to": "Obligatorisk REP.", "case_sensitive": True },
+        ]
     },
     # "all": [
     #     { "from": "pripiat", "to": "Prypiat", "case_sensitive": False },  # Origin / Ukrainian + Russian / level11

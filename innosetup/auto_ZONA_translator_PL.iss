@@ -1,7 +1,7 @@
 [Setup]
 AppName=auto_ZONA_translator
 OutputBaseFilename=auto_ZONA_translator_installer_PL
-AppVersion=v0.2.3-alpha
+AppVersion=v0.3.1-alpha
 DefaultDirName={src}
 UsePreviousAppDir=no
 DisableProgramGroupPage=yes

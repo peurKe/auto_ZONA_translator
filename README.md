@@ -315,4 +315,8 @@ Not:
   - Fixed a bug in the backup game files function that forced Steam game files to be validated even if the game files were valid.
 
 - v0.3.0
-  - Improved translation system - unified for all 4 games
+  - Improved translation system - unified for all 4 games.
+
+- v0.3.1
+  - Fixed translations of 'БАЛАНС: РУБ.' (SOLD: RUB.) in all languages other than French for CONVRGENCE.
+  - Fixed translations of 'Требуется реп' (Required rep) in all languages other than French for CONVRGENCE.
