@@ -289,7 +289,6 @@ RESTORE_SPECIFIC_WORDS = {
         "sv": []
     },
     "CONVRGENCE": {
-        # 
         "cs": [
             { "from": "ZUSTATEK:                   RUB.", "to": "ZUSTATEK:                                    RUB.", "case_sensitive": True },
             { "from": "Povinny\nrep", "to": "Povinny\nREP", "case_sensitive": True },
