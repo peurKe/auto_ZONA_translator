@@ -328,4 +328,4 @@ Not:
   - Improved translations with DeepL.
 
 - v0.3.2-alpha_hotfix
-  - Fixed assurance description in French for CONVRGENCE.
+  - Fixed insurance description in French for CONVRGENCE.
