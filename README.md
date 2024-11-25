@@ -59,8 +59,8 @@ Choose your preferred language:
 - **auto_ZONA_translator_installer_DE.exe** embedding texts and subtitles for **German** only
 - **auto_ZONA_translator_installer_EN.exe** embedding texts and subtitles for **English** only
 - **auto_ZONA_translator_installer_FR.exe** embedding texts and subtitles for **French** only
-- **auto_ZONA_translator_installer_FR.exe** embedding texts and subtitles for **Polish** only
-- **auto_ZONA_translator_installer_FR.exe** embedding texts and subtitles for **Romanian** only
+- **auto_ZONA_translator_installer_PL.exe** embedding texts and subtitles for **Polish** only
+- **auto_ZONA_translator_installer_RO.exe** embedding texts and subtitles for **Romanian** only
 
 Or choose the default installer for all other languages:
 - **auto_ZONA_translator_installer.exe** embedding texts and subtitles for **all supported languages**
@@ -321,3 +321,8 @@ Not:
   - Fixed translations of 'БАЛАНС: РУБ.' (BALANCE: RUB.) in all languages other than French for CONVRGENCE.
   - Fixed translations of 'Требуется реп' (Required rep) in all languages other than French for CONVRGENCE.
   - Correction of the translation of the innovations 4.0 presentation in CONVRGENCE.
+
+- v0.3.2
+  - Game versions are now retrieved from the buildid in the ‘steamapps/manifest_ID.acf’ game files.
+  - SQLite database files are now grouped by type of translation engine in separate directories: ‘sqlite/google/’, ‘sqlite/deepl/’ or ‘sqlite/deeplx/’.
+  - Improved translations with DeepL.

@@ -175,8 +175,8 @@ CYRILLIC_CONTENT_PATTERN = rb''  # See initialization in main() rigth after argu
 # D0 9F D0 95 D0 92 D0 9E
 
 # ЦЕНА НЕИЗ
-# Ц     Е     Н     А        Н
-#    20 D0 9D
+# Ц     Е     Н     А      Н     Е     И     З
+# D0 A6 D0 95 D0 9D D0 90  D0 9D D0 95 D0 98 D0 97
 
 # С     У     Х     А     Р     И     К     И
 # D0 A1 D0 A3 D0 A5 D0 90 D0 A0 D0 98 D0 9A D0 98
@@ -186,6 +186,9 @@ CYRILLIC_CONTENT_PATTERN = rb''  # See initialization in main() rigth after argu
 
 # К     а     с     с     е     т     а
 # D0 9A D0 B0 D1 81 D1 81 D0 B5 D1 82 D0 B0
+
+# Н     е     т
+# D0 9D D0 B5 D1 82
 
 # Latin	Char Unicode	Hex (UTF-8)	Binaire (UTF-8)
 # A	    А	U+0410	D0 90	11010000 10100000
