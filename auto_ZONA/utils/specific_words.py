@@ -435,7 +435,7 @@ RESTORE_SPECIFIC_WORDS = {
             },
             {
                 "from": "Retour unique de votre materiel apres deces. \nNe s'applique pas aux articles contenus dans le sac a dos",
-                "to": "Vous permet de recuperer votre equipemet une seule fois apres deces.\nNe s'applique pas aux objets dans votre\nsac a dos",
+                "to": "Vous permet de recuperer votre materiel une seule fois apres deces.\nNe s'applique pas aux objets dans votre\nsac a dos",
                 "case_sensitive": True
             },
             { "from": "n inspire pas confiance", "to": "n'inspire pas confiance", "case_sensitive": True },
@@ -497,7 +497,7 @@ RESTORE_SPECIFIC_WORDS = {
         ],
         "pl": [
             # { "from": "SALDO:                   RUB.", "to": "SALDO:                                         RUB.", "case_sensitive": True }, # OLD
-            { "from": "Wymagany\nrep", "to": "Wymagany\nREP.", "case_sensitive": True },
+            { "from": "Wymagany\nrep.", "to": "Wymagany\nREP.", "case_sensitive": True },
             { "from": "Wymagany przedstawiciel", "to": "Wymagany REP.", "case_sensitive": True },
         ],
         "pt": [
@@ -512,7 +512,7 @@ RESTORE_SPECIFIC_WORDS = {
         ],
         "sv": [
             # { "from": "SALDO:                  RUB.", "to": "SALDO:                                         RUB.", "case_sensitive": True }, # OLD
-            { "from": "Obligatorisk\nrep.", "to": "Obligatorisk REP.", "case_sensitive": True },
+            { "from": "Obligatorisk\nrep.", "to": "Obligatorisk\nREP.", "case_sensitive": True },
             { "from": "Obligatorisk representant.", "to": "Obligatorisk REP.", "case_sensitive": True },
         ]
     },

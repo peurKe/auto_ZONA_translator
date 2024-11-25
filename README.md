@@ -278,22 +278,22 @@ Not:
 
 # Release notes
 
-- v0.1.0
+- v0.1.0-alpha
   - initial update
 
-- v0.1.1
+- v0.1.1-alpha
   - Now, you can choose your preferred VOICES in the game between Ukrainian (Prypriat's native language) and Russian.
 
-- v0.1.2
+- v0.1.2-alpha
   - This release focuses on improving French translations, mainly to correct a few automatic translations. (Thanks to @cameleons for his help)
 
-- v0.1.3
+- v0.1.3-alpha
   - For all text languages: A separate database for each language (easier maintenance).
 
-- v0.1.4
+- v0.1.4-alpha
   - Only for french text language: faction names are no longer translated to maintain immersion. (Thanks to @cameleons for testing)
 
-- v0.1.5
+- v0.1.5-alpha
   - Great improvement in English translations + faction names are no longer translated to maintain immersion.
   - Innosetup's dedicated French installer now offers a French-language interface.
   - Innosetup's dedicated Czech installer has been added, with a Czech-language interface.
@@ -301,28 +301,31 @@ Not:
   - Innosetup's dedicated English installer has been added, with an English-language interface.
   - Innosetup's dedicated Polish installer has been added, with a Polish-language interface.
 
-- v0.2.0
+- v0.2.0-alpha
   - Added support for **CONVRGENCE** and **Paradox of Hope** games.
   - If the game's save files are invalid, the Steam game file integrity check is now automatically performed by the Steam console, with no manual action required.
   - When the translation is successful, the installation window closes automatically (new behavior).
   - If the translation fails, the installation window waits for user intervention with an error message (as usual).
 
-- v0.2.1
+- v0.2.1-alpha
   - Fixed wrong installer name in **README.md** documentation (Thanks @cameleons).
   - Improve **README.md** documentation and format.
 
-- v0.2.2
+- v0.2.2-alpha
   - Fixed a bug in the backup game files function that forced Steam game files to be validated even if the game files were valid.
 
-- v0.3.0
+- v0.3.0-alpha
   - Improved translation system - unified for all 4 games.
 
-- v0.3.1
+- v0.3.1-alpha
   - Fixed translations of 'БАЛАНС: РУБ.' (BALANCE: RUB.) in all languages other than French for CONVRGENCE.
   - Fixed translations of 'Требуется реп' (Required rep) in all languages other than French for CONVRGENCE.
   - Correction of the translation of the innovations 4.0 presentation in CONVRGENCE.
 
-- v0.3.2
+- v0.3.2-alpha
   - Game versions are now retrieved from the buildid in the ‘steamapps/manifest_ID.acf’ game files.
   - SQLite database files are now grouped by type of translation engine in separate directories: ‘sqlite/google/’, ‘sqlite/deepl/’ or ‘sqlite/deeplx/’.
   - Improved translations with DeepL.
+
+- v0.3.2-alpha_hotfix
+  - Fixed assurance description in French for CONVRGENCE.
