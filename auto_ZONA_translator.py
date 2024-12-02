@@ -732,13 +732,17 @@ def check_log_for_integrity_verification(log_file, app_id, last_check_timestamp)
     return False
 
 
-def validate_steam_game_and_wait(app_id, steam_log_path=r'C:\Program Files (x86)\Steam\logs\content_log.txt'):
+def validate_steam_game_and_wait(app_id, steam_log_path="C:\\Program Files (x86)\\Steam\\logs\\content_log.txt"):
     """
     Validates the integrity of a Steam game's files using its app ID.
     """
-    # App ID negative is not Steam game (see 'DEFAULT_ZONA_GAME_ID' variables)
-    if app_id < 0:
-        return False
+    # App ID is not Steam game (see 'DEFAULT_ZONA_GAME_ID' variables)
+    if not app_id:
+        printc(f" • [Cannot validates the integrity of '{DEFAULT_ZONA_GAME_NAME}' because it is not a genuine Steam Game.] Failed\n", bcolors.FAIL)
+        printc(f" Tips: Execute the 'auto_ZONA_translator (restore)' shortcut located in your '{DEFAULT_ZONA_GAME_NAME}' game folder.\n", bcolors.INFO)
+        printc(f"       Or reinstall (delete and download again) this '{DEFAULT_ZONA_GAME_NAME}' game.\n", bcolors.INFO)
+        inputc(f" Press Enter to exit...\n", bcolors.ASK)
+        sys.exit(-1)
     else:
         printc(f" • [Validate '{DEFAULT_ZONA_GAME_NAME}' (app ID '{app_id}') files integrity from Steam console. Monitoring logs] ...\n", bcolors.INFO)
         # Get the timestamp before starting the integrity check
@@ -818,7 +822,9 @@ def main():
             if os_path.exists(game_exec):
                 # Set specific game global variables
                 if game_exec == 'Paradox of Hope.exe':
-                    DEFAULT_ZONA_GAME_ID = -1
+                    DEFAULT_ZONA_GAME_ID = None
+                    DEFAULT_ZONA_GAME_MANIFEST_ACF_FILE = None
+                    DEFAULT_ZONA_GAME_MANIFEST_ACF_FILE_DEFAULT_VERSION = 'v0.4.3'
                     DEFAULT_ZONA_GAME_AUTHOR = 'NikZ'
                     DEFAULT_ZONA_GAME_NAME = 'Paradox of Hope'
                     DEFAULT_ZONA_GAME_NAME_REGEX = rb'\x50\x61\x72\x61\x64\x6F\x78\x20\x6F\x66\x20\x48\x6F\x70\x65'  # 'Paradox of Hope'
@@ -831,6 +837,7 @@ def main():
                 elif game_exec == 'CONVRGENCE.exe':
                     DEFAULT_ZONA_GAME_ID = 2609610  # https://store.steampowered.com/app/2609610/CONVRGENCE/
                     DEFAULT_ZONA_GAME_MANIFEST_ACF_FILE = f"..\\..\\appmanifest_{DEFAULT_ZONA_GAME_ID}.acf"
+                    DEFAULT_ZONA_GAME_MANIFEST_ACF_FILE_DEFAULT_VERSION = None
                     DEFAULT_ZONA_GAME_AUTHOR = 'NikZ'
                     DEFAULT_ZONA_GAME_NAME = 'CONVRGENCE'
                     DEFAULT_ZONA_GAME_NAME_REGEX = rb'\x43\x4F\x4E\x56\x52\x47\x45\x4E\x43\x45'  # 'CONVRGENCE'
@@ -842,6 +849,8 @@ def main():
                     DEFAULT_ZONA_TRANSLATE_ALLOWED_RANGES = DEFAULT_ZONA_TRANSLATE_DEFAULT_ALLOWED_RANGES
                 elif game_exec == 'ZONA.exe':
                     DEFAULT_ZONA_GAME_ID = 2142450  # https://store.steampowered.com/app/2142450/ZONA_Project_X_VR/
+                    DEFAULT_ZONA_GAME_MANIFEST_ACF_FILE = f"..\\..\\appmanifest_{DEFAULT_ZONA_GAME_ID}.acf"
+                    DEFAULT_ZONA_GAME_MANIFEST_ACF_FILE_DEFAULT_VERSION = None
                     DEFAULT_ZONA_GAME_AUTHOR = 'AGaming+'
                     DEFAULT_ZONA_GAME_NAME = 'Z.O.N.A Project X'
                     DEFAULT_ZONA_GAME_NAME_REGEX = rb'\x5A\x2E\x4F\x2E\x4E\x2E\x41'  # 'Z.O.N.A'
@@ -859,6 +868,8 @@ def main():
                     }
                 elif game_exec == 'ZONAORIGIN.exe':
                     DEFAULT_ZONA_GAME_ID = 2539520  # https://store.steampowered.com/app/2539520/ZONA_Origin/
+                    DEFAULT_ZONA_GAME_MANIFEST_ACF_FILE = f"..\\..\\appmanifest_{DEFAULT_ZONA_GAME_ID}.acf"
+                    DEFAULT_ZONA_GAME_MANIFEST_ACF_FILE_DEFAULT_VERSION = None
                     DEFAULT_ZONA_GAME_AUTHOR = 'AGaming+'
                     DEFAULT_ZONA_GAME_NAME = 'Z.O.N.A Origin'
                     DEFAULT_ZONA_GAME_NAME_REGEX = rb'\x5A\x2E\x4F\x2E\x4E\x2E\x41\x20\x4F\x52\x49\x47\x49\x4E'  # 'Z.O.N.A ORIGIN'
@@ -883,7 +894,11 @@ def main():
             raise RuntimeError(f"Function '{currentframe().f_code.co_name}': Heck! The script is not where it should be. Move this script in one of the same directory as the {'\' or \''.join(DEFAULT_ZONA_EXE_FILENAME_LIST)}' executable files (Example: usually in the '{DEFAULT_ZONA_DIR_EXAMPLE}' directory). Then run this moved script again ;)\n")
 
         # Get game current build
-        current_version_buildid = extract_buildid(DEFAULT_ZONA_GAME_MANIFEST_ACF_FILE)
+        if DEFAULT_ZONA_GAME_MANIFEST_ACF_FILE:
+            current_version_buildid = extract_buildid(DEFAULT_ZONA_GAME_MANIFEST_ACF_FILE)
+        else:
+            # Mainly for 'Paradox of hope'
+            current_version_buildid = DEFAULT_ZONA_GAME_MANIFEST_ACF_FILE_DEFAULT_VERSION
 
         # Replace '@PLACEHOLDER_VERSION_DIR' with current game version
         DEFAULT_ZONA_TRANSLATE_BACKUP_DIR = f"{DEFAULT_ZONA_TRANSLATE_DIR}/{current_version_buildid}/{DEFAULT_ZONA_TRANSLATE_BACKUP_DIR_NAME}"

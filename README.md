@@ -329,3 +329,6 @@ Not:
 
 - v0.3.2-alpha_hotfix
   - Fixed insurance description in French for CONVRGENCE.
+
+- v0.3.2-alpha_hotfix_1
+  - Fixed problem with DEFAULT_ZONA_GAME_MANIFEST_ACF_FILE variable (Thanks to Martysl1)
